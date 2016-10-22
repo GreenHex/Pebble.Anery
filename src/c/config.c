@@ -3,8 +3,8 @@
 #include "config.h"
 #include "clock.h"
 
-#define NUM_INT_MESSAGE_KEYS 11
-#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 2
+#define NUM_INT_MESSAGE_KEYS 5
+#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 1
 
 static int stringToInt( char *str );
 
@@ -16,14 +16,7 @@ void handle_config_message( DictionaryIterator *iterator ) {
   // in all-caps, pretending to be constant values. This should be outside the 
   // function, but since these are variables, tough luck.
   uint32_t INT_MESSAGE_KEYS[ NUM_INT_MESSAGE_KEYS ] = {
-    // Status 
-    MESSAGE_KEY_STATUS_DISPLAY_TYPE,
-    MESSAGE_KEY_STATUS_UPDATE_INTERVAL,
-    MESSAGE_KEY_STATUS_UPDATE_START_TIME,
-    MESSAGE_KEY_STATUS_UPDATE_END_TIME,
     // Clock
-    MESSAGE_KEY_CLOCK_TYPE_DIGITAL_OR_ANALOG,
-    MESSAGE_KEY_DIGITAL_CLOCK_TYPE_12_OR_24,
     MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS,
     // Chime
     MESSAGE_KEY_CHIME_INTERVAL,
@@ -43,7 +36,6 @@ void handle_config_message( DictionaryIterator *iterator ) {
   struct BOOL_CHKBOX_KEY { uint32_t keyID; int numChkBoxItems; };
 
   struct BOOL_CHKBOX_KEY BOOL_CHKBOX_MESSAGE_KEYS[ NUM_BOOL_CHKBOX_MESSAGE_KEYS ] = {
-    { .keyID = MESSAGE_KEY_STATUS_UPDATE_ON_DAYS, .numChkBoxItems = 7 },
     { .keyID = MESSAGE_KEY_CHIME_ON_DAYS, .numChkBoxItems = 7 }
   };
 

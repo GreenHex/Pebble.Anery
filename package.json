@@ -12,18 +12,17 @@
         ],
         "displayName": "Anery",
         "enableMultiJS": true,
-        "messageKeys": [],
+        "messageKeys": [
+            "ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS",
+            "CHIME_INTERVAL",
+            "CHIME_START_TIME",
+            "CHIME_END_TIME",
+            "CHIME_ON_DAYS[7]",
+            "CHIME_OFFSET"
+        ],
         "projectType": "native",
         "resources": {
             "media": [
-                {
-                    "file": "images/Analog Emery 200.png",
-                    "name": "ANALOG_EMERY_200",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "bitmap"
-                },
                 {
                     "file": "images/Analog Emery Full Res.png",
                     "name": "ANALOG_EMERY_FULL",
