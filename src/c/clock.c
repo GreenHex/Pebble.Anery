@@ -79,7 +79,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     .hand_color = COLOUR_HOUR_HAND,
     .hand_outline_color = COLOUR_HANDS_OUTLINE,
     .dot_radius = CENTER_DOT_RADIUS,
-    .dot_color = COLOUR_DOT,
+    .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
     .dot_outline_color = COLOUR_DOT_OUTLINE
   };
   draw_clock_hand( &hand_params );
@@ -94,7 +94,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     .hand_color = COLOUR_MIN_HAND,
     .hand_outline_color = COLOUR_HANDS_OUTLINE,
     .dot_radius = CENTER_DOT_RADIUS - 4,
-    .dot_color = COLOUR_DOT,
+    .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
     .dot_outline_color = COLOUR_DOT_OUTLINE
   };
   draw_clock_hand( &hand_params );
@@ -119,7 +119,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .hand_color = COLOUR_SEC_HAND,
       .hand_outline_color = COLOUR_HANDS_OUTLINE,
       .dot_radius = CENTER_DOT_RADIUS - 8,
-      .dot_color = COLOUR_DOT,
+      .dot_color = COLOUR_SEC_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
     };
     draw_clock_hand( &hand_params );

@@ -24,6 +24,14 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/Anery Icon.png",
+                    "name": "ANERY_ICON",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/Analog Emery Full Res.png",
                     "name": "ANALOG_EMERY_FULL",
                     "targetPlatforms": [
@@ -40,56 +48,6 @@
                         "diorite"
                     ],
                     "type": "bitmap"
-                },
-                {
-                    "file": "fonts/DroidSans_38.ttf",
-                    "name": "FONT_DROIDSANS_38",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "file": "fonts/DroidSans_37.ttf",
-                    "name": "FONT_DROIDSANS_37",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "file": "fonts/DroidSans_18.ttf",
-                    "name": "FONT_DROIDSANS_18",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "file": "fonts/DroidSans_13.ttf",
-                    "name": "FONT_DROIDSANS_13",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "file": "fonts/DroidSans_12.ttf",
-                    "name": "FONT_DROIDSANS_12",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
-                    ],
-                    "type": "font"
                 }
             ]
         },
