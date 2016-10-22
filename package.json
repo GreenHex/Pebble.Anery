@@ -1,0 +1,107 @@
+{
+    "author": "The Resetter",
+    "dependencies": {
+        "pebble-clay": "^1.0.2"
+    },
+    "keywords": [],
+    "name": "anery",
+    "pebble": {
+        "capabilities": [
+            "location",
+            "configurable"
+        ],
+        "displayName": "Anery",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/Analog Emery 200.png",
+                    "name": "ANALOG_EMERY_200",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Analog Emery Full Res.png",
+                    "name": "ANALOG_EMERY_FULL",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Pebble_Battery_Charging_Icon.png",
+                    "name": "BATTERY_CHARGING_ICON",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "fonts/DroidSans_38.ttf",
+                    "name": "FONT_DROIDSANS_38",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DroidSans_37.ttf",
+                    "name": "FONT_DROIDSANS_37",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DroidSans_18.ttf",
+                    "name": "FONT_DROIDSANS_18",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DroidSans_13.ttf",
+                    "name": "FONT_DROIDSANS_13",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "file": "fonts/DroidSans_12.ttf",
+                    "name": "FONT_DROIDSANS_12",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "font"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "emery"
+        ],
+        "uuid": "feec8b3e-0491-4030-b9f9-5083cff5ec75",
+        "watchapp": {
+            "watchface": true
+        }
+    },
+    "version": "1.0.0"
+}
