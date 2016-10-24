@@ -24,6 +24,14 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/Analog Emery Full Res Slim Markers.png",
+                    "name": "ANALOG_EMERY_FULL_SLIM",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/Anery Icon.png",
                     "name": "ANERY_ICON",
                     "targetPlatforms": [
