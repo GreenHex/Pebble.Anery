@@ -97,6 +97,10 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     graphics_context_set_stroke_color( ctx, COLOUR_DOT_OUTLINE );
     gpath_draw_outline( ctx, s_minute_arrow );
     
+    if ( ! ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
+      graphics_context_set_fill_color( ctx, GColorBlack );
+      graphics_fill_circle( ctx, center_pt, 2 );
+    } 
   } else { // contemporary
     
     int32_t hour_angle = ( ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 ) );
@@ -178,12 +182,9 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     graphics_context_set_stroke_color( ctx, COLOUR_SEC_HAND_TIP );
     graphics_draw_line( ctx, sec_hand, sec_hand_tip );
     #endif
-  } else {
-    graphics_context_set_fill_color( ctx, GColorBlack );
-    graphics_fill_circle( ctx, center_pt, 2 );
   }  
-    
 }
+
 static void stop_seconds_display( void* data ) { // after timer elapses
   if ( secs_display_apptimer) app_timer_cancel( secs_display_apptimer ); // Just for fun.
   secs_display_apptimer = 0; // if we are here, we know for sure that timer has expired. 
