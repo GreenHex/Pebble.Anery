@@ -56,6 +56,11 @@ static const GPathInfo MINUTE_HAND_POINTS_LEFT = {
   }
 };
 
+enum ANALOG_HANDS_STYLE {
+  STYLE_CONTEMPORARY = 0,
+  STYLE_SPIFFY_GS = 1
+};
+
 struct ANALOG_LAYER_DATA {
   bool show_seconds;
 };

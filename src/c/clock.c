@@ -63,83 +63,85 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   GRect layer_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &layer_bounds );
   
-  /*
-  int32_t hour_angle = ( ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 ) );
-  GPoint hour_hand = (GPoint) {
-    .x = ( sin_lookup( hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.x,
-    .y = ( -cos_lookup( hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.y
-  };
-    
-  // hour hand
-  hand_params = (struct HAND_DRAW_PARAMS) {
-    .ctx = ctx,
-    .center_pt = center_pt,
-    .from_pt = center_pt,
-    .to_pt = hour_hand,
-    .hand_width = HOUR_HAND_WIDTH,
-    .hand_color = COLOUR_HOUR_HAND,
-    .hand_outline_color = COLOUR_HANDS_OUTLINE,
-    .dot_radius = CENTER_DOT_RADIUS,
-    .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
-    .dot_outline_color = COLOUR_DOT_OUTLINE
-  };
-  draw_clock_hand( &hand_params );
-  
-  int32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
-  GPoint min_hand = (GPoint) {
-    .x = ( sin_lookup( min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.x,
-    .y = ( -cos_lookup( min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.y
-  };
+  if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
+    // for hour and minute hands
+    graphics_context_set_stroke_width( ctx, 1 );
 
-  // minute hand
-  hand_params = (struct HAND_DRAW_PARAMS) {
-    .ctx = ctx,
-    .center_pt = center_pt,
-    .from_pt = center_pt,
-    .to_pt = min_hand,
-    .hand_width = MIN_HAND_WIDTH,
-    .hand_color = COLOUR_MIN_HAND,
-    .hand_outline_color = COLOUR_HANDS_OUTLINE,
-    .dot_radius = CENTER_DOT_RADIUS - 4,
-    .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
-    .dot_outline_color = COLOUR_DOT_OUTLINE
-  };
-  draw_clock_hand( &hand_params );
-  */
-  
-  // for hour and minute hands
-  graphics_context_set_stroke_width( ctx, 1 );
-  
-  // hour hand
-  uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
-  gpath_rotate_to( s_hour_arrow, hour_angle );
-  gpath_rotate_to( s_hour_arrow_left, hour_angle );
-  gpath_move_to( s_hour_arrow, center_pt );
-  gpath_move_to( s_hour_arrow_left, center_pt );
-  
-  graphics_context_set_fill_color( ctx, GColorWhite );
-  gpath_draw_filled(ctx, s_hour_arrow);
-  graphics_context_set_fill_color( ctx, GColorLightGray );
-  gpath_draw_filled( ctx, s_hour_arrow_left );
-  graphics_context_set_fill_color(ctx, COLOUR_HOUR_HAND );
-  graphics_context_set_stroke_color(ctx, COLOUR_DOT_OUTLINE );
-  gpath_draw_outline(ctx, s_hour_arrow);
-  
-  // min hand
-  uint32_t minute_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
-  gpath_rotate_to( s_minute_arrow, minute_angle );
-  gpath_rotate_to( s_minute_arrow_left, minute_angle );
-  gpath_move_to( s_minute_arrow, center_pt );
-  gpath_move_to( s_minute_arrow_left, center_pt );
-  
-  graphics_context_set_fill_color( ctx, GColorLightGray );
-  gpath_draw_filled( ctx, s_minute_arrow );
-  graphics_context_set_fill_color( ctx, GColorWhite );
-  gpath_draw_filled( ctx, s_minute_arrow_left );
-  graphics_context_set_fill_color( ctx, COLOUR_MIN_HAND );
-  graphics_context_set_stroke_color( ctx, COLOUR_DOT_OUTLINE );
-  gpath_draw_outline( ctx, s_minute_arrow );
-  
+    // hour hand
+    uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
+    gpath_rotate_to( s_hour_arrow, hour_angle );
+    gpath_rotate_to( s_hour_arrow_left, hour_angle );
+    gpath_move_to( s_hour_arrow, center_pt );
+    gpath_move_to( s_hour_arrow_left, center_pt );
+
+    graphics_context_set_fill_color( ctx, GColorWhite );
+    gpath_draw_filled( ctx, s_hour_arrow );
+    graphics_context_set_fill_color( ctx, GColorLightGray );
+    gpath_draw_filled( ctx, s_hour_arrow_left );
+    graphics_context_set_fill_color( ctx, COLOUR_HOUR_HAND );
+    graphics_context_set_stroke_color( ctx, COLOUR_DOT_OUTLINE );
+    gpath_draw_outline( ctx, s_hour_arrow);
+
+    // min hand
+    uint32_t minute_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
+    gpath_rotate_to( s_minute_arrow, minute_angle );
+    gpath_rotate_to( s_minute_arrow_left, minute_angle );
+    gpath_move_to( s_minute_arrow, center_pt );
+    gpath_move_to( s_minute_arrow_left, center_pt );
+
+    graphics_context_set_fill_color( ctx, GColorLightGray );
+    gpath_draw_filled( ctx, s_minute_arrow );
+    graphics_context_set_fill_color( ctx, GColorWhite );
+    gpath_draw_filled( ctx, s_minute_arrow_left );
+    graphics_context_set_fill_color( ctx, COLOUR_MIN_HAND );
+    graphics_context_set_stroke_color( ctx, COLOUR_DOT_OUTLINE );
+    gpath_draw_outline( ctx, s_minute_arrow );
+    
+  } else { // contemporary
+    
+    int32_t hour_angle = ( ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 ) );
+    GPoint hour_hand = (GPoint) {
+      .x = ( sin_lookup( hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.x,
+      .y = ( -cos_lookup( hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.y
+    };
+
+    // hour hand
+    hand_params = (struct HAND_DRAW_PARAMS) {
+      .ctx = ctx,
+      .center_pt = center_pt,
+      .from_pt = center_pt,
+      .to_pt = hour_hand,
+      .hand_width = HOUR_HAND_WIDTH,
+      .hand_color = COLOUR_HOUR_HAND,
+      .hand_outline_color = COLOUR_HANDS_OUTLINE,
+      .dot_radius = CENTER_DOT_RADIUS,
+      .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
+      .dot_outline_color = COLOUR_DOT_OUTLINE
+    };
+    draw_clock_hand( &hand_params );
+
+    int32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
+    GPoint min_hand = (GPoint) {
+      .x = ( sin_lookup( min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.x,
+      .y = ( -cos_lookup( min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.y
+    };
+
+    // minute hand
+    hand_params = (struct HAND_DRAW_PARAMS) {
+      .ctx = ctx,
+      .center_pt = center_pt,
+      .from_pt = center_pt,
+      .to_pt = min_hand,
+      .hand_width = MIN_HAND_WIDTH,
+      .hand_color = COLOUR_MIN_HAND,
+      .hand_outline_color = COLOUR_HANDS_OUTLINE,
+      .dot_radius = CENTER_DOT_RADIUS - 4,
+      .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
+      .dot_outline_color = COLOUR_DOT_OUTLINE
+    };
+    draw_clock_hand( &hand_params );
+  }
+
   if ( ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
     int32_t sec_angle = TRIG_MAX_ANGLE * tm_time.tm_sec / 60;
     int32_t sec_tail_angle = sec_angle + ( TRIG_MAX_ANGLE / 2 );
@@ -179,9 +181,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   } else {
     graphics_context_set_fill_color( ctx, GColorBlack );
     graphics_fill_circle( ctx, center_pt, 2 );
-  }
-  
-  
+  }  
     
 }
 static void stop_seconds_display( void* data ) { // after timer elapses

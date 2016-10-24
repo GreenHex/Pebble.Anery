@@ -13,6 +13,7 @@
         "displayName": "Anery",
         "enableMultiJS": true,
         "messageKeys": [
+            "ANALOG_HANDS_STYLE",
             "ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS",
             "CHIME_INTERVAL",
             "CHIME_START_TIME",
