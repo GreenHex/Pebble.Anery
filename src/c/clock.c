@@ -75,7 +75,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     .hand_color = COLOUR_HOUR_HAND,
     .hand_outline_color = COLOUR_HANDS_OUTLINE,
     .dot_radius = CENTER_DOT_RADIUS,
-    .dot_color = COLOUR_DOT,
+    .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
     .dot_outline_color = COLOUR_DOT_OUTLINE
   };
   draw_clock_hand( &hand_params );
@@ -95,8 +95,8 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     .hand_width = MIN_HAND_WIDTH,
     .hand_color = COLOUR_MIN_HAND,
     .hand_outline_color = COLOUR_HANDS_OUTLINE,
-    .dot_radius = CENTER_DOT_RADIUS - 2,
-    .dot_color = COLOUR_DOT,
+    .dot_radius = CENTER_DOT_RADIUS - 4,
+    .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
     .dot_outline_color = COLOUR_DOT_OUTLINE
   };
   draw_clock_hand( &hand_params );
@@ -122,8 +122,8 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .hand_width = SEC_HAND_WIDTH,
       .hand_color = COLOUR_SEC_HAND,
       .hand_outline_color = COLOUR_HANDS_OUTLINE,
-      .dot_radius = CENTER_DOT_RADIUS - 4,
-      .dot_color = COLOUR_DOT,
+      .dot_radius = CENTER_DOT_RADIUS - 8,
+      .dot_color = COLOUR_SEC_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
     };
     draw_clock_hand( &hand_params );
@@ -176,7 +176,7 @@ void clock_init( Window *window ) {
   //
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( struct ANALOG_LAYER_DATA ) );
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
+  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), analog_clock_layer );
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
