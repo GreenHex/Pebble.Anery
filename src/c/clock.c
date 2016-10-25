@@ -41,7 +41,7 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
 static void draw_clock_hand( struct HAND_DRAW_PARAMS *pDP ) {
   // dot outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->dot_outline_color );
-  graphics_context_set_stroke_width( pDP->ctx, 2 );
+  graphics_context_set_stroke_width( pDP->ctx, 1 );
   graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius );
   // hand outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_color );
@@ -165,7 +165,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .hand_width = SEC_HAND_WIDTH,
       .hand_color = COLOUR_SEC_HAND,
       .hand_outline_color = COLOUR_HANDS_OUTLINE,
-      .dot_radius = CENTER_DOT_RADIUS - 10,
+      .dot_radius = CENTER_DOT_RADIUS - 8,
       .dot_color = COLOUR_SEC_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
     };

@@ -12,7 +12,7 @@
 #define SEC_HAND_WIDTH 1
 #define MIN_HAND_WIDTH 9
 #define HOUR_HAND_WIDTH 13
-#define CENTER_DOT_RADIUS 15
+#define CENTER_DOT_RADIUS 13
 
 #define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
 #define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
@@ -25,33 +25,33 @@
 static const GPathInfo HOUR_HAND_POINTS = {
   4, (GPoint []) {
     { 0, 25 },
-    { -8, 0 },
-    { 0, -55 },
-    { 8, 0 },
-  }
-};
-
-static const GPathInfo MINUTE_HAND_POINTS = {
-  4, (GPoint []) {
-    { 0, 25 },
-    { -7, 0 },
-    { 0, -78 },
-    { 7, 0 },
+    { -9, 0 },
+    { 0, -48 },
+    { 9, 0 },
   }
 };
 
 static const GPathInfo HOUR_HAND_POINTS_LEFT = {
   3, (GPoint []) {
     { 0, 25 },
+    { -9, 0 },
+    { 0, -48 }
+  }
+};
+
+static const GPathInfo MINUTE_HAND_POINTS = {
+  4, (GPoint []) {
+    { 0, 25 },
     { -8, 0 },
-    { 0, -55 }
+    { 0, -78 },
+    { 8, 0 },
   }
 };
 
 static const GPathInfo MINUTE_HAND_POINTS_LEFT = {
   3, (GPoint []) {
     { 0, 25 },
-    { -7, 0 },
+    { -8, 0 },
     { 0, -78 },
   }
 };
