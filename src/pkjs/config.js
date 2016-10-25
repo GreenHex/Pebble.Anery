@@ -1,7 +1,7 @@
 module.exports = [
   {
     "type": "heading",
-    "defaultValue": "Bliss Time 2"
+    "defaultValue": "Anery"
   },
   {
     "type": "text",
@@ -27,6 +27,10 @@ module.exports = [
           { 
             "label": "Spiffy GS",
             "value": '1'
+          },
+          { 
+            "label": "SBGE001",
+            "value": '3'
           }
         ]
       },

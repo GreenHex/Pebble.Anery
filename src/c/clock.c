@@ -8,10 +8,14 @@ static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
-static GPath *s_hour_arrow = 0;
-static GPath *s_minute_arrow = 0;
-static GPath *s_hour_arrow_left = 0;
-static GPath *s_minute_arrow_left = 0;
+static GPath *s_gs_hour_arrow = 0;
+static GPath *s_gs_hour_arrow_left = 0;
+static GPath *s_gs_minute_arrow = 0;
+static GPath *s_gs_minute_arrow_left = 0;
+static GPath *s_sbge001_hour_arrow = 0;
+static GPath *s_sbge001_hour_arrow_left = 0;
+static GPath *s_sbge001_minute_arrow = 0;
+static GPath *s_sbge001_minute_arrow_left = 0;
 static AppTimer* secs_display_apptimer = 0; 
 static tm tm_time;
 
@@ -56,51 +60,78 @@ static void draw_clock_hand( struct HAND_DRAW_PARAMS *pDP ) {
   graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
 }
 
+static void draw_gpath_hands( struct GPATH_HANDS_PARAMS *pGP ) {
+  // for hour and minute hands
+  graphics_context_set_stroke_width( pGP->ctx, 1 );
+
+  // hour hand
+  gpath_rotate_to( pGP->s_hour_arrow, pGP->hour_angle );
+  gpath_rotate_to( pGP->s_hour_arrow_left, pGP->hour_angle );
+  gpath_move_to( pGP->s_hour_arrow, pGP->center_pt );
+  gpath_move_to( pGP->s_hour_arrow_left, pGP->center_pt );
+
+  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow );
+  graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow_left );
+  graphics_context_set_fill_color( pGP->ctx, COLOUR_HOUR_HAND );
+  graphics_context_set_stroke_color( pGP->ctx, COLOUR_DOT_OUTLINE );
+  gpath_draw_outline( pGP->ctx, pGP->s_hour_arrow);
+
+  // min hand
+  gpath_rotate_to( pGP->s_min_arrow, pGP->min_angle );
+  gpath_rotate_to( pGP->s_min_arrow_left, pGP->min_angle );
+  gpath_move_to( pGP->s_min_arrow, pGP->center_pt );
+  gpath_move_to( pGP->s_min_arrow_left, pGP->center_pt );
+
+  graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
+  gpath_draw_filled( pGP->ctx, pGP->s_min_arrow );
+  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
+  gpath_draw_filled( pGP->ctx, pGP->s_min_arrow_left );
+  graphics_context_set_fill_color( pGP->ctx, COLOUR_MIN_HAND );
+  graphics_context_set_stroke_color( pGP->ctx, COLOUR_DOT_OUTLINE );
+  gpath_draw_outline( pGP->ctx, pGP->s_min_arrow );
+
+  if ( ! ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
+    graphics_context_set_fill_color( pGP->ctx, GColorBlack );
+    graphics_fill_circle( pGP->ctx, pGP->center_pt, 2 );
+  } 
+}
+
 static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   // uses global tm_time
 
   static struct HAND_DRAW_PARAMS hand_params;
+  static struct GPATH_HANDS_PARAMS gpath_params;
   GRect layer_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &layer_bounds );
   uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
   uint32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
   
   if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
-    // for hour and minute hands
-    graphics_context_set_stroke_width( ctx, 1 );
-
-    // hour hand
-    gpath_rotate_to( s_hour_arrow, hour_angle );
-    gpath_rotate_to( s_hour_arrow_left, hour_angle );
-    gpath_move_to( s_hour_arrow, center_pt );
-    gpath_move_to( s_hour_arrow_left, center_pt );
-
-    graphics_context_set_fill_color( ctx, GColorWhite );
-    gpath_draw_filled( ctx, s_hour_arrow );
-    graphics_context_set_fill_color( ctx, GColorLightGray );
-    gpath_draw_filled( ctx, s_hour_arrow_left );
-    graphics_context_set_fill_color( ctx, COLOUR_HOUR_HAND );
-    graphics_context_set_stroke_color( ctx, COLOUR_DOT_OUTLINE );
-    gpath_draw_outline( ctx, s_hour_arrow);
-
-    // min hand
-    gpath_rotate_to( s_minute_arrow, min_angle );
-    gpath_rotate_to( s_minute_arrow_left, min_angle );
-    gpath_move_to( s_minute_arrow, center_pt );
-    gpath_move_to( s_minute_arrow_left, center_pt );
-
-    graphics_context_set_fill_color( ctx, GColorLightGray );
-    gpath_draw_filled( ctx, s_minute_arrow );
-    graphics_context_set_fill_color( ctx, GColorWhite );
-    gpath_draw_filled( ctx, s_minute_arrow_left );
-    graphics_context_set_fill_color( ctx, COLOUR_MIN_HAND );
-    graphics_context_set_stroke_color( ctx, COLOUR_DOT_OUTLINE );
-    gpath_draw_outline( ctx, s_minute_arrow );
-    
-    if ( ! ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
-      graphics_context_set_fill_color( ctx, GColorBlack );
-      graphics_fill_circle( ctx, center_pt, 2 );
-    } 
+    gpath_params = (struct GPATH_HANDS_PARAMS) {
+      .ctx = ctx,
+      .center_pt = center_pt,
+      .hour_angle = hour_angle,
+      .min_angle = min_angle,
+      .s_hour_arrow = s_gs_hour_arrow,
+      .s_hour_arrow_left = s_gs_hour_arrow_left,
+      .s_min_arrow = s_gs_minute_arrow,
+      .s_min_arrow_left = s_gs_minute_arrow_left
+    };
+    draw_gpath_hands( &gpath_params );
+  } else if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
+    gpath_params = (struct GPATH_HANDS_PARAMS) {
+      .ctx = ctx,
+      .center_pt = center_pt,
+      .hour_angle = hour_angle,
+      .min_angle = min_angle,
+      .s_hour_arrow = s_sbge001_hour_arrow,
+      .s_hour_arrow_left = s_sbge001_hour_arrow_left,
+      .s_min_arrow = s_sbge001_minute_arrow,
+      .s_min_arrow_left = s_sbge001_minute_arrow_left
+    };
+    draw_gpath_hands( &gpath_params );
   } else { // contemporary
     
     GPoint hour_hand = (GPoint) {
@@ -225,11 +256,15 @@ void clock_init( Window *window ) {
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
   
-  s_minute_arrow = gpath_create( &MINUTE_HAND_POINTS );
-  s_minute_arrow_left = gpath_create( &MINUTE_HAND_POINTS_LEFT );
-  s_hour_arrow = gpath_create( &HOUR_HAND_POINTS );
-  s_hour_arrow_left = gpath_create( &HOUR_HAND_POINTS_LEFT );
-  
+  s_gs_minute_arrow = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS );
+  s_gs_minute_arrow_left = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS_LEFT );
+  s_gs_hour_arrow = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS );
+  s_gs_hour_arrow_left = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS_LEFT );
+  //
+  s_sbge001_minute_arrow = gpath_create( &MINUTE_HAND_SBGE001_POINTS );
+  s_sbge001_minute_arrow_left = gpath_create( &MINUTE_HAND_SBGE001_POINTS_LEFT );
+  s_sbge001_hour_arrow = gpath_create( &HOUR_HAND_SBGE001_POINTS );
+  s_sbge001_hour_arrow_left = gpath_create( &HOUR_HAND_SBGE001_POINTS_LEFT );
 
   // subscriptions
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
@@ -242,10 +277,14 @@ void clock_deinit( void ) {
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer );
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
   tick_timer_service_unsubscribe();
-  gpath_destroy( s_minute_arrow );
-  gpath_destroy( s_minute_arrow_left );
-  gpath_destroy( s_hour_arrow );
-  gpath_destroy( s_hour_arrow_left );
+  gpath_destroy( s_sbge001_minute_arrow );
+  gpath_destroy( s_sbge001_minute_arrow_left );
+  gpath_destroy( s_sbge001_hour_arrow );
+  gpath_destroy( s_sbge001_hour_arrow_left );
+  gpath_destroy( s_gs_minute_arrow );
+  gpath_destroy( s_gs_minute_arrow_left );
+  gpath_destroy( s_gs_hour_arrow );
+  gpath_destroy( s_gs_hour_arrow_left );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
   gbitmap_destroy( analog_clock_bitmap );
