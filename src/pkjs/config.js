@@ -30,7 +30,7 @@ module.exports = [
           },
           { 
             "label": "SBGE001",
-            "value": '3'
+            "value": '2'
           }
         ]
       },

@@ -8,6 +8,8 @@ static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
+static BitmapLayer *date_bitmap_layer = 0;
+static TextLayer *date_text_layer = 0;
 static GPath *s_gs_hour_arrow = 0;
 static GPath *s_gs_hour_arrow_left = 0;
 static GPath *s_gs_minute_arrow = 0;
@@ -16,6 +18,7 @@ static GPath *s_sbge001_hour_arrow = 0;
 static GPath *s_sbge001_hour_arrow_left = 0;
 static GPath *s_sbge001_minute_arrow = 0;
 static GPath *s_sbge001_minute_arrow_left = 0;
+static GFont date_font;
 static AppTimer* secs_display_apptimer = 0; 
 static tm tm_time;
 
@@ -75,7 +78,7 @@ static void draw_gpath_hands( struct GPATH_HANDS_PARAMS *pGP ) {
   graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
   gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow_left );
   graphics_context_set_fill_color( pGP->ctx, COLOUR_HOUR_HAND );
-  graphics_context_set_stroke_color( pGP->ctx, COLOUR_DOT_OUTLINE );
+  graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
   gpath_draw_outline( pGP->ctx, pGP->s_hour_arrow);
 
   // min hand
@@ -89,7 +92,7 @@ static void draw_gpath_hands( struct GPATH_HANDS_PARAMS *pGP ) {
   graphics_context_set_fill_color( pGP->ctx, GColorWhite );
   gpath_draw_filled( pGP->ctx, pGP->s_min_arrow_left );
   graphics_context_set_fill_color( pGP->ctx, COLOUR_MIN_HAND );
-  graphics_context_set_stroke_color( pGP->ctx, COLOUR_DOT_OUTLINE );
+  graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
   gpath_draw_outline( pGP->ctx, pGP->s_min_arrow );
 
   if ( ! ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
@@ -107,7 +110,12 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   GPoint center_pt = grect_center_point( &layer_bounds );
   uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
   uint32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
-  
+
+  static char date_text[3] = "";
+  text_layer_set_text_color( date_text_layer, GColorBlack );
+  snprintf( date_text, sizeof( date_text ), "%d%%", tm_time.tm_mday );
+  text_layer_set_text( date_text_layer, date_text );
+
   if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
     gpath_params = (struct GPATH_HANDS_PARAMS) {
       .ctx = ctx,
@@ -117,10 +125,11 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_arrow = s_gs_hour_arrow,
       .s_hour_arrow_left = s_gs_hour_arrow_left,
       .s_min_arrow = s_gs_minute_arrow,
-      .s_min_arrow_left = s_gs_minute_arrow_left
+      .s_min_arrow_left = s_gs_minute_arrow_left,
+      .hand_outline_color = GColorBlack
     };
     draw_gpath_hands( &gpath_params );
-  } else if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
+  } else if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
     gpath_params = (struct GPATH_HANDS_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
@@ -129,7 +138,8 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_arrow = s_sbge001_hour_arrow,
       .s_hour_arrow_left = s_sbge001_hour_arrow_left,
       .s_min_arrow = s_sbge001_minute_arrow,
-      .s_min_arrow_left = s_sbge001_minute_arrow_left
+      .s_min_arrow_left = s_sbge001_minute_arrow_left,
+      .hand_outline_color = GColorDarkGray
     };
     draw_gpath_hands( &gpath_params );
   } else { // contemporary
@@ -211,7 +221,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     graphics_context_set_stroke_color( ctx, COLOUR_SEC_HAND_TIP );
     graphics_draw_line( ctx, sec_hand, sec_hand_tip );
     #endif
-  }  
+  }
 }
 
 static void stop_seconds_display( void* data ) { // after timer elapses
@@ -249,9 +259,20 @@ void clock_init( Window *window ) {
   layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
   //
+  GRect date_window_frame = GRect(window_bounds.origin.x + window_bounds.size.w - 3 - DATE_WINDOW_WIDTH,
+                                  window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
+                                  DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
+  date_bitmap_layer = bitmap_layer_create( date_window_frame );
+  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( date_bitmap_layer ) );
+  GRect date_window_bounds = GRect( 0, 0, DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
+  date_text_layer = text_layer_create( date_window_bounds );
+  layer_add_child( bitmap_layer_get_layer( date_bitmap_layer ), text_layer_get_layer( date_text_layer ) );
+  date_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_PRELUDE_MEDIUM_48 ) );
+  text_layer_set_text_alignment( date_text_layer, GTextAlignmentCenter );
+  //
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( struct ANALOG_LAYER_DATA ) );
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
+  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), analog_clock_layer );
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
@@ -277,6 +298,9 @@ void clock_deinit( void ) {
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer );
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
   tick_timer_service_unsubscribe();
+  fonts_unload_custom_font( date_font );
+  bitmap_layer_destroy( date_bitmap_layer );
+  text_layer_destroy( date_text_layer );
   gpath_destroy( s_sbge001_minute_arrow );
   gpath_destroy( s_sbge001_minute_arrow_left );
   gpath_destroy( s_sbge001_hour_arrow );

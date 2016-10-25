@@ -4,7 +4,7 @@
 
 #define CLOCK_POS_X 0
 #define CLOCK_POS_Y 0
-#define SEC_HAND_LENGTH 72
+#define SEC_HAND_LENGTH 73
 #define SEC_HAND_TAIL_LENGTH 28
 #define SEC_HAND_TIP_LENGTH 16
 #define MIN_HAND_LENGTH 64
@@ -13,6 +13,8 @@
 #define MIN_HAND_WIDTH 9
 #define HOUR_HAND_WIDTH 13
 #define CENTER_DOT_RADIUS 13
+#define DATE_WINDOW_WIDTH 23
+#define DATE_WINDOW_HEIGHT 19
 
 #define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
 #define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
@@ -57,36 +59,44 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_LEFT = {
 };
 
 static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
-  4, (GPoint []) {
-    { 0, 25 },
+  6, (GPoint []) {
+    { -3, 20 },
     { -9, 0 },
-    { 0, -48 },
-    { 9, 0 }
+    { -3, -48 },
+    { 3, -48 },
+    { 9, 0 },
+    { 3, 20 }
   }
 };
 
 static const GPathInfo HOUR_HAND_SBGE001_POINTS_LEFT = {
-  3, (GPoint []) {
-    { 0, 25 },
+  5, (GPoint []) {
+    { 0, 20 },
+    { -3, 20 },
     { -9, 0 },
+    { -3, -48 },
     { 0, -48 }
   }
 };
 
 static const GPathInfo MINUTE_HAND_SBGE001_POINTS = {
-  4, (GPoint []) {
-    { 0, 25 },
+  6, (GPoint []) {
+    { -2, 20 },
     { -8, 0 },
-    { 0, -78 },
-    { 8, 0 }
+    { -2, -74 },
+    { 2, -74 },
+    { 8, 0 },
+    { 2, 20 }
   }
 };
 
 static const GPathInfo MINUTE_HAND_SBGE001_POINTS_LEFT = {
-  3, (GPoint []) {
-    { 0, 25 },
+  5, (GPoint []) {
+    { 0, 20 },
+    { -2, 20 },
     { -8, 0 },
-    { 0, -78 }
+    { -2, -74 },
+    { 0, -74 }
   }
 };
 
@@ -122,6 +132,7 @@ struct GPATH_HANDS_PARAMS {
   GPath *s_hour_arrow_left;
   GPath *s_min_arrow;
   GPath *s_min_arrow_left;
+  GColor hand_outline_color;
 };
 
 bool is_X_in_range( int a, int b, int x );
