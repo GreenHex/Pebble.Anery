@@ -18,7 +18,6 @@ static GPath *s_sbge001_hour_arrow = 0;
 static GPath *s_sbge001_hour_arrow_left = 0;
 static GPath *s_sbge001_minute_arrow = 0;
 static GPath *s_sbge001_minute_arrow_left = 0;
-static GFont date_font;
 static AppTimer* secs_display_apptimer = 0; 
 static tm tm_time;
 
@@ -110,11 +109,6 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   GPoint center_pt = grect_center_point( &layer_bounds );
   uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
   uint32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
-
-  static char date_text[3] = "";
-  text_layer_set_text_color( date_text_layer, GColorBlack );
-  snprintf( date_text, sizeof( date_text ), "%d%%", tm_time.tm_mday );
-  text_layer_set_text( date_text_layer, date_text );
 
   if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
     gpath_params = (struct GPATH_HANDS_PARAMS) {
@@ -224,6 +218,31 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   }
 }
 
+static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
+  GRect date_window_bounds = layer_get_bounds( layer );
+  date_window_bounds = grect_inset( date_window_bounds, GEdgeInsets( DATE_WINDOW_OUTLINE_THK ) );
+  // APP_LOG( APP_LOG_LEVEL_INFO, "date_bitmap_layer_update_proc() (%d, %d, %d, %d)", date_window_bounds.origin.x, date_window_bounds.origin.y, date_window_bounds.size.w, date_window_bounds.size.h );
+  graphics_context_set_stroke_width( ctx, DATE_WINDOW_OUTLINE_THK );
+  graphics_context_set_stroke_color( ctx, GColorBlack );
+  graphics_draw_round_rect( ctx, date_window_bounds, 0 );
+  graphics_context_set_stroke_color( ctx, GColorDarkGray );
+  graphics_draw_round_rect( ctx, date_window_bounds, DATE_WINDOW_OUTLINE_THK );
+}
+
+static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
+  GRect date_window_bounds = layer_get_bounds( layer );
+  // APP_LOG( APP_LOG_LEVEL_INFO, "date_text_layer_update_proc() (%d, %d, %d, %d)", date_window_bounds.origin.x, date_window_bounds.origin.y, date_window_bounds.size.w, date_window_bounds.size.h );
+  graphics_context_set_fill_color( ctx, GColorWhite );
+  graphics_fill_rect( ctx, date_window_bounds, 0, GCornersAll );
+  static char date_text[3] = "";
+  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorRed : ( tm_time.tm_wday == 6 ) ? GColorBlue : GColorBlack;
+  graphics_context_set_text_color( ctx, text_color );
+  snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
+  date_window_bounds.origin.y -= 4;
+  graphics_draw_text( ctx, date_text, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21), date_window_bounds,
+                     GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+}
+
 static void stop_seconds_display( void* data ) { // after timer elapses
   if ( secs_display_apptimer) app_timer_cancel( secs_display_apptimer ); // Just for fun.
   secs_display_apptimer = 0; // if we are here, we know for sure that timer has expired. 
@@ -243,7 +262,8 @@ static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
   if ( secs_display_apptimer ) {
     app_timer_reschedule( secs_display_apptimer, (uint32_t) persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) * 1000 );
   } else {
-    secs_display_apptimer = app_timer_register( (uint32_t) persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) * 1000, stop_seconds_display, 0 );
+    secs_display_apptimer = app_timer_register( (uint32_t) persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) * 1000,
+                                               stop_seconds_display, 0 );
   }
 }
 
@@ -252,24 +272,26 @@ void clock_init( Window *window ) {
   GRect window_bounds = layer_get_bounds( window_layer );
   GRect clock_layer_bounds = GRect( window_bounds.origin.x + CLOCK_POS_X, window_bounds.origin.y + CLOCK_POS_Y, 
                                    window_bounds.size.w - CLOCK_POS_X, window_bounds.size.h - CLOCK_POS_Y );
-  //
+  // background bitmap
   analog_clock_bitmap = gbitmap_create_with_resource( RESOURCE_ID_ANALOG_EMERY_FULL_SLIM );
   analog_clock_bitmap_layer = bitmap_layer_create( clock_layer_bounds );
   bitmap_layer_set_bitmap( analog_clock_bitmap_layer, analog_clock_bitmap );
   layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
-  //
-  GRect date_window_frame = GRect(window_bounds.origin.x + window_bounds.size.w - 3 - DATE_WINDOW_WIDTH,
+  // date bitmap layer
+  GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - 3 - DATE_WINDOW_WIDTH,
                                   window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
                                   DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
   date_bitmap_layer = bitmap_layer_create( date_window_frame );
+  layer_set_update_proc( bitmap_layer_get_layer( date_bitmap_layer ), date_bitmap_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( date_bitmap_layer ) );
+  // date text layer
   GRect date_window_bounds = GRect( 0, 0, DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
+  date_window_bounds = grect_inset( date_window_bounds, GEdgeInsets( DATE_WINDOW_OUTLINE_THK * 2 ) );
   date_text_layer = text_layer_create( date_window_bounds );
+  layer_set_update_proc( text_layer_get_layer( date_text_layer ), date_text_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( date_bitmap_layer ), text_layer_get_layer( date_text_layer ) );
-  date_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_PRELUDE_MEDIUM_48 ) );
-  text_layer_set_text_alignment( date_text_layer, GTextAlignmentCenter );
-  //
+  // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( struct ANALOG_LAYER_DATA ) );
   ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
@@ -298,7 +320,6 @@ void clock_deinit( void ) {
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer );
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
   tick_timer_service_unsubscribe();
-  fonts_unload_custom_font( date_font );
   bitmap_layer_destroy( date_bitmap_layer );
   text_layer_destroy( date_text_layer );
   gpath_destroy( s_sbge001_minute_arrow );

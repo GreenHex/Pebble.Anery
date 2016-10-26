@@ -25,42 +25,6 @@
         "resources": {
             "media": [
                 {
-                    "characterRegex": "[0-9]",
-                    "file": "fonts/Prelude-Medium.ttf",
-                    "name": "FONT_PRELUDE_MEDIUM_48",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[0-9]",
-                    "file": "fonts/Prelude-Medium.ttf",
-                    "name": "FONT_PRELUDE_MEDIUM_32",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[0-9]",
-                    "file": "fonts/Prelude-Medium.ttf",
-                    "name": "FONT_PRELUDE_MEDIUM_24",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[0-9]",
-                    "file": "fonts/Prelude-Medium.ttf",
-                    "name": "FONT_PRELUDE_MEDIUM_18",
-                    "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
                     "file": "images/Analog Emery Full Res Slim Markers.png",
                     "name": "ANALOG_EMERY_FULL_SLIM",
                     "targetPlatforms": [

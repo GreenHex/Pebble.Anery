@@ -13,8 +13,9 @@
 #define MIN_HAND_WIDTH 9
 #define HOUR_HAND_WIDTH 13
 #define CENTER_DOT_RADIUS 13
-#define DATE_WINDOW_WIDTH 23
-#define DATE_WINDOW_HEIGHT 19
+#define DATE_WINDOW_WIDTH 34
+#define DATE_WINDOW_HEIGHT 28
+#define DATE_WINDOW_OUTLINE_THK 2
 
 #define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
 #define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
