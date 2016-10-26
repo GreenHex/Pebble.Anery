@@ -10,6 +10,8 @@ static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
 static BitmapLayer *date_bitmap_layer = 0;
 static TextLayer *date_text_layer = 0;
+static GPath *s_gmt_arrow = 0;
+static GPath *s_gmt_inlay = 0;
 static GPath *s_gs_hour_arrow = 0;
 static GPath *s_gs_hour_arrow_left = 0;
 static GPath *s_gs_minute_arrow = 0;
@@ -20,6 +22,7 @@ static GPath *s_sbge001_minute_arrow = 0;
 static GPath *s_sbge001_minute_arrow_left = 0;
 static AppTimer* secs_display_apptimer = 0; 
 static tm tm_time;
+static tm tm_gmt;
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction );
 
@@ -30,7 +33,7 @@ bool is_X_in_range( int a, int b, int x ) { return ( ( b > a ) ? ( ( x >= a ) &&
 void draw_clock( void ) {
   time_t now = time( NULL );
   tm_time = *localtime( &now ); // copy to global
-
+  tm_gmt = *gmtime( &now ); // copy to global
   if ( persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) ) accel_tap_service_subscribe( start_seconds_display );
 }
 
@@ -107,6 +110,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   static struct GPATH_HANDS_PARAMS gpath_params;
   GRect layer_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &layer_bounds );
+  uint32_t gmt_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_gmt.tm_hour % 24 ) * 6 ) + ( tm_gmt.tm_min / 20 ) ) ) / ( 12 * 6 );
   uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
   uint32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
 
@@ -124,6 +128,22 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     };
     draw_gpath_hands( &gpath_params );
   } else if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
+    
+    // gmt hand
+    gpath_rotate_to( s_gmt_arrow, gmt_angle );
+    gpath_move_to( s_gmt_arrow, center_pt );
+    graphics_context_set_fill_color( ctx, GColorDarkCandyAppleRed );
+    gpath_draw_filled( ctx, s_gmt_arrow );
+    graphics_context_set_stroke_color( ctx, GColorRed );
+    gpath_draw_outline( ctx, s_gmt_arrow );
+    // gmt inlay
+    gpath_rotate_to( s_gmt_inlay, gmt_angle );
+    gpath_move_to( s_gmt_inlay, center_pt );
+    graphics_context_set_fill_color( ctx, GColorWhite );
+    gpath_draw_filled( ctx, s_gmt_inlay );
+    // graphics_context_set_stroke_color( ctx, GColorWhite );
+    // gpath_draw_outline( ctx, s_gmt_inlay );
+    
     gpath_params = (struct GPATH_HANDS_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
@@ -299,6 +319,9 @@ void clock_init( Window *window ) {
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
   
+  s_gmt_arrow = gpath_create( &GMT_HAND );
+  s_gmt_inlay = gpath_create( &GMT_HAND_INLAY );
+  //
   s_gs_minute_arrow = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS );
   s_gs_minute_arrow_left = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS_LEFT );
   s_gs_hour_arrow = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS );
@@ -330,6 +353,8 @@ void clock_deinit( void ) {
   gpath_destroy( s_gs_minute_arrow_left );
   gpath_destroy( s_gs_hour_arrow );
   gpath_destroy( s_gs_hour_arrow_left );
+  gpath_destroy( s_gmt_inlay );
+  gpath_destroy( s_gmt_arrow );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
   gbitmap_destroy( analog_clock_bitmap );
