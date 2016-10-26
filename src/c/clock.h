@@ -16,6 +16,9 @@
 #define DATE_WINDOW_WIDTH 34
 #define DATE_WINDOW_HEIGHT 28
 #define DATE_WINDOW_OUTLINE_THK 2
+#define BATT_GAUGE_LOC_X 33
+#define BATT_GAUGE_LOC_Y 132
+#define BATT_GAUGE_SIZE 71
 
 #define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
 #define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )

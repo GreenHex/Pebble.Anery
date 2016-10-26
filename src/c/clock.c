@@ -8,6 +8,8 @@ static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
+static BitmapLayer *batt_gauge_bitmap_layer = 0;
+static GBitmap *batt_gauge_bitmap = 0;
 static BitmapLayer *date_bitmap_layer = 0;
 static TextLayer *date_text_layer = 0;
 static GPath *s_gmt_arrow = 0;
@@ -266,6 +268,14 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
+static void batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
+  GRect batt_gauge_window_bounds = layer_get_bounds( layer );
+  GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
+  graphics_draw_bitmap_in_rect( ctx, batt_gauge_bitmap, batt_gauge_window_bounds );
+  
+}
+  
 static void stop_seconds_display( void* data ) { // after timer elapses
   if ( secs_display_apptimer) app_timer_cancel( secs_display_apptimer ); // Just for fun.
   secs_display_apptimer = 0; // if we are here, we know for sure that timer has expired. 
@@ -301,6 +311,12 @@ void clock_init( Window *window ) {
   bitmap_layer_set_bitmap( analog_clock_bitmap_layer, analog_clock_bitmap );
   layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
+  // battery
+  batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_BATTERY_GAUGE );
+  GRect batt_gauge_layer_frame = GRect( BATT_GAUGE_LOC_X, BATT_GAUGE_LOC_Y, BATT_GAUGE_SIZE, BATT_GAUGE_SIZE );
+  batt_gauge_bitmap_layer = bitmap_layer_create( batt_gauge_layer_frame );
+  layer_set_update_proc( bitmap_layer_get_layer( batt_gauge_bitmap_layer ), batt_gauge_layer_update_proc );
+  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( batt_gauge_bitmap_layer ) );
   // date bitmap layer
   GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - 3 - DATE_WINDOW_WIDTH,
                                   window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
@@ -346,6 +362,7 @@ void clock_deinit( void ) {
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer );
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
   tick_timer_service_unsubscribe();
+  bitmap_layer_destroy( batt_gauge_bitmap_layer );
   bitmap_layer_destroy( date_bitmap_layer );
   text_layer_destroy( date_text_layer );
   gpath_destroy( s_sbge001_minute_arrow );
@@ -360,5 +377,6 @@ void clock_deinit( void ) {
   gpath_destroy( s_gmt_arrow );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
+  gbitmap_destroy( batt_gauge_bitmap );
   gbitmap_destroy( analog_clock_bitmap );
 }

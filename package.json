@@ -25,6 +25,14 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/gs batt.png",
+                    "name": "BATTERY_GAUGE",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/Analog Emery Full Res Slim Markers.png",
                     "name": "ANALOG_EMERY_FULL_SLIM",
                     "targetPlatforms": [
@@ -45,16 +53,6 @@
                     "name": "ANALOG_EMERY_FULL",
                     "targetPlatforms": [
                         "emery"
-                    ],
-                    "type": "bitmap"
-                },
-                {
-                    "file": "images/Pebble_Battery_Charging_Icon.png",
-                    "name": "BATTERY_CHARGING_ICON",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite"
                     ],
                     "type": "bitmap"
                 }
