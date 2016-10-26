@@ -35,11 +35,14 @@ void draw_clock( void ) {
   tm_time = *localtime( &now ); // copy to global
   tm_gmt = *gmtime( &now ); // copy to global
   if ( persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) ) accel_tap_service_subscribe( start_seconds_display );
+  layer_mark_dirty( analog_clock_layer );
 }
 
 static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   tm_time = *tick_time; // copy to global
-
+  time_t now = time( NULL );
+  tm_gmt = *gmtime( &now ); // copy to global
+  
   // if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: handle_clock_tick(): %d:%d:%d", tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec );
 
   layer_mark_dirty( analog_clock_layer );
@@ -110,7 +113,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   static struct GPATH_HANDS_PARAMS gpath_params;
   GRect layer_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &layer_bounds );
-  uint32_t gmt_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_gmt.tm_hour % 24 ) * 6 ) + ( tm_gmt.tm_min / 20 ) ) ) / ( 12 * 6 );
+  uint32_t gmt_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_gmt.tm_hour ) * 6 ) + ( tm_gmt.tm_min / 10 ) ) ) / ( 12 * 6 * 2 );
   uint32_t hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 );
   uint32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
 
@@ -314,7 +317,7 @@ void clock_init( Window *window ) {
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( struct ANALOG_LAYER_DATA ) );
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
+  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), analog_clock_layer );
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
@@ -333,7 +336,7 @@ void clock_init( Window *window ) {
   s_sbge001_hour_arrow_left = gpath_create( &HOUR_HAND_SBGE001_POINTS_LEFT );
 
   // subscriptions
-  tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
+  tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
 
   // show current time
   draw_clock();

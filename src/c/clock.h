@@ -116,7 +116,7 @@ static const GPathInfo GMT_HAND = {
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
     { -5, -59 },
-    { 0, -73 },
+    { 0, -72 },
     { 5, -59 },
   }
 };
