@@ -29,6 +29,9 @@
                     "file": "images/Moser Battery Gauge.png",
                     "name": "MOSER_BATTERY_GAUGE",
                     "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
@@ -37,6 +40,9 @@
                     "file": "images/SBGE001 Battery Gauge.png",
                     "name": "SBGE001_BATTERY_GAUGE",
                     "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
@@ -45,22 +51,21 @@
                     "file": "images/Analog Emery Full Res Slim Markers.png",
                     "name": "ANALOG_EMERY_FULL_SLIM",
                     "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
                 },
                 {
                     "file": "images/Anery Icon.png",
+                    "menuIcon": true,
                     "name": "ANERY_ICON",
                     "targetPlatforms": [
-                        "emery"
-                    ],
-                    "type": "bitmap"
-                },
-                {
-                    "file": "images/Analog Emery Full Res.png",
-                    "name": "ANALOG_EMERY_FULL",
-                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
@@ -69,6 +74,9 @@
         },
         "sdkVersion": "3",
         "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "diorite",
             "emery"
         ],
         "uuid": "feec8b3e-0491-4030-b9f9-5083cff5ec75",

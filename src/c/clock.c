@@ -143,14 +143,14 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     // gmt hand
     gpath_rotate_to( s_gmt_arrow, gmt_angle );
     gpath_move_to( s_gmt_arrow, center_pt );
-    graphics_context_set_fill_color( ctx, GColorDarkCandyAppleRed );
+    graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkCandyAppleRed, GColorWhite ) );
     gpath_draw_filled( ctx, s_gmt_arrow );
-    graphics_context_set_stroke_color( ctx, GColorRed );
+    graphics_context_set_stroke_color( ctx, PBL_IF_COLOR_ELSE( GColorRed, GColorWhite ) );
     gpath_draw_outline( ctx, s_gmt_arrow );
     // gmt inlay
     gpath_rotate_to( s_gmt_inlay, gmt_angle );
     gpath_move_to( s_gmt_inlay, center_pt );
-    graphics_context_set_fill_color( ctx, GColorWhite );
+    graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorWhite, GColorLightGray ) );
     gpath_draw_filled( ctx, s_gmt_inlay );
     // graphics_context_set_stroke_color( ctx, GColorWhite );
     // gpath_draw_outline( ctx, s_gmt_inlay );
@@ -256,7 +256,7 @@ static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_stroke_width( ctx, DATE_WINDOW_OUTLINE_THK );
   graphics_context_set_stroke_color( ctx, GColorBlack );
   graphics_draw_round_rect( ctx, date_window_bounds, 0 );
-  graphics_context_set_stroke_color( ctx, GColorDarkGray );
+  graphics_context_set_stroke_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorBlack ) );
   graphics_draw_round_rect( ctx, date_window_bounds, DATE_WINDOW_OUTLINE_THK );
 }
 
@@ -431,7 +431,7 @@ void clock_init( Window *window ) {
   layer_set_update_proc( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ), sbge001_batt_gauge_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
   // date bitmap layer
-  GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - 3 - DATE_WINDOW_WIDTH,
+  GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - DATE_LEFT_GAP - DATE_WINDOW_WIDTH,
                                   window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
                                   DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
   date_bitmap_layer = bitmap_layer_create( date_window_frame );
@@ -446,7 +446,11 @@ void clock_init( Window *window ) {
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( struct ANALOG_LAYER_DATA ) );
+  #ifdef SECONDS_TESTING
+  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
+  #else
   ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
+  #endif
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), analog_clock_layer );
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
@@ -468,7 +472,11 @@ void clock_init( Window *window ) {
   s_sbge001_batt_gauge_arrow = gpath_create( &SBGE001_BATT_GAUGE_HAND );
 
   // subscriptions
+  #ifdef SECONDS_TESTING
+  tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
+  #else
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
+  #endif
   
   batt_gauge_update_proc( battery_state_service_peek() );
   battery_state_service_subscribe( batt_gauge_update_proc );
