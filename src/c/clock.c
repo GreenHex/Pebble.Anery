@@ -22,9 +22,11 @@ static GPath *s_sbge001_hour_arrow = 0;
 static GPath *s_sbge001_hour_arrow_left = 0;
 static GPath *s_sbge001_minute_arrow = 0;
 static GPath *s_sbge001_minute_arrow_left = 0;
+static GPath *s_batt_gauge_arrow = 0;
 static AppTimer* secs_display_apptimer = 0; 
 static tm tm_time;
 static tm tm_gmt;
+static BatteryChargeState charge_state;
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction );
 
@@ -264,8 +266,13 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_text_color( ctx, text_color );
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
   date_window_bounds.origin.y -= 4;
-  graphics_draw_text( ctx, date_text, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21), date_window_bounds,
+  graphics_draw_text( ctx, date_text, fonts_get_system_font( FONT_KEY_ROBOTO_CONDENSED_21 ), date_window_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+}
+
+static void batt_date_update_proc( BatteryChargeState state ) {
+  charge_state = state;
+  layer_mark_dirty( bitmap_layer_get_layer( batt_gauge_bitmap_layer ) );
 }
 
 static void batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -274,6 +281,21 @@ static void batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
   graphics_draw_bitmap_in_rect( ctx, batt_gauge_bitmap, batt_gauge_window_bounds );
   
+  uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
+  
+  gpath_rotate_to( s_batt_gauge_arrow, DEG_TO_TRIGANGLE( batt_angle ) );
+  gpath_move_to( s_batt_gauge_arrow, center_pt );
+  
+  graphics_context_set_fill_color( ctx, GColorDarkGray );
+  gpath_draw_filled( ctx, s_batt_gauge_arrow );
+  graphics_context_set_stroke_color( ctx, GColorLightGray );
+  gpath_draw_outline( ctx, s_batt_gauge_arrow);
+  
+  graphics_context_set_fill_color( ctx, charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
+  graphics_context_set_stroke_color( ctx, GColorLightGray );
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_fill_circle( ctx, center_pt, BATT_GAUGE_DOT_RADIUS - 1 );	
+  graphics_draw_circle( ctx, center_pt, BATT_GAUGE_DOT_RADIUS );
 }
   
 static void stop_seconds_display( void* data ) { // after timer elapses
@@ -350,9 +372,14 @@ void clock_init( Window *window ) {
   s_sbge001_minute_arrow_left = gpath_create( &MINUTE_HAND_SBGE001_POINTS_LEFT );
   s_sbge001_hour_arrow = gpath_create( &HOUR_HAND_SBGE001_POINTS );
   s_sbge001_hour_arrow_left = gpath_create( &HOUR_HAND_SBGE001_POINTS_LEFT );
+  //
+  s_batt_gauge_arrow = gpath_create( &BATT_GAUGE_HAND );
 
   // subscriptions
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
+  
+  batt_date_update_proc( battery_state_service_peek() );
+  battery_state_service_subscribe( batt_date_update_proc );
 
   // show current time
   draw_clock();
@@ -375,6 +402,7 @@ void clock_deinit( void ) {
   gpath_destroy( s_gs_hour_arrow_left );
   gpath_destroy( s_gmt_inlay );
   gpath_destroy( s_gmt_arrow );
+  gpath_destroy( s_batt_gauge_arrow );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
   gbitmap_destroy( batt_gauge_bitmap );

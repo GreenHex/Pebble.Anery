@@ -19,6 +19,7 @@
 #define BATT_GAUGE_LOC_X 33
 #define BATT_GAUGE_LOC_Y 132
 #define BATT_GAUGE_SIZE 71
+#define BATT_GAUGE_DOT_RADIUS 4
 
 #define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
 #define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
@@ -121,6 +122,14 @@ static const GPathInfo GMT_HAND_INLAY = {
     { -5, -59 },
     { 0, -72 },
     { 5, -59 },
+  }
+};
+
+static const GPathInfo BATT_GAUGE_HAND = {
+  3, (GPoint []) {
+    { -3, 0 },
+    { 0, -24 },
+    { 3, 0 }
   }
 };
 
