@@ -8,8 +8,11 @@ static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
-static BitmapLayer *batt_gauge_bitmap_layer = 0;
-static GBitmap *batt_gauge_bitmap = 0;
+static BitmapLayer *moser_batt_gauge_bitmap_layer = 0;
+static BitmapLayer *sbge001_batt_gauge_bitmap_layer = 0;
+static GBitmap *moser_batt_gauge_bitmap = 0;
+static GBitmap *sbge001_batt_gauge_bitmap = 0;
+static BitmapLayer *cont_batt_gauge_bitmap_layer = 0;
 static BitmapLayer *date_bitmap_layer = 0;
 static TextLayer *date_text_layer = 0;
 static GPath *s_gmt_arrow = 0;
@@ -22,7 +25,8 @@ static GPath *s_sbge001_hour_arrow = 0;
 static GPath *s_sbge001_hour_arrow_left = 0;
 static GPath *s_sbge001_minute_arrow = 0;
 static GPath *s_sbge001_minute_arrow_left = 0;
-static GPath *s_batt_gauge_arrow = 0;
+static GPath *s_moser_batt_gauge_arrow = 0;
+static GPath *s_sbge001_batt_gauge_arrow = 0;
 static AppTimer* secs_display_apptimer = 0; 
 static tm tm_time;
 static tm tm_gmt;
@@ -270,32 +274,86 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
-static void batt_date_update_proc( BatteryChargeState state ) {
+static void batt_gauge_update_proc( BatteryChargeState state ) {
   charge_state = state;
-  layer_mark_dirty( bitmap_layer_get_layer( batt_gauge_bitmap_layer ) );
+  layer_mark_dirty( bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ) );
+  layer_mark_dirty( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
 }
 
-static void batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
-  if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
+static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_CONTEMPORARY ) return;
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
-  graphics_draw_bitmap_in_rect( ctx, batt_gauge_bitmap, batt_gauge_window_bounds );
+  uint32_t batt_angle = TRIG_MAX_ANGLE * charge_state.charge_percent / 100;
+ 
+  GColor batt_indicator_colour = GColorDarkGray;
+  #if defined( PBL_COLOR )
+  if ( charge_state.charge_percent < 16 ) {
+    batt_indicator_colour = COLOUR_BATT_15;
+  } else if ( charge_state.charge_percent < 96 ) {
+    batt_indicator_colour = COLOUR_BATT_95;
+  } else {
+    batt_indicator_colour = COLOUR_BATT_100;
+  }
+  #endif
   
-  uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
+  graphics_context_set_fill_color( ctx, batt_indicator_colour );
+  graphics_fill_radial( ctx, batt_gauge_window_bounds, GOvalScaleModeFitCircle, 
+                      CONT_BATT_GAUGE_EXT_RADIUS - CONT_BATT_GAUGE_INT_RADIUS, 0, batt_angle );
+  /*  
+  graphics_context_set_stroke_color( ctx, GColorDarkGray );
+  graphics_context_set_stroke_width( ctx, 1 );
   
-  gpath_rotate_to( s_batt_gauge_arrow, DEG_TO_TRIGANGLE( batt_angle ) );
-  gpath_move_to( s_batt_gauge_arrow, center_pt );
+  graphics_draw_circle( ctx, center_pt, CONT_BATT_GAUGE_INT_RADIUS );
+  graphics_draw_circle( ctx, center_pt, CONT_BATT_GAUGE_EXT_RADIUS );
+  */
+}
+
+static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SPIFFY_GS ) return;
+  GRect batt_gauge_window_bounds = layer_get_bounds( layer );
+  GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
+  graphics_draw_bitmap_in_rect( ctx, moser_batt_gauge_bitmap, batt_gauge_window_bounds );
+  
+  center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
+ 
+  uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245;
+  gpath_rotate_to( s_moser_batt_gauge_arrow, DEG_TO_TRIGANGLE( batt_angle ) );
+  gpath_move_to( s_moser_batt_gauge_arrow, center_pt );
   
   graphics_context_set_fill_color( ctx, GColorDarkGray );
-  gpath_draw_filled( ctx, s_batt_gauge_arrow );
+  gpath_draw_filled( ctx, s_moser_batt_gauge_arrow );
   graphics_context_set_stroke_color( ctx, GColorLightGray );
-  gpath_draw_outline( ctx, s_batt_gauge_arrow);
+  gpath_draw_outline( ctx, s_moser_batt_gauge_arrow);
   
   graphics_context_set_fill_color( ctx, charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
   graphics_context_set_stroke_color( ctx, GColorLightGray );
   graphics_context_set_stroke_width( ctx, 1 );
-  graphics_fill_circle( ctx, center_pt, BATT_GAUGE_DOT_RADIUS - 1 );	
-  graphics_draw_circle( ctx, center_pt, BATT_GAUGE_DOT_RADIUS );
+  graphics_fill_circle( ctx, center_pt, MOSER_BATT_GAUGE_DOT_RADIUS - 1 );	
+  graphics_draw_circle( ctx, center_pt, MOSER_BATT_GAUGE_DOT_RADIUS );
+}
+
+static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
+  GRect batt_gauge_window_bounds = layer_get_bounds( layer );
+  GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
+  graphics_draw_bitmap_in_rect( ctx, sbge001_batt_gauge_bitmap, batt_gauge_window_bounds );
+  
+  uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
+  
+  gpath_rotate_to( s_sbge001_batt_gauge_arrow, DEG_TO_TRIGANGLE( batt_angle ) );
+  gpath_move_to( s_sbge001_batt_gauge_arrow, center_pt );
+  
+  graphics_context_set_fill_color( ctx, GColorDarkGray );
+  gpath_draw_filled( ctx, s_sbge001_batt_gauge_arrow );
+  graphics_context_set_stroke_color( ctx, GColorLightGray );
+  gpath_draw_outline( ctx, s_sbge001_batt_gauge_arrow);
+  
+  graphics_context_set_fill_color( ctx, charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
+  graphics_context_set_stroke_color( ctx, GColorLightGray );
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_fill_circle( ctx, center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS - 1 );	
+  graphics_draw_circle( ctx, center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS );
 }
   
 static void stop_seconds_display( void* data ) { // after timer elapses
@@ -333,12 +391,28 @@ void clock_init( Window *window ) {
   bitmap_layer_set_bitmap( analog_clock_bitmap_layer, analog_clock_bitmap );
   layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
-  // battery
-  batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_BATTERY_GAUGE );
-  GRect batt_gauge_layer_frame = GRect( BATT_GAUGE_LOC_X, BATT_GAUGE_LOC_Y, BATT_GAUGE_SIZE, BATT_GAUGE_SIZE );
-  batt_gauge_bitmap_layer = bitmap_layer_create( batt_gauge_layer_frame );
-  layer_set_update_proc( bitmap_layer_get_layer( batt_gauge_bitmap_layer ), batt_gauge_layer_update_proc );
-  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( batt_gauge_bitmap_layer ) );
+  // cont battery
+  GRect cont_batt_gauge_bitmap_layer_frame = GRect( window_bounds.origin.x + ( ( window_bounds.size.w - CONT_BATT_GAUGE_SIZE ) / 2 ),
+                                  window_bounds.origin.y + ( ( window_bounds.size.h - CONT_BATT_GAUGE_SIZE ) / 2 ),
+                                  CONT_BATT_GAUGE_SIZE, CONT_BATT_GAUGE_SIZE );
+  cont_batt_gauge_bitmap_layer = bitmap_layer_create( cont_batt_gauge_bitmap_layer_frame );
+  layer_set_update_proc( bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ), cont_batt_gauge_layer_update_proc );
+  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ) );
+  // moser battery
+  moser_batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_MOSER_BATTERY_GAUGE );
+  GRect moser_batt_gauge_bitmap_layer_frame = GRect( window_bounds.origin.x + 3,
+                                  window_bounds.origin.y + ( ( window_bounds.size.h - MOSER_BATT_GAUGE_SIZE_H ) / 2 ),
+                                  MOSER_BATT_GAUGE_SIZE_W, MOSER_BATT_GAUGE_SIZE_H );
+  moser_batt_gauge_bitmap_layer = bitmap_layer_create( moser_batt_gauge_bitmap_layer_frame );
+  layer_set_update_proc( bitmap_layer_get_layer( moser_batt_gauge_bitmap_layer ), moser_batt_gauge_layer_update_proc );
+  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( moser_batt_gauge_bitmap_layer ) );
+  // sbge001 battery
+  sbge001_batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_SBGE001_BATTERY_GAUGE );
+  GRect sbge001_batt_gauge_layer_frame = GRect( SBGE001_BATT_GAUGE_LOC_X, SBGE001_BATT_GAUGE_LOC_Y,
+                                               SBGE001_BATT_GAUGE_SIZE, SBGE001_BATT_GAUGE_SIZE );
+  sbge001_batt_gauge_bitmap_layer = bitmap_layer_create( sbge001_batt_gauge_layer_frame );
+  layer_set_update_proc( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ), sbge001_batt_gauge_layer_update_proc );
+  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
   // date bitmap layer
   GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - 3 - DATE_WINDOW_WIDTH,
                                   window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
@@ -373,13 +447,14 @@ void clock_init( Window *window ) {
   s_sbge001_hour_arrow = gpath_create( &HOUR_HAND_SBGE001_POINTS );
   s_sbge001_hour_arrow_left = gpath_create( &HOUR_HAND_SBGE001_POINTS_LEFT );
   //
-  s_batt_gauge_arrow = gpath_create( &BATT_GAUGE_HAND );
+  s_moser_batt_gauge_arrow = gpath_create( &MOSER_BATT_GAUGE_HAND);
+  s_sbge001_batt_gauge_arrow = gpath_create( &SBGE001_BATT_GAUGE_HAND );
 
   // subscriptions
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
   
-  batt_date_update_proc( battery_state_service_peek() );
-  battery_state_service_subscribe( batt_date_update_proc );
+  batt_gauge_update_proc( battery_state_service_peek() );
+  battery_state_service_subscribe( batt_gauge_update_proc );
 
   // show current time
   draw_clock();
@@ -389,7 +464,9 @@ void clock_deinit( void ) {
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer );
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
   tick_timer_service_unsubscribe();
-  bitmap_layer_destroy( batt_gauge_bitmap_layer );
+  bitmap_layer_destroy( moser_batt_gauge_bitmap_layer );
+  bitmap_layer_destroy( sbge001_batt_gauge_bitmap_layer );
+  bitmap_layer_destroy( cont_batt_gauge_bitmap_layer );
   bitmap_layer_destroy( date_bitmap_layer );
   text_layer_destroy( date_text_layer );
   gpath_destroy( s_sbge001_minute_arrow );
@@ -402,9 +479,11 @@ void clock_deinit( void ) {
   gpath_destroy( s_gs_hour_arrow_left );
   gpath_destroy( s_gmt_inlay );
   gpath_destroy( s_gmt_arrow );
-  gpath_destroy( s_batt_gauge_arrow );
+  gpath_destroy( s_sbge001_batt_gauge_arrow );
+  gpath_destroy( s_moser_batt_gauge_arrow );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
-  gbitmap_destroy( batt_gauge_bitmap );
+  gbitmap_destroy( moser_batt_gauge_bitmap );
+  gbitmap_destroy( sbge001_batt_gauge_bitmap );
   gbitmap_destroy( analog_clock_bitmap );
 }

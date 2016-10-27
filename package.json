@@ -25,8 +25,16 @@
         "resources": {
             "media": [
                 {
-                    "file": "images/gs batt.png",
-                    "name": "BATTERY_GAUGE",
+                    "file": "images/Moser Battery Gauge.png",
+                    "name": "MOSER_BATTERY_GAUGE",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/SBGE001 Battery Gauge.png",
+                    "name": "SBGE001_BATTERY_GAUGE",
                     "targetPlatforms": [
                         "emery"
                     ],
@@ -67,5 +75,5 @@
             "watchface": true
         }
     },
-    "version": "1.0.0"
+    "version": "1.1.0"
 }

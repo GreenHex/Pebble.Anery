@@ -16,10 +16,20 @@
 #define DATE_WINDOW_WIDTH 34
 #define DATE_WINDOW_HEIGHT 28
 #define DATE_WINDOW_OUTLINE_THK 2
-#define BATT_GAUGE_LOC_X 33
-#define BATT_GAUGE_LOC_Y 132
-#define BATT_GAUGE_SIZE 71
-#define BATT_GAUGE_DOT_RADIUS 4
+#define CONT_BATT_GAUGE_INT_RADIUS 16
+#define CONT_BATT_GAUGE_EXT_RADIUS 20
+#define CONT_BATT_GAUGE_SIZE CONT_BATT_GAUGE_EXT_RADIUS * 2 + 1
+#define SBGE001_BATT_GAUGE_LOC_X 33
+#define SBGE001_BATT_GAUGE_LOC_Y 132
+#define SBGE001_BATT_GAUGE_SIZE 71
+#define SBGE001_BATT_GAUGE_DOT_RADIUS 4
+#define MOSER_BATT_GAUGE_SIZE_W 55
+#define MOSER_BATT_GAUGE_SIZE_H 45
+#define MOSER_BATT_GAUGE_DOT_RADIUS 3
+
+#define COLOUR_BATT_15          GColorRed
+#define COLOUR_BATT_95          GColorDarkGreen
+#define COLOUR_BATT_100         GColorMayGreen
 
 #define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
 #define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
@@ -108,24 +118,34 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS_LEFT = {
 static const GPathInfo GMT_HAND = {
   7, (GPoint []) {
     { -4, 0 },
-    { -2, -56 },
-    { -8, -56 },
-    { 0, -76 },
-    { 8, -56 },
-    { 2, -56 },
+    { -2, -60 },
+    { -8, -60 },
+    { 0, -80 },
+    { 8, -60 },
+    { 2, -60 },
     { 4,  0 }
   }
 };
 
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
-    { -5, -59 },
-    { 0, -72 },
-    { 5, -59 },
+    { -5, -63 },
+    { 0, -76 },
+    { 5, -63 },
   }
 };
 
-static const GPathInfo BATT_GAUGE_HAND = {
+static const GPathInfo MOSER_BATT_GAUGE_HAND = {
+  5, (GPoint []) {
+    { -1, 0 },
+    { -2, -19 },
+    { 0, -38 },
+    { 2, -19 },
+    { 1, 0 }
+  }
+};
+
+static const GPathInfo SBGE001_BATT_GAUGE_HAND = {
   3, (GPoint []) {
     { -3, 0 },
     { 0, -24 },
