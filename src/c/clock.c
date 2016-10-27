@@ -281,7 +281,9 @@ static void batt_gauge_update_proc( BatteryChargeState state ) {
 }
 
 static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_BATTERY_GAUGE ) ) return;
   if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_CONTEMPORARY ) return;
+  
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
   uint32_t batt_angle = TRIG_MAX_ANGLE * charge_state.charge_percent / 100;
@@ -309,8 +311,26 @@ static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   */
 }
 
+static void draw_battery_gauge( struct BATTERY_GAUGE_DRAW_PARAMS *pDP ) {
+  gpath_rotate_to( pDP->s_arrow, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
+  gpath_move_to( pDP->s_arrow, pDP->center_pt );
+  
+  graphics_context_set_fill_color( pDP->ctx, pDP->hand_colour );
+  gpath_draw_filled( pDP->ctx, pDP->s_arrow );
+  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
+  gpath_draw_outline( pDP->ctx, pDP->s_arrow);
+  
+  graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
+  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
+  graphics_context_set_stroke_width( pDP->ctx, 1 );
+  graphics_fill_circle( pDP->ctx, pDP->center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS - 1 );	
+  graphics_draw_circle( pDP->ctx, pDP->center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS );
+}
+
 static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_BATTERY_GAUGE ) ) return;
   if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SPIFFY_GS ) return;
+  
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
   graphics_draw_bitmap_in_rect( ctx, moser_batt_gauge_bitmap, batt_gauge_window_bounds );
@@ -318,42 +338,39 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
  
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245;
-  gpath_rotate_to( s_moser_batt_gauge_arrow, DEG_TO_TRIGANGLE( batt_angle ) );
-  gpath_move_to( s_moser_batt_gauge_arrow, center_pt );
-  
-  graphics_context_set_fill_color( ctx, GColorDarkGray );
-  gpath_draw_filled( ctx, s_moser_batt_gauge_arrow );
-  graphics_context_set_stroke_color( ctx, GColorLightGray );
-  gpath_draw_outline( ctx, s_moser_batt_gauge_arrow);
-  
-  graphics_context_set_fill_color( ctx, charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
-  graphics_context_set_stroke_color( ctx, GColorLightGray );
-  graphics_context_set_stroke_width( ctx, 1 );
-  graphics_fill_circle( ctx, center_pt, MOSER_BATT_GAUGE_DOT_RADIUS - 1 );	
-  graphics_draw_circle( ctx, center_pt, MOSER_BATT_GAUGE_DOT_RADIUS );
+  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params;
+  batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
+    .ctx = ctx,
+    .batt_angle = batt_angle,
+    .center_pt = center_pt,
+    .s_arrow = s_moser_batt_gauge_arrow,
+    .hand_colour = GColorDarkGray,
+    .hand_outline_colour = GColorLightGray,
+    .charge_state = charge_state,    
+  };
+  draw_battery_gauge( &batt_gauge_params );
 }
 
 static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_BATTERY_GAUGE ) ) return;
   if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
+  
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
   graphics_draw_bitmap_in_rect( ctx, sbge001_batt_gauge_bitmap, batt_gauge_window_bounds );
   
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
-  
-  gpath_rotate_to( s_sbge001_batt_gauge_arrow, DEG_TO_TRIGANGLE( batt_angle ) );
-  gpath_move_to( s_sbge001_batt_gauge_arrow, center_pt );
-  
-  graphics_context_set_fill_color( ctx, GColorDarkGray );
-  gpath_draw_filled( ctx, s_sbge001_batt_gauge_arrow );
-  graphics_context_set_stroke_color( ctx, GColorLightGray );
-  gpath_draw_outline( ctx, s_sbge001_batt_gauge_arrow);
-  
-  graphics_context_set_fill_color( ctx, charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
-  graphics_context_set_stroke_color( ctx, GColorLightGray );
-  graphics_context_set_stroke_width( ctx, 1 );
-  graphics_fill_circle( ctx, center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS - 1 );	
-  graphics_draw_circle( ctx, center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS );
+  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params;
+  batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
+    .ctx = ctx,
+    .batt_angle = batt_angle,
+    .center_pt = center_pt,
+    .s_arrow = s_sbge001_batt_gauge_arrow,
+    .hand_colour = GColorDarkGray,
+    .hand_outline_colour = GColorLightGray,
+    .charge_state = charge_state,    
+  };
+  draw_battery_gauge( &batt_gauge_params );
 }
   
 static void stop_seconds_display( void* data ) { // after timer elapses

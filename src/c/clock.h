@@ -188,6 +188,17 @@ struct GPATH_HANDS_PARAMS {
   GColor hand_outline_color;
 };
 
+struct BATTERY_GAUGE_DRAW_PARAMS {
+  GContext *ctx;
+  uint32_t batt_angle;
+  GPoint center_pt;
+  GPath *s_arrow;
+  GColor hand_colour;
+  GColor hand_outline_colour;
+  uint16_t dot_radius;
+  BatteryChargeState charge_state;
+};
+
 bool is_X_in_range( int a, int b, int x );
 void draw_clock( void );
 void clock_init( Window* window );

@@ -19,7 +19,8 @@
             "CHIME_START_TIME",
             "CHIME_END_TIME",
             "CHIME_ON_DAYS[7]",
-            "CHIME_OFFSET"
+            "CHIME_OFFSET",
+            "SHOW_BATTERY_GAUGE"
         ],
         "projectType": "native",
         "resources": {
@@ -75,5 +76,5 @@
             "watchface": true
         }
     },
-    "version": "1.1.0"
+    "version": "1.2.0"
 }

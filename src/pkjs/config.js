@@ -43,6 +43,12 @@ module.exports = [
         "min": '0',
         "max": '60',
         "step": '5'
+      },
+      {
+        "type": "toggle",
+        "messageKey": "SHOW_BATTERY_GAUGE",
+        "label": "Show Battery Status",
+        "defaultValue": false
       }
     ]
   },

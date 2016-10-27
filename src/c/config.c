@@ -4,7 +4,7 @@
 #include "clock.h"
 
 #define NUM_INT_MESSAGE_KEYS 6
-#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 1
+#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 2
 
 static int stringToInt( char *str );
 
@@ -37,13 +37,17 @@ void handle_config_message( DictionaryIterator *iterator ) {
   struct BOOL_CHKBOX_KEY { uint32_t keyID; int numChkBoxItems; };
 
   struct BOOL_CHKBOX_KEY BOOL_CHKBOX_MESSAGE_KEYS[ NUM_BOOL_CHKBOX_MESSAGE_KEYS ] = {
-    { .keyID = MESSAGE_KEY_CHIME_ON_DAYS, .numChkBoxItems = 7 }
+    { .keyID = MESSAGE_KEY_CHIME_ON_DAYS, .numChkBoxItems = 7 },
+    { .keyID = MESSAGE_KEY_SHOW_BATTERY_GAUGE, .numChkBoxItems = 1}
   };
 
   for ( int i = 0 ; i < NUM_BOOL_CHKBOX_MESSAGE_KEYS; i++ ) {
     for ( int j = 0 ; j < BOOL_CHKBOX_MESSAGE_KEYS[i].numChkBoxItems ; j++ ) {
       if ( ( p_tuple = dict_find( iterator, BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j ) ) ) {
-        persist_write_bool( BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j, ( ( p_tuple->value->uint8 == 't' ) || ( p_tuple->value->uint8 == 'T' ) ) );
+        persist_write_bool( BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j, 
+                           ( ( p_tuple->value->uint8 == 't' ) || ( p_tuple->value->uint8 == 'T' ) || ( p_tuple->value->uint8 == '1' ) ) );
+        // if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "config.c: handle_config_message(): %ld: %d %d", 
+        //                   BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j, persist_read_bool( BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j ), p_tuple->value->uint8 );
       }
     }
   }
