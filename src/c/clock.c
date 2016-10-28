@@ -375,8 +375,8 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
 }
   
 static void stop_seconds_display( void* data ) { // after timer elapses
-  if ( secs_display_apptimer) app_timer_cancel( secs_display_apptimer ); // Just for fun.
-  secs_display_apptimer = 0; // if we are here, we know for sure that timer has expired. 
+  if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer ); // just for fun.
+  secs_display_apptimer = 0; // docs don't say if this is set to zero when timer expires. 
 
   ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
 
@@ -384,6 +384,10 @@ static void stop_seconds_display( void* data ) { // after timer elapses
 }
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
+  #ifdef SECONDS_ALWAYS_ON
+  return;
+  #endif
+  
   if ( ! persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) ) return;
 
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
