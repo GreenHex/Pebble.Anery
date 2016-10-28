@@ -183,7 +183,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .hand_width = HOUR_HAND_WIDTH,
       .hand_color = COLOUR_HOUR_HAND,
       .hand_outline_color = COLOUR_HANDS_OUTLINE,
-      .dot_radius = CENTER_DOT_RADIUS,
+      .dot_radius = HOUR_CENTER_DOT_RADIUS,
       .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
     };
@@ -203,7 +203,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .hand_width = MIN_HAND_WIDTH,
       .hand_color = COLOUR_MIN_HAND,
       .hand_outline_color = COLOUR_HANDS_OUTLINE,
-      .dot_radius = CENTER_DOT_RADIUS - CENTER_DOT_RADIUS_MIN_DECREMENT,
+      .dot_radius = MIN_CENTER_DOT_RADIUS,
       .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
     };
@@ -231,7 +231,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .hand_width = SEC_HAND_WIDTH,
       .hand_color = COLOUR_SEC_HAND,
       .hand_outline_color = COLOUR_HANDS_OUTLINE,
-      .dot_radius = CENTER_DOT_RADIUS - CENTER_DOT_RADIUS_SEC_DECREMENT,
+      .dot_radius = SEC_CENTER_DOT_RADIUS,
       .dot_color = COLOUR_SEC_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
     };
@@ -447,7 +447,7 @@ void clock_init( Window *window ) {
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( struct ANALOG_LAYER_DATA ) );
-  #ifdef SECONDS_TESTING
+  #ifdef SECONDS_ALWAYS_ON
   ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
   #else
   ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
@@ -473,7 +473,7 @@ void clock_init( Window *window ) {
   s_sbge001_batt_gauge_arrow = gpath_create( &SBGE001_BATT_GAUGE_HAND );
 
   // subscriptions
-  #ifdef SECONDS_TESTING
+  #ifdef SECONDS_ALWAYS_ON
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
   #else
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
