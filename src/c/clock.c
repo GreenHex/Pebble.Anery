@@ -320,7 +320,8 @@ static void draw_battery_gauge( struct BATTERY_GAUGE_DRAW_PARAMS *pDP ) {
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
   gpath_draw_outline( pDP->ctx, pDP->s_arrow);
   
-  graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
+  graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorKellyGreen : 
+                                  pDP->charge_state.charge_percent < 16 ? GColorDarkCandyAppleRed : GColorDarkGray );
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
   graphics_context_set_stroke_width( pDP->ctx, 1 );
   graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
@@ -338,8 +339,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
  
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245;
-  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params;
-  batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
+  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
@@ -361,8 +361,7 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
   graphics_draw_bitmap_in_rect( ctx, sbge001_batt_gauge_bitmap, batt_gauge_window_bounds );
   
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
-  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params;
-  batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
+  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
