@@ -323,8 +323,8 @@ static void draw_battery_gauge( struct BATTERY_GAUGE_DRAW_PARAMS *pDP ) {
   graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorDarkGreen : GColorDarkGray );
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
   graphics_context_set_stroke_width( pDP->ctx, 1 );
-  graphics_fill_circle( pDP->ctx, pDP->center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS - 1 );	
-  graphics_draw_circle( pDP->ctx, pDP->center_pt, SBGE001_BATT_GAUGE_DOT_RADIUS );
+  graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
+  graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius );
 }
 
 static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -346,6 +346,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
     .s_arrow = s_moser_batt_gauge_arrow,
     .hand_colour = GColorDarkGray,
     .hand_outline_colour = GColorLightGray,
+    .dot_radius = MOSER_BATT_GAUGE_DOT_RADIUS,
     .charge_state = charge_state,    
   };
   draw_battery_gauge( &batt_gauge_params );
@@ -368,7 +369,8 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
     .s_arrow = s_sbge001_batt_gauge_arrow,
     .hand_colour = GColorDarkGray,
     .hand_outline_colour = GColorLightGray,
-    .charge_state = charge_state,    
+    .dot_radius = SBGE001_BATT_GAUGE_DOT_RADIUS,
+    .charge_state = charge_state,   
   };
   draw_battery_gauge( &batt_gauge_params );
 }

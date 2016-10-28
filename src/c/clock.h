@@ -37,7 +37,7 @@
 /////// 144 x 168
 #define CLOCK_POS_X 0
 #define CLOCK_POS_Y 0
-#define SEC_HAND_LENGTH 60 /* 53 */
+#define SEC_HAND_LENGTH 55 /* 53 */
 #define SEC_HAND_TAIL_LENGTH 20
 #define SEC_HAND_TIP_LENGTH 12
 #define MIN_HAND_LENGTH 50
