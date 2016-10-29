@@ -311,7 +311,7 @@ static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   */
 }
 
-static void draw_battery_gauge( struct BATTERY_GAUGE_DRAW_PARAMS *pDP ) {
+static void draw_battery_arrow( struct BATTERY_HAND_DRAW_PARAMS *pDP ) {
   gpath_rotate_to( pDP->s_arrow, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
   gpath_move_to( pDP->s_arrow, pDP->center_pt );
   
@@ -339,7 +339,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
  
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245;
-  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
+  struct BATTERY_HAND_DRAW_PARAMS batt_hand_params = (struct BATTERY_HAND_DRAW_PARAMS) {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
@@ -349,7 +349,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
     .dot_radius = MOSER_BATT_GAUGE_DOT_RADIUS,
     .charge_state = charge_state,    
   };
-  draw_battery_gauge( &batt_gauge_params );
+  draw_battery_arrow( &batt_hand_params );
 }
 
 static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -361,7 +361,7 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
   graphics_draw_bitmap_in_rect( ctx, sbge001_batt_gauge_bitmap, batt_gauge_window_bounds );
   
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
-  struct BATTERY_GAUGE_DRAW_PARAMS batt_gauge_params = (struct BATTERY_GAUGE_DRAW_PARAMS) {
+  struct BATTERY_HAND_DRAW_PARAMS batt_hand_params = (struct BATTERY_HAND_DRAW_PARAMS) {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
@@ -371,7 +371,7 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
     .dot_radius = SBGE001_BATT_GAUGE_DOT_RADIUS,
     .charge_state = charge_state,   
   };
-  draw_battery_gauge( &batt_gauge_params );
+  draw_battery_arrow( &batt_hand_params );
 }
   
 static void stop_seconds_display( void* data ) { // after timer elapses

@@ -354,7 +354,7 @@ struct GPATH_HANDS_PARAMS {
   GColor hand_outline_color;
 };
 
-struct BATTERY_GAUGE_DRAW_PARAMS {
+struct BATTERY_HAND_DRAW_PARAMS {
   GContext *ctx;
   uint32_t batt_angle;
   GPoint center_pt;
