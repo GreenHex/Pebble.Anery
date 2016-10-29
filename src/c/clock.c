@@ -73,7 +73,13 @@ static void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
   graphics_draw_line( pDP->ctx, pDP->from_pt, pDP->to_pt );
   // dot
   graphics_context_set_fill_color( pDP->ctx, pDP->dot_color );
-  graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
+  graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );
+  /*
+  // dot outline
+  graphics_context_set_stroke_color( pDP->ctx, GColorDarkGray );
+  graphics_context_set_stroke_width( pDP->ctx, 1 );
+  graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 2 );
+  */
 }
 
 static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
@@ -86,9 +92,9 @@ static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   gpath_move_to( pGP->s_hour_arrow, pGP->center_pt );
   gpath_move_to( pGP->s_hour_arrow_left, pGP->center_pt );
 
-  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow );
   graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow );
+  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
   gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow_left );
   graphics_context_set_fill_color( pGP->ctx, COLOUR_HOUR_HAND );
   graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
@@ -266,7 +272,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_fill_color( ctx, GColorWhite );
   graphics_fill_rect( ctx, date_window_bounds, 0, GCornersAll );
   static char date_text[3] = "";
-  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorRed : ( tm_time.tm_wday == 6 ) ? GColorBlue : GColorBlack;
+  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlue : GColorBlack;
   graphics_context_set_text_color( ctx, text_color );
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
   date_window_bounds.origin.y -= 4;

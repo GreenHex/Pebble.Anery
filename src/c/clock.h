@@ -128,12 +128,13 @@ static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
 };
 
 static const GPathInfo HOUR_HAND_SBGE001_POINTS_LEFT = {
-  5, (GPoint []) {
-    { 0, 20 },
-    { -3, 20 },
-    { -10, 0 },
-    { -3, -48 },
-    { 0, -48 }
+  6, (GPoint []) {
+    { -1, 18 },
+    { -8, 0 },
+    { -1, -46 },
+    { 1, -46 },
+    { 8, 0 },
+    { 1, 18 }
   }
 };
 
@@ -149,12 +150,13 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS = {
 };
 
 static const GPathInfo MINUTE_HAND_SBGE001_POINTS_LEFT = {
-  5, (GPoint []) {
-    { 0, 20 },
-    { -3, 20 },
-    { -8, 0 },
-    { -3, -74 },
-    { 0, -74 }
+  6, (GPoint []) {
+    { -1, 18 },
+    { -6, 0 },
+    { -1, -72 },
+    { 1, -72 },
+    { 6, 0 },
+    { 1, 18 }
   }
 };
 
@@ -246,12 +248,13 @@ static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
 };
 
 static const GPathInfo HOUR_HAND_SBGE001_POINTS_LEFT = {
-  5, (GPoint []) {
-    { 0, 14 },
-    { -3, 14 },
-    { -8, 0 },
-    { -2, -38 },
-    { 0, -38 }
+  6, (GPoint []) {
+    { -1, 12 },
+    { -6, 0 },
+    { 0, -36 },
+    { 0, -36 },
+    { 6, 0 },
+    { 1, 12 }
   }
 };
 
@@ -267,12 +270,13 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS = {
 };
 
 static const GPathInfo MINUTE_HAND_SBGE001_POINTS_LEFT = {
-  5, (GPoint []) {
-    { 0, 14 },
-    { -3, 14 },
-    { -7, 0 },
-    { -2, -60 },
-    { 0, -60 }
+  6, (GPoint []) {
+    { -1, 12 },
+    { -5, 0 },
+    { -0, -58 },
+    { 0, -58 },
+    { 5, 0 },
+    { 1, 12 }
   }
 };
 
