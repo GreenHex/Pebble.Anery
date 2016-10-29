@@ -290,9 +290,9 @@ static const GPathInfo GMT_HAND = {
 
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
-    { -4, -42 },
+    { -4, -41 },
     { 0, -51 },
-    { 4, -42 },
+    { 4, -41 },
   }
 };
 
@@ -325,11 +325,11 @@ enum ANALOG_HANDS_STYLE {
   STYLE_SBGE001 = 2
 };
 
-struct ANALOG_LAYER_DATA {
+typedef struct {
   bool show_seconds;
-};
+} ANALOG_LAYER_DATA;
 
-struct HAND_DRAW_PARAMS {
+typedef struct {
   GContext *ctx;
   GPoint center_pt;
   GPoint from_pt;
@@ -340,9 +340,9 @@ struct HAND_DRAW_PARAMS {
   uint16_t dot_radius;
   GColor dot_color;
   GColor dot_outline_color;
-};
+} HAND_DRAW_PARAMS;
 
-struct GPATH_HANDS_PARAMS {
+typedef struct {
   GContext *ctx;
   GPoint center_pt;
   uint32_t hour_angle;
@@ -352,9 +352,9 @@ struct GPATH_HANDS_PARAMS {
   GPath *s_min_arrow;
   GPath *s_min_arrow_left;
   GColor hand_outline_color;
-};
+} GPATH_HANDS_PARAMS;
 
-struct BATTERY_HAND_DRAW_PARAMS {
+typedef struct {
   GContext *ctx;
   uint32_t batt_angle;
   GPoint center_pt;
@@ -363,7 +363,7 @@ struct BATTERY_HAND_DRAW_PARAMS {
   GColor hand_outline_colour;
   uint16_t dot_radius;
   BatteryChargeState charge_state;
-};
+} BATTERY_HAND_DRAW_PARAMS;
 
 bool is_X_in_range( int a, int b, int x );
 void draw_clock( void );

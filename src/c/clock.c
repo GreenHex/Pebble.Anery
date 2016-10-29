@@ -58,7 +58,7 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) do_chime( &tm_time );
 }
 
-static void draw_clock_hand( struct HAND_DRAW_PARAMS *pDP ) {
+static void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
   // dot outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->dot_outline_color );
   graphics_context_set_stroke_width( pDP->ctx, 1 );
@@ -76,7 +76,7 @@ static void draw_clock_hand( struct HAND_DRAW_PARAMS *pDP ) {
   graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
 }
 
-static void draw_gpath_hands( struct GPATH_HANDS_PARAMS *pGP ) {
+static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   // for hour and minute hands
   graphics_context_set_stroke_width( pGP->ctx, 1 );
 
@@ -108,7 +108,7 @@ static void draw_gpath_hands( struct GPATH_HANDS_PARAMS *pGP ) {
   graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
   gpath_draw_outline( pGP->ctx, pGP->s_min_arrow );
 
-  if ( ! ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
+  if ( ! ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
     graphics_context_set_fill_color( pGP->ctx, GColorBlack );
     graphics_fill_circle( pGP->ctx, pGP->center_pt, 2 );
   } 
@@ -117,8 +117,8 @@ static void draw_gpath_hands( struct GPATH_HANDS_PARAMS *pGP ) {
 static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   // uses global tm_time
 
-  static struct HAND_DRAW_PARAMS hand_params;
-  static struct GPATH_HANDS_PARAMS gpath_params;
+  static HAND_DRAW_PARAMS hand_params;
+  static GPATH_HANDS_PARAMS gpath_params;
   GRect layer_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &layer_bounds );
   uint32_t gmt_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_gmt.tm_hour ) * 6 ) + ( tm_gmt.tm_min / 10 ) ) ) / ( 12 * 6 * 2 );
@@ -126,7 +126,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   uint32_t min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60;
 
   if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
-    gpath_params = (struct GPATH_HANDS_PARAMS) {
+    gpath_params = (GPATH_HANDS_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
       .hour_angle = hour_angle,
@@ -155,7 +155,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     // graphics_context_set_stroke_color( ctx, GColorWhite );
     // gpath_draw_outline( ctx, s_gmt_inlay );
     
-    gpath_params = (struct GPATH_HANDS_PARAMS) {
+    gpath_params = (GPATH_HANDS_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
       .hour_angle = hour_angle,
@@ -175,7 +175,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     };
 
     // hour hand
-    hand_params = (struct HAND_DRAW_PARAMS) {
+    hand_params = (HAND_DRAW_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
       .from_pt = center_pt,
@@ -195,7 +195,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     };
 
     // minute hand
-    hand_params = (struct HAND_DRAW_PARAMS) {
+    hand_params = (HAND_DRAW_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
       .from_pt = center_pt,
@@ -210,7 +210,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     draw_clock_hand( &hand_params );
   }
 
-  if ( ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
+  if ( ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
     int32_t sec_angle = TRIG_MAX_ANGLE * tm_time.tm_sec / 60;
     int32_t sec_tail_angle = sec_angle + ( TRIG_MAX_ANGLE / 2 );
     GPoint sec_hand = (GPoint) {
@@ -222,8 +222,8 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .y = ( -cos_lookup( sec_tail_angle ) * SEC_HAND_TAIL_LENGTH / TRIG_MAX_RATIO ) + center_pt.y
     };  
 
-   // second hand
-    hand_params = (struct HAND_DRAW_PARAMS) {
+    // second hand
+    hand_params = (HAND_DRAW_PARAMS) {
       .ctx = ctx,
       .center_pt = center_pt,
       .from_pt = sec_hand,
@@ -311,7 +311,7 @@ static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   */
 }
 
-static void draw_battery_hand( struct BATTERY_HAND_DRAW_PARAMS *pDP ) {
+static void draw_battery_hand( BATTERY_HAND_DRAW_PARAMS *pDP ) {
   gpath_rotate_to( pDP->s_arrow, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
   gpath_move_to( pDP->s_arrow, pDP->center_pt );
   
@@ -339,7 +339,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
  
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245;
-  struct BATTERY_HAND_DRAW_PARAMS batt_hand_params = (struct BATTERY_HAND_DRAW_PARAMS) {
+  BATTERY_HAND_DRAW_PARAMS batt_hand_params = {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
@@ -361,7 +361,7 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
   graphics_draw_bitmap_in_rect( ctx, sbge001_batt_gauge_bitmap, batt_gauge_window_bounds );
   
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
-  struct BATTERY_HAND_DRAW_PARAMS batt_hand_params = (struct BATTERY_HAND_DRAW_PARAMS) {
+  BATTERY_HAND_DRAW_PARAMS batt_hand_params = {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
@@ -378,7 +378,7 @@ static void stop_seconds_display( void* data ) { // after timer elapses
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer ); // just for fun.
   secs_display_apptimer = 0; // docs don't say if this is set to zero when timer expires. 
 
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
+  ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
 
   tick_timer_service_subscribe( MINUTE_UNIT, handle_clock_tick );
 }
@@ -392,7 +392,7 @@ static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
 
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
 
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
+  ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
   //
   if ( secs_display_apptimer ) {
     app_timer_reschedule( secs_display_apptimer, (uint32_t) persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) * 1000 );
@@ -450,11 +450,11 @@ void clock_init( Window *window ) {
   layer_add_child( bitmap_layer_get_layer( date_bitmap_layer ), text_layer_get_layer( date_text_layer ) );
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
-                                              sizeof( struct ANALOG_LAYER_DATA ) );
+                                              sizeof( ANALOG_LAYER_DATA ) );
   #ifdef SECONDS_ALWAYS_ON
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
+  ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
   #else
-  ( (struct ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
+  ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
   #endif
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), analog_clock_layer );
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
