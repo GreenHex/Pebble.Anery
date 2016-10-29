@@ -272,7 +272,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_fill_color( ctx, GColorWhite );
   graphics_fill_rect( ctx, date_window_bounds, 0, GCornersAll );
   static char date_text[3] = "";
-  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlue : GColorBlack;
+  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack;
   graphics_context_set_text_color( ctx, text_color );
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
   date_window_bounds.origin.y -= 4;
