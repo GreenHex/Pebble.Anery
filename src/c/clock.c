@@ -442,7 +442,7 @@ void clock_init( Window *window ) {
   layer_set_update_proc( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ), sbge001_batt_gauge_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
   // date bitmap layer
-  GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - DATE_LEFT_GAP - DATE_WINDOW_WIDTH,
+  GRect date_window_frame = GRect( window_bounds.origin.x + window_bounds.size.w - DATE_WINDOW_WIDTH - PBL_IF_COLOR_ELSE( DATE_LEFT_GAP, DATE_LEFT_GAP - 2 ),
                                   window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
                                   DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
   date_bitmap_layer = bitmap_layer_create( date_window_frame );
