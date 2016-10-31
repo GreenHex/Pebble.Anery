@@ -4,6 +4,20 @@
 #include "chime.h"
 #include "app_messaging.h"
 
+#ifdef GARNISH_HOLIDAYS
+#define NUM_HOLIDAYS 3
+typedef struct {
+  int date;
+  int month;
+  uint32_t iconID;
+} HOLIDAY;
+HOLIDAY holidays[ NUM_HOLIDAYS ] = {
+  { .date = 1, .month = 0, .iconID = RESOURCE_ID_ICON_CHRISTMAS },
+  { .date = 1, .month = 10, .iconID = RESOURCE_ID_ICON_CHRISTMAS },
+  { .date = 25, .month = 11, .iconID = RESOURCE_ID_ICON_CHRISTMAS }
+};
+#endif
+
 static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
@@ -271,6 +285,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // APP_LOG( APP_LOG_LEVEL_INFO, "date_text_layer_update_proc() (%d, %d, %d, %d)", date_window_bounds.origin.x, date_window_bounds.origin.y, date_window_bounds.size.w, date_window_bounds.size.h );
   graphics_context_set_fill_color( ctx, GColorWhite );
   graphics_fill_rect( ctx, date_window_bounds, 0, GCornersAll );
+
   static char date_text[3] = "";
   GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack;
   graphics_context_set_text_color( ctx, text_color );
@@ -278,6 +293,19 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   date_window_bounds.origin.y -= 4;
   graphics_draw_text( ctx, date_text, fonts_get_system_font( FONT_KEY_ROBOTO_CONDENSED_21 ), date_window_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  #ifdef GARNISH_HOLIDAYS
+  date_window_bounds.origin.y += 4;
+  static GBitmap *holiday_bitmap = 0;
+  for ( int i = 0; i < NUM_HOLIDAYS; i++ ) {
+    if ( ( holidays[i].date == tm_time.tm_mday ) && ( holidays[i].month == tm_time.tm_mon ) ) {
+      holiday_bitmap = gbitmap_create_with_resource( holidays[i].iconID );
+      graphics_draw_bitmap_in_rect( ctx, holiday_bitmap, date_window_bounds );
+      break;
+    }
+  }
+  if ( holiday_bitmap ) gbitmap_destroy( holiday_bitmap );
+  holiday_bitmap = 0;
+  #endif
 }
 
 static void batt_gauge_update_proc( BatteryChargeState state ) {
@@ -291,7 +319,7 @@ static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_CONTEMPORARY ) return;
   
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
-  GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
+  // GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
   uint32_t batt_angle = TRIG_MAX_ANGLE * charge_state.charge_percent / 100;
  
   GColor batt_indicator_colour = GColorDarkGray;
@@ -446,6 +474,7 @@ void clock_init( Window *window ) {
                                   window_bounds.origin.y + ( ( window_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
                                   DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
   date_bitmap_layer = bitmap_layer_create( date_window_frame );
+  bitmap_layer_set_compositing_mode( date_bitmap_layer, GCompOpAssign );
   layer_set_update_proc( bitmap_layer_get_layer( date_bitmap_layer ), date_bitmap_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( date_bitmap_layer ) );
   // date text layer
@@ -454,6 +483,7 @@ void clock_init( Window *window ) {
   date_text_layer = text_layer_create( date_window_bounds );
   layer_set_update_proc( text_layer_get_layer( date_text_layer ), date_text_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( date_bitmap_layer ), text_layer_get_layer( date_text_layer ) );
+  
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( ANALOG_LAYER_DATA ) );
@@ -491,7 +521,7 @@ void clock_init( Window *window ) {
   
   batt_gauge_update_proc( battery_state_service_peek() );
   battery_state_service_subscribe( batt_gauge_update_proc );
-
+  
   // show current time
   draw_clock();
 }

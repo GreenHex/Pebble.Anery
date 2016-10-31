@@ -26,6 +26,17 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/Christmas Tree 02.png",
+                    "name": "ICON_CHRISTMAS",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/Moser Battery Gauge.png",
                     "name": "MOSER_BATTERY_GAUGE",
                     "targetPlatforms": [

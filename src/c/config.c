@@ -6,6 +6,11 @@
 #define NUM_INT_MESSAGE_KEYS 6
 #define NUM_BOOL_CHKBOX_MESSAGE_KEYS 2
 
+typedef struct {
+  uint32_t keyID;
+  int numChkBoxItems;
+} BOOL_CHKBOX_KEY;
+
 static int stringToInt( char *str );
 
 void handle_config_message( DictionaryIterator *iterator ) {
@@ -34,9 +39,7 @@ void handle_config_message( DictionaryIterator *iterator ) {
     }
   }
 
-  struct BOOL_CHKBOX_KEY { uint32_t keyID; int numChkBoxItems; };
-
-  struct BOOL_CHKBOX_KEY BOOL_CHKBOX_MESSAGE_KEYS[ NUM_BOOL_CHKBOX_MESSAGE_KEYS ] = {
+  BOOL_CHKBOX_KEY BOOL_CHKBOX_MESSAGE_KEYS[ NUM_BOOL_CHKBOX_MESSAGE_KEYS ] = {
     { .keyID = MESSAGE_KEY_CHIME_ON_DAYS, .numChkBoxItems = 7 },
     { .keyID = MESSAGE_KEY_SHOW_BATTERY_GAUGE, .numChkBoxItems = 1}
   };
