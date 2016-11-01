@@ -2,21 +2,6 @@
 #include "global.h"
 #include "clock.h"
 #include "chime.h"
-#include "app_messaging.h"
-
-#ifdef GARNISH_HOLIDAYS
-#define NUM_HOLIDAYS 3
-typedef struct {
-  int date;
-  int month;
-  uint32_t iconID;
-} HOLIDAY;
-HOLIDAY holidays[ NUM_HOLIDAYS ] = {
-  { .date = 1, .month = 0, .iconID = RESOURCE_ID_ICON_CHRISTMAS },
-  { .date = 1, .month = 10, .iconID = RESOURCE_ID_ICON_CHRISTMAS },
-  { .date = 25, .month = 11, .iconID = RESOURCE_ID_ICON_CHRISTMAS }
-};
-#endif
 
 static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
@@ -24,8 +9,6 @@ static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
 static BitmapLayer *moser_batt_gauge_bitmap_layer = 0;
 static BitmapLayer *sbge001_batt_gauge_bitmap_layer = 0;
-static GBitmap *moser_batt_gauge_bitmap = 0;
-static GBitmap *sbge001_batt_gauge_bitmap = 0;
 static BitmapLayer *cont_batt_gauge_bitmap_layer = 0;
 static BitmapLayer *date_bitmap_layer = 0;
 static TextLayer *date_text_layer = 0;
@@ -45,6 +28,21 @@ static AppTimer* secs_display_apptimer = 0;
 static tm tm_time;
 static tm tm_gmt;
 static BatteryChargeState charge_state;
+
+#ifdef GARNISH_HOLIDAYS
+#define NUM_HOLIDAYS 2
+
+typedef struct {
+  int date;
+  int month;
+  uint32_t iconID;
+} HOLIDAY;
+
+HOLIDAY holidays[ NUM_HOLIDAYS ] = {
+  { .date = 1, .month = 0, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_NEW_YEAR_COLOUR,  RESOURCE_ID_ICON_NEW_YEAR_BW ) },
+  { .date = 25, .month = 11, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_CHRISTMAS_COLOUR, RESOURCE_ID_ICON_CHRISTMAS_BW ) }
+};
+#endif
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction );
 
@@ -368,6 +366,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
+  GBitmap *moser_batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_MOSER_BATTERY_GAUGE );
   graphics_draw_bitmap_in_rect( ctx, moser_batt_gauge_bitmap, batt_gauge_window_bounds );
   
   center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
@@ -384,14 +383,16 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
     .charge_state = charge_state,    
   };
   draw_battery_hand( &batt_hand_params );
+  gbitmap_destroy( moser_batt_gauge_bitmap );
 }
 
 static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_BATTERY_GAUGE ) ) return;
   if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
-  
+
   GRect batt_gauge_window_bounds = layer_get_bounds( layer );
   GPoint center_pt = grect_center_point( &batt_gauge_window_bounds );
+  GBitmap *sbge001_batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_SBGE001_BATTERY_GAUGE );
   graphics_draw_bitmap_in_rect( ctx, sbge001_batt_gauge_bitmap, batt_gauge_window_bounds );
   
   uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 105 ) / 100 ) + 225;
@@ -406,6 +407,7 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
     .charge_state = charge_state,   
   };
   draw_battery_hand( &batt_hand_params );
+  gbitmap_destroy( sbge001_batt_gauge_bitmap );
 }
   
 static void stop_seconds_display( void* data ) { // after timer elapses
@@ -455,7 +457,6 @@ void clock_init( Window *window ) {
   layer_set_update_proc( bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ), cont_batt_gauge_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ) );
   // moser battery
-  moser_batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_MOSER_BATTERY_GAUGE );
   GRect moser_batt_gauge_bitmap_layer_frame = GRect( window_bounds.origin.x + 3,
                                   window_bounds.origin.y + ( ( window_bounds.size.h - MOSER_BATT_GAUGE_SIZE_H ) / 2 ),
                                   MOSER_BATT_GAUGE_SIZE_W, MOSER_BATT_GAUGE_SIZE_H );
@@ -463,7 +464,6 @@ void clock_init( Window *window ) {
   layer_set_update_proc( bitmap_layer_get_layer( moser_batt_gauge_bitmap_layer ), moser_batt_gauge_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), bitmap_layer_get_layer( moser_batt_gauge_bitmap_layer ) );
   // sbge001 battery
-  sbge001_batt_gauge_bitmap = gbitmap_create_with_resource( RESOURCE_ID_SBGE001_BATTERY_GAUGE );
   GRect sbge001_batt_gauge_layer_frame = GRect( SBGE001_BATT_GAUGE_LOC_X, SBGE001_BATT_GAUGE_LOC_Y,
                                                SBGE001_BATT_GAUGE_SIZE, SBGE001_BATT_GAUGE_SIZE );
   sbge001_batt_gauge_bitmap_layer = bitmap_layer_create( sbge001_batt_gauge_layer_frame );
@@ -549,7 +549,5 @@ void clock_deinit( void ) {
   gpath_destroy( s_moser_batt_gauge_arrow );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
-  gbitmap_destroy( moser_batt_gauge_bitmap );
-  gbitmap_destroy( sbge001_batt_gauge_bitmap );
   gbitmap_destroy( analog_clock_bitmap );
 }

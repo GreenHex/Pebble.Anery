@@ -26,12 +26,37 @@
         "resources": {
             "media": [
                 {
-                    "file": "images/Christmas Tree 02.png",
-                    "name": "ICON_CHRISTMAS",
+                    "file": "images/New Year BW.png",
+                    "name": "ICON_NEW_YEAR_BW",
                     "targetPlatforms": [
                         "aplite",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/New Year Colour.png",
+                    "name": "ICON_NEW_YEAR_COLOUR",
+                    "targetPlatforms": [
                         "basalt",
-                        "diorite",
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Christmas BW.png",
+                    "name": "ICON_CHRISTMAS_BW",
+                    "targetPlatforms": [
+                        "aplite",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Christmas Colour.png",
+                    "name": "ICON_CHRISTMAS_COLOUR",
+                    "targetPlatforms": [
+                        "basalt",
                         "emery"
                     ],
                     "type": "bitmap"
@@ -95,5 +120,5 @@
             "watchface": true
         }
     },
-    "version": "1.7.0"
+    "version": "1.8.0"
 }
