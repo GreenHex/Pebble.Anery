@@ -4,14 +4,10 @@
 #include "chime.h"
 
 static Layer *window_layer = 0;
+// analog clock
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
-static BitmapLayer *moser_batt_gauge_bitmap_layer = 0;
-static BitmapLayer *sbge001_batt_gauge_bitmap_layer = 0;
-static BitmapLayer *cont_batt_gauge_bitmap_layer = 0;
-static BitmapLayer *date_bitmap_layer = 0;
-static TextLayer *date_text_layer = 0;
 static GPath *s_gmt_arrow = 0;
 static GPath *s_gmt_inlay = 0;
 static GPath *s_gs_hour_arrow = 0;
@@ -22,13 +18,17 @@ static GPath *s_sbge001_hour_arrow = 0;
 static GPath *s_sbge001_hour_arrow_left = 0;
 static GPath *s_sbge001_minute_arrow = 0;
 static GPath *s_sbge001_minute_arrow_left = 0;
+// moser battery gauge
+static BitmapLayer *moser_batt_gauge_bitmap_layer = 0;
 static GPath *s_moser_batt_gauge_arrow = 0;
+// sbge001 battry gauge
+static BitmapLayer *sbge001_batt_gauge_bitmap_layer = 0;
 static GPath *s_sbge001_batt_gauge_arrow = 0;
-static AppTimer* secs_display_apptimer = 0; 
-static tm tm_time;
-static tm tm_gmt;
-static BatteryChargeState charge_state;
-
+// cont battery gauge
+static BitmapLayer *cont_batt_gauge_bitmap_layer = 0;
+// date window
+static BitmapLayer *date_bitmap_layer = 0;
+static TextLayer *date_text_layer = 0;
 #ifdef GARNISH_HOLIDAYS
 #define NUM_HOLIDAYS 3
 HOLIDAY holidays[ NUM_HOLIDAYS ] = {
@@ -37,6 +37,11 @@ HOLIDAY holidays[ NUM_HOLIDAYS ] = {
   { .date = 25, .month = 11, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_CHRISTMAS_COLOUR, RESOURCE_ID_ICON_CHRISTMAS_BW ) }
 };
 #endif
+// misc.
+static BatteryChargeState charge_state;
+static AppTimer* secs_display_apptimer = 0; 
+static tm tm_time;
+static tm tm_gmt;
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction );
 
