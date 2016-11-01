@@ -91,7 +91,7 @@ static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
   }
 };
 
-static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_LEFT = {
+static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 25 },
     { -9, 0 },
@@ -108,7 +108,7 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS = {
   }
 };
 
-static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_LEFT = {
+static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 25 },
     { -8, 0 },
@@ -127,7 +127,7 @@ static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
   }
 };
 
-static const GPathInfo HOUR_HAND_SBGE001_POINTS_LEFT = {
+static const GPathInfo HOUR_HAND_SBGE001_POINTS_HIGHLIGHT = {
   6, (GPoint []) {
     { -1, 18 },
     { -8, 0 },
@@ -149,7 +149,7 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS = {
   }
 };
 
-static const GPathInfo MINUTE_HAND_SBGE001_POINTS_LEFT = {
+static const GPathInfo MINUTE_HAND_SBGE001_POINTS_HIGHLIGHT = {
   6, (GPoint []) {
     { -1, 18 },
     { -6, 0 },
@@ -211,7 +211,7 @@ static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
   }
 };
 
-static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_LEFT = {
+static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 18 },
     { -8, 0 },
@@ -224,14 +224,14 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS = {
     { 0, 18 },
     { -7, 0 },
     { 0, -68 },
-    { 6, 0 },
+    { 7, 0 },
   }
 };
 
-static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_LEFT = {
+static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 18 },
-    { -7, 0 },
+    { 7, 0 },
     { 0, -68 },
   }
 };
@@ -247,7 +247,7 @@ static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
   }
 };
 
-static const GPathInfo HOUR_HAND_SBGE001_POINTS_LEFT = {
+static const GPathInfo HOUR_HAND_SBGE001_POINTS_HIGHLIGHT = {
   6, (GPoint []) {
     { -1, 12 },
     { -6, 0 },
@@ -269,7 +269,7 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS = {
   }
 };
 
-static const GPathInfo MINUTE_HAND_SBGE001_POINTS_LEFT = {
+static const GPathInfo MINUTE_HAND_SBGE001_POINTS_HIGHLIGHT = {
   6, (GPoint []) {
     { -1, 12 },
     { -5, 0 },
@@ -350,10 +350,10 @@ typedef struct {
   GPoint center_pt;
   uint32_t hour_angle;
   uint32_t min_angle;
-  GPath *s_hour_arrow;
-  GPath *s_hour_arrow_left;
-  GPath *s_min_arrow;
-  GPath *s_min_arrow_left;
+  GPath *s_hour_hand;
+  GPath *s_hour_hand_highlight;
+  GPath *s_min_hand;
+  GPath *s_min_hand_highlight;
   GColor hand_outline_color;
 } GPATH_HANDS_PARAMS;
 
@@ -361,7 +361,7 @@ typedef struct {
   GContext *ctx;
   uint32_t batt_angle;
   GPoint center_pt;
-  GPath *s_arrow;
+  GPath *s_hand;
   GColor hand_colour;
   GColor hand_outline_colour;
   uint16_t dot_radius;
@@ -371,7 +371,7 @@ typedef struct {
 #ifdef GARNISH_HOLIDAYS
 typedef struct {
   int date;
-  int month;
+  int month; // use normal month, not unix month
   uint32_t iconID;
 } HOLIDAY;
 #endif

@@ -45,12 +45,10 @@ function sendDictionaryToPebble( dictionary ) {
 /// Send configuration data
 function sendConfig() {
   var dictionary = {};
-
   local_config_settings.map( function ( item ) {
     dictionary[item] = localStorage.getItem( item );
     if (DEBUG) console.log( "index.js: sendConfig(): " + item + ": " + dictionary[item] );
   });
-
   sendDictionaryToPebble( dictionary );
 }
 
@@ -80,7 +78,6 @@ Pebble.addEventListener( 'webviewclosed', function( e ) {
   if ( e && !e.response ) {
     return;
   }
-
   var dictionary = clay.getSettings( e.response );
   if (DEBUG) console.log( "index.js/clay: " + JSON.stringify( dictionary ) );
   // save for later...

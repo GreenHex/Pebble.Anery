@@ -8,22 +8,22 @@ static Layer *window_layer = 0;
 static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
-static GPath *s_gmt_arrow = 0;
+static GPath *s_gmt_hand = 0;
 static GPath *s_gmt_inlay = 0;
-static GPath *s_gs_hour_arrow = 0;
-static GPath *s_gs_hour_arrow_left = 0;
-static GPath *s_gs_minute_arrow = 0;
-static GPath *s_gs_minute_arrow_left = 0;
-static GPath *s_sbge001_hour_arrow = 0;
-static GPath *s_sbge001_hour_arrow_left = 0;
-static GPath *s_sbge001_minute_arrow = 0;
-static GPath *s_sbge001_minute_arrow_left = 0;
+static GPath *s_gs_hour_hand = 0;
+static GPath *s_gs_hour_hand_highlight = 0;
+static GPath *s_gs_minute_hand = 0;
+static GPath *s_gs_minute_hand_highlight = 0;
+static GPath *s_sbge001_hour_hand = 0;
+static GPath *s_sbge001_hour_hand_highlight = 0;
+static GPath *s_sbge001_minute_hand = 0;
+static GPath *s_sbge001_minute_hand_highlight = 0;
 // moser battery gauge
 static BitmapLayer *moser_batt_gauge_bitmap_layer = 0;
-static GPath *s_moser_batt_gauge_arrow = 0;
+static GPath *s_moser_batt_gauge_hand = 0;
 // sbge001 battry gauge
 static BitmapLayer *sbge001_batt_gauge_bitmap_layer = 0;
-static GPath *s_sbge001_batt_gauge_arrow = 0;
+static GPath *s_sbge001_batt_gauge_hand = 0;
 // cont battery gauge
 static BitmapLayer *cont_batt_gauge_bitmap_layer = 0;
 // date window
@@ -32,9 +32,9 @@ static TextLayer *date_text_layer = 0;
 #ifdef GARNISH_HOLIDAYS
 #define NUM_HOLIDAYS 3
 HOLIDAY holidays[ NUM_HOLIDAYS ] = {
-  { .date = 1, .month = 0, .iconID = RESOURCE_ID_ICON_NEW_YEAR },
-  { .date = 31, .month = 9, .iconID = RESOURCE_ID_ICON_HALOWEEN },
-  { .date = 25, .month = 11, .iconID = RESOURCE_ID_ICON_CHRISTMAS }
+  { .date = 1, .month = 1, .iconID = RESOURCE_ID_ICON_NEW_YEAR },
+  { .date = 31, .month = 10, .iconID = RESOURCE_ID_ICON_HALOWEEN },
+  { .date = 25, .month = 12, .iconID = RESOURCE_ID_ICON_CHRISTMAS }
 };
 #endif
 // misc.
@@ -98,32 +98,32 @@ static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   graphics_context_set_stroke_width( pGP->ctx, 1 );
 
   // hour hand
-  gpath_rotate_to( pGP->s_hour_arrow, pGP->hour_angle );
-  gpath_rotate_to( pGP->s_hour_arrow_left, pGP->hour_angle );
-  gpath_move_to( pGP->s_hour_arrow, pGP->center_pt );
-  gpath_move_to( pGP->s_hour_arrow_left, pGP->center_pt );
+  gpath_rotate_to( pGP->s_hour_hand, pGP->hour_angle );
+  gpath_rotate_to( pGP->s_hour_hand_highlight, pGP->hour_angle );
+  gpath_move_to( pGP->s_hour_hand, pGP->center_pt );
+  gpath_move_to( pGP->s_hour_hand_highlight, pGP->center_pt );
 
   graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand );
   graphics_context_set_fill_color( pGP->ctx, GColorWhite );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_arrow_left );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand_highlight );
   graphics_context_set_fill_color( pGP->ctx, COLOUR_HOUR_HAND );
   graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
-  gpath_draw_outline( pGP->ctx, pGP->s_hour_arrow);
+  gpath_draw_outline( pGP->ctx, pGP->s_hour_hand );
 
   // min hand
-  gpath_rotate_to( pGP->s_min_arrow, pGP->min_angle );
-  gpath_rotate_to( pGP->s_min_arrow_left, pGP->min_angle );
-  gpath_move_to( pGP->s_min_arrow, pGP->center_pt );
-  gpath_move_to( pGP->s_min_arrow_left, pGP->center_pt );
+  gpath_rotate_to( pGP->s_min_hand, pGP->min_angle );
+  gpath_rotate_to( pGP->s_min_hand_highlight, pGP->min_angle );
+  gpath_move_to( pGP->s_min_hand, pGP->center_pt );
+  gpath_move_to( pGP->s_min_hand_highlight, pGP->center_pt );
 
   graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
-  gpath_draw_filled( pGP->ctx, pGP->s_min_arrow );
+  gpath_draw_filled( pGP->ctx, pGP->s_min_hand );
   graphics_context_set_fill_color( pGP->ctx, GColorWhite );
-  gpath_draw_filled( pGP->ctx, pGP->s_min_arrow_left );
+  gpath_draw_filled( pGP->ctx, pGP->s_min_hand_highlight );
   graphics_context_set_fill_color( pGP->ctx, COLOUR_MIN_HAND );
   graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
-  gpath_draw_outline( pGP->ctx, pGP->s_min_arrow );
+  gpath_draw_outline( pGP->ctx, pGP->s_min_hand );
 
   if ( ! ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
     graphics_context_set_fill_color( pGP->ctx, GColorBlack );
@@ -148,22 +148,22 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .center_pt = center_pt,
       .hour_angle = hour_angle,
       .min_angle = min_angle,
-      .s_hour_arrow = s_gs_hour_arrow,
-      .s_hour_arrow_left = s_gs_hour_arrow_left,
-      .s_min_arrow = s_gs_minute_arrow,
-      .s_min_arrow_left = s_gs_minute_arrow_left,
+      .s_hour_hand = s_gs_hour_hand,
+      .s_hour_hand_highlight = s_gs_hour_hand_highlight,
+      .s_min_hand = s_gs_minute_hand,
+      .s_min_hand_highlight = s_gs_minute_hand_highlight,
       .hand_outline_color = GColorBlack
     };
     draw_gpath_hands( &gpath_params );
   } else if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
     
     // gmt hand
-    gpath_rotate_to( s_gmt_arrow, gmt_angle );
-    gpath_move_to( s_gmt_arrow, center_pt );
+    gpath_rotate_to( s_gmt_hand, gmt_angle );
+    gpath_move_to( s_gmt_hand, center_pt );
     graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkCandyAppleRed, GColorWhite ) );
-    gpath_draw_filled( ctx, s_gmt_arrow );
+    gpath_draw_filled( ctx, s_gmt_hand );
     graphics_context_set_stroke_color( ctx, PBL_IF_COLOR_ELSE( GColorRed, GColorWhite ) );
-    gpath_draw_outline( ctx, s_gmt_arrow );
+    gpath_draw_outline( ctx, s_gmt_hand );
     // gmt inlay
     gpath_rotate_to( s_gmt_inlay, gmt_angle );
     gpath_move_to( s_gmt_inlay, center_pt );
@@ -177,10 +177,10 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .center_pt = center_pt,
       .hour_angle = hour_angle,
       .min_angle = min_angle,
-      .s_hour_arrow = s_sbge001_hour_arrow,
-      .s_hour_arrow_left = s_sbge001_hour_arrow_left,
-      .s_min_arrow = s_sbge001_minute_arrow,
-      .s_min_arrow_left = s_sbge001_minute_arrow_left,
+      .s_hour_hand = s_sbge001_hour_hand,
+      .s_hour_hand_highlight = s_sbge001_hour_hand_highlight,
+      .s_min_hand = s_sbge001_minute_hand,
+      .s_min_hand_highlight = s_sbge001_minute_hand_highlight,
       .hand_outline_color = GColorDarkGray
     };
     draw_gpath_hands( &gpath_params );
@@ -294,7 +294,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   date_window_bounds.origin.y += 4;
   static GBitmap *holiday_bitmap = 0;
   for ( int i = 0; i < NUM_HOLIDAYS; i++ ) {
-    if ( ( holidays[i].date == tm_time.tm_mday ) && ( holidays[i].month == tm_time.tm_mon ) ) {
+    if ( ( holidays[i].date == tm_time.tm_mday ) && ( ( holidays[i].month - 1 ) == tm_time.tm_mon ) ) {
       holiday_bitmap = gbitmap_create_with_resource( holidays[i].iconID );
       graphics_draw_bitmap_in_rect( ctx, holiday_bitmap, date_window_bounds );
       break;
@@ -343,13 +343,13 @@ static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
 }
 
 static void draw_battery_hand( BATTERY_HAND_DRAW_PARAMS *pDP ) {
-  gpath_rotate_to( pDP->s_arrow, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
-  gpath_move_to( pDP->s_arrow, pDP->center_pt );
+  gpath_rotate_to( pDP->s_hand, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
+  gpath_move_to( pDP->s_hand, pDP->center_pt );
   
   graphics_context_set_fill_color( pDP->ctx, pDP->hand_colour );
-  gpath_draw_filled( pDP->ctx, pDP->s_arrow );
+  gpath_draw_filled( pDP->ctx, pDP->s_hand );
   graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
-  gpath_draw_outline( pDP->ctx, pDP->s_arrow);
+  gpath_draw_outline( pDP->ctx, pDP->s_hand );
   
   graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorKellyGreen : 
                                   pDP->charge_state.charge_percent < 16 ? GColorDarkCandyAppleRed : GColorDarkGray );
@@ -375,7 +375,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
-    .s_arrow = s_moser_batt_gauge_arrow,
+    .s_hand = s_moser_batt_gauge_hand,
     .hand_colour = GColorDarkGray,
     .hand_outline_colour = GColorLightGray,
     .dot_radius = MOSER_BATT_GAUGE_DOT_RADIUS,
@@ -399,7 +399,7 @@ static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) 
     .ctx = ctx,
     .batt_angle = batt_angle,
     .center_pt = center_pt,
-    .s_arrow = s_sbge001_batt_gauge_arrow,
+    .s_hand = s_sbge001_batt_gauge_hand,
     .hand_colour = GColorDarkGray,
     .hand_outline_colour = GColorLightGray,
     .dot_radius = SBGE001_BATT_GAUGE_DOT_RADIUS,
@@ -495,21 +495,21 @@ void clock_init( Window *window ) {
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
   
-  s_gmt_arrow = gpath_create( &GMT_HAND );
+  s_gmt_hand = gpath_create( &GMT_HAND );
   s_gmt_inlay = gpath_create( &GMT_HAND_INLAY );
   //
-  s_gs_minute_arrow = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS );
-  s_gs_minute_arrow_left = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS_LEFT );
-  s_gs_hour_arrow = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS );
-  s_gs_hour_arrow_left = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS_LEFT );
+  s_gs_minute_hand = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS );
+  s_gs_minute_hand_highlight = gpath_create( &MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT );
+  s_gs_hour_hand = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS );
+  s_gs_hour_hand_highlight = gpath_create( &HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT );
   //
-  s_sbge001_minute_arrow = gpath_create( &MINUTE_HAND_SBGE001_POINTS );
-  s_sbge001_minute_arrow_left = gpath_create( &MINUTE_HAND_SBGE001_POINTS_LEFT );
-  s_sbge001_hour_arrow = gpath_create( &HOUR_HAND_SBGE001_POINTS );
-  s_sbge001_hour_arrow_left = gpath_create( &HOUR_HAND_SBGE001_POINTS_LEFT );
+  s_sbge001_minute_hand = gpath_create( &MINUTE_HAND_SBGE001_POINTS );
+  s_sbge001_minute_hand_highlight = gpath_create( &MINUTE_HAND_SBGE001_POINTS_HIGHLIGHT );
+  s_sbge001_hour_hand = gpath_create( &HOUR_HAND_SBGE001_POINTS );
+  s_sbge001_hour_hand_highlight = gpath_create( &HOUR_HAND_SBGE001_POINTS_HIGHLIGHT );
   //
-  s_moser_batt_gauge_arrow = gpath_create( &MOSER_BATT_GAUGE_HAND);
-  s_sbge001_batt_gauge_arrow = gpath_create( &SBGE001_BATT_GAUGE_HAND );
+  s_moser_batt_gauge_hand = gpath_create( &MOSER_BATT_GAUGE_HAND);
+  s_sbge001_batt_gauge_hand = gpath_create( &SBGE001_BATT_GAUGE_HAND );
 
   // subscriptions
   #ifdef SECONDS_ALWAYS_ON
@@ -534,18 +534,18 @@ void clock_deinit( void ) {
   bitmap_layer_destroy( cont_batt_gauge_bitmap_layer );
   bitmap_layer_destroy( date_bitmap_layer );
   text_layer_destroy( date_text_layer );
-  gpath_destroy( s_sbge001_minute_arrow );
-  gpath_destroy( s_sbge001_minute_arrow_left );
-  gpath_destroy( s_sbge001_hour_arrow );
-  gpath_destroy( s_sbge001_hour_arrow_left );
-  gpath_destroy( s_gs_minute_arrow );
-  gpath_destroy( s_gs_minute_arrow_left );
-  gpath_destroy( s_gs_hour_arrow );
-  gpath_destroy( s_gs_hour_arrow_left );
+  gpath_destroy( s_sbge001_minute_hand );
+  gpath_destroy( s_sbge001_minute_hand_highlight );
+  gpath_destroy( s_sbge001_hour_hand );
+  gpath_destroy( s_sbge001_hour_hand_highlight );
+  gpath_destroy( s_gs_minute_hand );
+  gpath_destroy( s_gs_minute_hand_highlight );
+  gpath_destroy( s_gs_hour_hand );
+  gpath_destroy( s_gs_hour_hand_highlight );
   gpath_destroy( s_gmt_inlay );
-  gpath_destroy( s_gmt_arrow );
-  gpath_destroy( s_sbge001_batt_gauge_arrow );
-  gpath_destroy( s_moser_batt_gauge_arrow );
+  gpath_destroy( s_gmt_hand );
+  gpath_destroy( s_sbge001_batt_gauge_hand );
+  gpath_destroy( s_moser_batt_gauge_hand );
   bitmap_layer_destroy( analog_clock_bitmap_layer );
   layer_destroy( analog_clock_layer );
   gbitmap_destroy( analog_clock_bitmap );
