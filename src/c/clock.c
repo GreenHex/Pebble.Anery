@@ -32,14 +32,14 @@ static TextLayer *date_text_layer = 0;
 #ifdef GARNISH_HOLIDAYS
 #define NUM_HOLIDAYS 3
 HOLIDAY holidays[ NUM_HOLIDAYS ] = {
-  { .date = 1, .month = 0, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_NEW_YEAR_COLOUR,  RESOURCE_ID_ICON_NEW_YEAR_BW ) },
-  { .date = 31, .month = 9, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_HALOWEEN_COLOUR,  RESOURCE_ID_ICON_HALOWEEN_BW ) },
-  { .date = 25, .month = 11, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_CHRISTMAS_COLOUR, RESOURCE_ID_ICON_CHRISTMAS_BW ) }
+  { .date = 1, .month = 0, .iconID = RESOURCE_ID_ICON_NEW_YEAR },
+  { .date = 31, .month = 9, .iconID = RESOURCE_ID_ICON_HALOWEEN },
+  { .date = 25, .month = 11, .iconID = RESOURCE_ID_ICON_CHRISTMAS }
 };
 #endif
 // misc.
 static BatteryChargeState charge_state;
-static AppTimer* secs_display_apptimer = 0; 
+static AppTimer *secs_display_apptimer = 0; 
 static tm tm_time;
 static tm tm_gmt;
 

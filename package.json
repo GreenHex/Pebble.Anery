@@ -26,55 +26,34 @@
         "resources": {
             "media": [
                 {
-                    "file": "images/Haloween Colour.png",
-                    "name": "ICON_HALOWEEN_COLOUR",
+                    "file": "images/Haloween.png",
+                    "name": "ICON_HALOWEEN",
                     "targetPlatforms": [
+                        "aplite",
                         "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/Haloween BW.png",
-                    "name": "ICON_HALOWEEN_BW",
+                    "file": "images/New Year.png",
+                    "name": "ICON_NEW_YEAR",
                     "targetPlatforms": [
                         "aplite",
-                        "diorite"
-                    ],
-                    "type": "bitmap"
-                },
-                {
-                    "file": "images/New Year BW.png",
-                    "name": "ICON_NEW_YEAR_BW",
-                    "targetPlatforms": [
-                        "aplite",
-                        "diorite"
-                    ],
-                    "type": "bitmap"
-                },
-                {
-                    "file": "images/New Year Colour.png",
-                    "name": "ICON_NEW_YEAR_COLOUR",
-                    "targetPlatforms": [
                         "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/Christmas BW.png",
-                    "name": "ICON_CHRISTMAS_BW",
+                    "file": "images/Christmas.png",
+                    "name": "ICON_CHRISTMAS",
                     "targetPlatforms": [
                         "aplite",
-                        "diorite"
-                    ],
-                    "type": "bitmap"
-                },
-                {
-                    "file": "images/Christmas Colour.png",
-                    "name": "ICON_CHRISTMAS_COLOUR",
-                    "targetPlatforms": [
                         "basalt",
+                        "diorite",
                         "emery"
                     ],
                     "type": "bitmap"
