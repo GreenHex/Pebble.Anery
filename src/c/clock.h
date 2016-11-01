@@ -368,6 +368,14 @@ typedef struct {
   BatteryChargeState charge_state;
 } BATTERY_HAND_DRAW_PARAMS;
 
+#ifdef GARNISH_HOLIDAYS
+typedef struct {
+  int date;
+  int month;
+  uint32_t iconID;
+} HOLIDAY;
+#endif
+
 bool is_X_in_range( int a, int b, int x );
 void draw_clock( void );
 void clock_init( Window* window );

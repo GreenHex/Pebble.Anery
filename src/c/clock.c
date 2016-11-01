@@ -31,13 +31,6 @@ static BatteryChargeState charge_state;
 
 #ifdef GARNISH_HOLIDAYS
 #define NUM_HOLIDAYS 2
-
-typedef struct {
-  int date;
-  int month;
-  uint32_t iconID;
-} HOLIDAY;
-
 HOLIDAY holidays[ NUM_HOLIDAYS ] = {
   { .date = 1, .month = 0, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_NEW_YEAR_COLOUR,  RESOURCE_ID_ICON_NEW_YEAR_BW ) },
   { .date = 25, .month = 11, .iconID = PBL_IF_COLOR_ELSE( RESOURCE_ID_ICON_CHRISTMAS_COLOUR, RESOURCE_ID_ICON_CHRISTMAS_BW ) }
