@@ -26,6 +26,24 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/Haloween Colour.png",
+                    "name": "ICON_HALOWEEN_COLOUR",
+                    "targetPlatforms": [
+                        "basalt",
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Haloween BW.png",
+                    "name": "ICON_HALOWEEN_BW",
+                    "targetPlatforms": [
+                        "aplite",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/New Year BW.png",
                     "name": "ICON_NEW_YEAR_BW",
                     "targetPlatforms": [
