@@ -91,9 +91,9 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_hand_highlight = s_gs_hour_hand_highlight,
       .s_min_hand = s_gs_minute_hand,
       .s_min_hand_highlight = s_gs_minute_hand_highlight,
-      .hour_hand_colour = GColorLightGray,
+      .hour_hand_colour = GColorDarkGray,
       .hour_hand_highlight_colour = GColorWhite,
-      .min_hand_colour = GColorLightGray,
+      .min_hand_colour = GColorDarkGray,
       .min_hand_highlight_colour = GColorWhite,
       .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
@@ -125,9 +125,9 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_hand_highlight = s_sbge001_hour_hand_highlight,
       .s_min_hand = s_sbge001_minute_hand,
       .s_min_hand_highlight = s_sbge001_minute_hand_highlight,
-      .hour_hand_colour = GColorLightGray,
+      .hour_hand_colour = GColorDarkGray,
       .hour_hand_highlight_colour = GColorWhite,
-      .min_hand_colour = GColorLightGray,
+      .min_hand_colour = GColorDarkGray,
       .min_hand_highlight_colour = GColorWhite,
       .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
