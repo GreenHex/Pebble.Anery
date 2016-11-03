@@ -112,7 +112,7 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS = {
 static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 25 },
-    { -8, 0 },
+    { 8, 0 },
     { 0, -78 },
   }
 };
@@ -295,9 +295,9 @@ static const GPathInfo GMT_HAND = {
 
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
-    { -4, -48 },
+    { -4, -47 },
     { 0, -56 },
-    { 4, -48 },
+    { 4, -47 },
   }
 };
 
