@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "global.h"
 #include "clock.h"
+#include "draw_utils.h"
 #include "chime.h"
 
 static Layer *window_layer = 0;
@@ -69,68 +70,6 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) do_chime( &tm_time );
 }
 
-static void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
-  // dot outline
-  graphics_context_set_stroke_color( pDP->ctx, pDP->dot_outline_color );
-  graphics_context_set_stroke_width( pDP->ctx, 1 );
-  graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius );
-  // hand outline
-  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_color );
-  graphics_context_set_stroke_width( pDP->ctx, pDP->hand_width + 2);
-  graphics_draw_line( pDP->ctx, pDP->from_pt, pDP->to_pt );
-  // hand
-  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_color );
-  graphics_context_set_stroke_width( pDP->ctx, pDP->hand_width );
-  graphics_draw_line( pDP->ctx, pDP->from_pt, pDP->to_pt );
-  // dot
-  graphics_context_set_fill_color( pDP->ctx, pDP->dot_color );
-  graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );
-  /*
-  // dot outline
-  graphics_context_set_stroke_color( pDP->ctx, GColorDarkGray );
-  graphics_context_set_stroke_width( pDP->ctx, 1 );
-  graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 2 );
-  */
-}
-
-static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
-  // for hour and minute hands
-  graphics_context_set_stroke_width( pGP->ctx, 1 );
-
-  // hour hand
-  gpath_rotate_to( pGP->s_hour_hand, pGP->hour_angle );
-  gpath_rotate_to( pGP->s_hour_hand_highlight, pGP->hour_angle );
-  gpath_move_to( pGP->s_hour_hand, pGP->center_pt );
-  gpath_move_to( pGP->s_hour_hand_highlight, pGP->center_pt );
-
-  graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand );
-  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand_highlight );
-  graphics_context_set_fill_color( pGP->ctx, COLOUR_HOUR_HAND );
-  graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
-  gpath_draw_outline( pGP->ctx, pGP->s_hour_hand );
-
-  // min hand
-  gpath_rotate_to( pGP->s_min_hand, pGP->min_angle );
-  gpath_rotate_to( pGP->s_min_hand_highlight, pGP->min_angle );
-  gpath_move_to( pGP->s_min_hand, pGP->center_pt );
-  gpath_move_to( pGP->s_min_hand_highlight, pGP->center_pt );
-
-  graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
-  gpath_draw_filled( pGP->ctx, pGP->s_min_hand );
-  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
-  gpath_draw_filled( pGP->ctx, pGP->s_min_hand_highlight );
-  graphics_context_set_fill_color( pGP->ctx, COLOUR_MIN_HAND );
-  graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
-  gpath_draw_outline( pGP->ctx, pGP->s_min_hand );
-
-  if ( ! ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds ) {
-    graphics_context_set_fill_color( pGP->ctx, GColorBlack );
-    graphics_fill_circle( pGP->ctx, pGP->center_pt, 2 );
-  } 
-}
-
 static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
   // uses global tm_time
 
@@ -152,7 +91,10 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_hand_highlight = s_gs_hour_hand_highlight,
       .s_min_hand = s_gs_minute_hand,
       .s_min_hand_highlight = s_gs_minute_hand_highlight,
-      .hand_outline_color = GColorBlack
+      .hour_hand_colour = COLOUR_HOUR_HAND,
+      .min_hand_colour = COLOUR_MIN_HAND,
+      .hand_outline_color = GColorBlack,
+      .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
     };
     draw_gpath_hands( &gpath_params );
   } else if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
@@ -181,7 +123,10 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_hand_highlight = s_sbge001_hour_hand_highlight,
       .s_min_hand = s_sbge001_minute_hand,
       .s_min_hand_highlight = s_sbge001_minute_hand_highlight,
-      .hand_outline_color = GColorDarkGray
+      .hour_hand_colour = COLOUR_HOUR_HAND,
+      .min_hand_colour = COLOUR_MIN_HAND,
+      .hand_outline_color = GColorBlack,
+      .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
     };
     draw_gpath_hands( &gpath_params );
   } else { // contemporary
@@ -340,23 +285,6 @@ static void cont_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_draw_circle( ctx, center_pt, CONT_BATT_GAUGE_INT_RADIUS );
   graphics_draw_circle( ctx, center_pt, CONT_BATT_GAUGE_EXT_RADIUS );
   */
-}
-
-static void draw_battery_hand( BATTERY_HAND_DRAW_PARAMS *pDP ) {
-  gpath_rotate_to( pDP->s_hand, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
-  gpath_move_to( pDP->s_hand, pDP->center_pt );
-  
-  graphics_context_set_fill_color( pDP->ctx, pDP->hand_colour );
-  gpath_draw_filled( pDP->ctx, pDP->s_hand );
-  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
-  gpath_draw_outline( pDP->ctx, pDP->s_hand );
-  
-  graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorKellyGreen : 
-                                  pDP->charge_state.charge_percent < 16 ? GColorDarkCandyAppleRed : GColorDarkGray );
-  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
-  graphics_context_set_stroke_width( pDP->ctx, 1 );
-  graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
-  graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius );
 }
 
 static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
