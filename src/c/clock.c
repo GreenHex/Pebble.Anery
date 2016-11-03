@@ -91,9 +91,11 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_hand_highlight = s_gs_hour_hand_highlight,
       .s_min_hand = s_gs_minute_hand,
       .s_min_hand_highlight = s_gs_minute_hand_highlight,
-      .hour_hand_colour = COLOUR_HOUR_HAND,
-      .min_hand_colour = COLOUR_MIN_HAND,
-      .hand_outline_color = GColorBlack,
+      .hour_hand_colour = GColorLightGray,
+      .hour_hand_highlight_colour = GColorWhite,
+      .min_hand_colour = GColorLightGray,
+      .min_hand_highlight_colour = GColorWhite,
+      .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
     };
     draw_gpath_hands( &gpath_params );
@@ -109,7 +111,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     // gmt inlay
     gpath_rotate_to( s_gmt_inlay, gmt_angle );
     gpath_move_to( s_gmt_inlay, center_pt );
-    graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorWhite, GColorLightGray ) );
+    graphics_context_set_fill_color( ctx, GColorWhite );
     gpath_draw_filled( ctx, s_gmt_inlay );
     // graphics_context_set_stroke_color( ctx, GColorWhite );
     // gpath_draw_outline( ctx, s_gmt_inlay );
@@ -123,9 +125,11 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .s_hour_hand_highlight = s_sbge001_hour_hand_highlight,
       .s_min_hand = s_sbge001_minute_hand,
       .s_min_hand_highlight = s_sbge001_minute_hand_highlight,
-      .hour_hand_colour = COLOUR_HOUR_HAND,
-      .min_hand_colour = COLOUR_MIN_HAND,
-      .hand_outline_color = GColorBlack,
+      .hour_hand_colour = GColorLightGray,
+      .hour_hand_highlight_colour = GColorWhite,
+      .min_hand_colour = GColorLightGray,
+      .min_hand_highlight_colour = GColorWhite,
+      .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
     };
     draw_gpath_hands( &gpath_params );
@@ -144,7 +148,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .to_pt = hour_hand,
       .hand_width = HOUR_HAND_WIDTH,
       .hand_color = COLOUR_HOUR_HAND,
-      .hand_outline_color = COLOUR_HANDS_OUTLINE,
+      .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .dot_radius = HOUR_CENTER_DOT_RADIUS,
       .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
@@ -164,7 +168,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .to_pt = min_hand,
       .hand_width = MIN_HAND_WIDTH,
       .hand_color = COLOUR_MIN_HAND,
-      .hand_outline_color = COLOUR_HANDS_OUTLINE,
+      .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .dot_radius = MIN_CENTER_DOT_RADIUS,
       .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE
@@ -192,7 +196,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
       .to_pt = sec_hand_tail,
       .hand_width = SEC_HAND_WIDTH,
       .hand_color = COLOUR_SEC_HAND,
-      .hand_outline_color = COLOUR_HANDS_OUTLINE,
+      .hand_outline_color = COLOUR_BG_BITMAP_BG,
       .dot_radius = SEC_CENTER_DOT_RADIUS,
       .dot_color = COLOUR_SEC_HAND, // COLOUR_DOT,
       .dot_outline_color = COLOUR_DOT_OUTLINE

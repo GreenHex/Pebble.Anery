@@ -52,11 +52,10 @@ void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   gpath_move_to( pGP->s_hour_hand, pGP->center_pt );
   gpath_move_to( pGP->s_hour_hand_highlight, pGP->center_pt );
 
-  graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand );
-  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
-  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand_highlight );
   graphics_context_set_fill_color( pGP->ctx, pGP->hour_hand_colour );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand );
+  graphics_context_set_fill_color( pGP->ctx, pGP->hour_hand_highlight_colour );
+  gpath_draw_filled( pGP->ctx, pGP->s_hour_hand_highlight );
   graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
   gpath_draw_outline( pGP->ctx, pGP->s_hour_hand );
 
@@ -66,12 +65,11 @@ void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   gpath_move_to( pGP->s_min_hand, pGP->center_pt );
   gpath_move_to( pGP->s_min_hand_highlight, pGP->center_pt );
 
-  graphics_context_set_fill_color( pGP->ctx, GColorLightGray );
+  graphics_context_set_fill_color( pGP->ctx, pGP->min_hand_colour );
   gpath_draw_filled( pGP->ctx, pGP->s_min_hand );
-  graphics_context_set_fill_color( pGP->ctx, GColorWhite );
+  graphics_context_set_fill_color( pGP->ctx, pGP->min_hand_highlight_colour );
   gpath_draw_filled( pGP->ctx, pGP->s_min_hand_highlight );
-  graphics_context_set_fill_color( pGP->ctx, pGP->hour_hand_colour );
-  graphics_context_set_stroke_color( pGP->ctx, pGP->hand_outline_color );
+  graphics_context_set_fill_color( pGP->ctx, pGP->hand_outline_color );
   gpath_draw_outline( pGP->ctx, pGP->s_min_hand );
 
   if ( ! ( pGP->show_seconds ) ) {

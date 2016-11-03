@@ -23,7 +23,9 @@ typedef struct {
   GPath *s_min_hand;
   GPath *s_min_hand_highlight;
   GColor hour_hand_colour;
+  GColor hour_hand_highlight_colour;
   GColor min_hand_colour;
+  GColor min_hand_highlight_colour;
   GColor hand_outline_color;
   bool show_seconds;
 } GPATH_HANDS_PARAMS;

@@ -66,16 +66,17 @@
 #endif
 ///////
 
+#define COLOUR_BG_BITMAP_BG     GColorBlack
 #define COLOUR_BATT_15          GColorRed
 #define COLOUR_BATT_95          GColorDarkGreen
 #define COLOUR_BATT_100         GColorMayGreen
 
-#define COLOUR_DOT              PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
-#define COLOUR_DOT_OUTLINE      PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
-#define COLOUR_HANDS_OUTLINE    PBL_IF_COLOR_ELSE( GColorBlack, GColorBlack )
+#define COLOUR_DOT              GColorWhite
+#define COLOUR_DOT_OUTLINE      GColorBlack
+#define COLOUR_HANDS_OUTLINE    GColorBlack
 #define COLOUR_HOUR_HAND        PBL_IF_COLOR_ELSE( GColorJaegerGreen /* GColorIslamicGreen */, GColorWhite )
 #define COLOUR_MIN_HAND         PBL_IF_COLOR_ELSE( GColorChromeYellow /* GColorOrange */, GColorWhite )
-#define COLOUR_SEC_HAND         PBL_IF_COLOR_ELSE( GColorWhite, GColorWhite )
+#define COLOUR_SEC_HAND         GColorWhite
 #define COLOUR_SEC_HAND_TIP     PBL_IF_COLOR_ELSE( GColorDarkCandyAppleRed, GColorWhite )
 
 ///////
@@ -163,20 +164,20 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS_HIGHLIGHT = {
 static const GPathInfo GMT_HAND = {
   7, (GPoint []) {
     { -4, 0 },
-    { -2, -60 },
-    { -8, -60 },
-    { 0, -80 },
-    { 8, -60 },
-    { 2, -60 },
+    { -2, -64 },
+    { -8, -64 },
+    { 0, -84 },
+    { 8, -64 },
+    { 2, -64 },
     { 4,  0 }
   }
 };
 
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
-    { -5, -63 },
-    { 0, -76 },
-    { 5, -63 },
+    { -5, -67 },
+    { 0, -80 },
+    { 5, -67 },
   }
 };
 
@@ -283,20 +284,20 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS_HIGHLIGHT = {
 static const GPathInfo GMT_HAND = {
   7, (GPoint []) {
     { -3, 0 },
-    { -2, -39 },
-    { -6, -39 },
-    { 0, -54 },
-    { 6, -39 },
-    { 2, -39 },
+    { -2, -44 },
+    { -6, -44 },
+    { 0, -59 },
+    { 6, -44 },
+    { 2, -44 },
     { 3,  0 }
   }
 };
 
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
-    { -4, -41 },
-    { 0, -51 },
-    { 4, -41 },
+    { -4, -48 },
+    { 0, -56 },
+    { 4, -48 },
   }
 };
 
