@@ -18,16 +18,6 @@
 #define HOUR_CENTER_DOT_RADIUS 13
 #define MIN_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 4 )
 #define SEC_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 8 )
-#define CONT_BATT_GAUGE_INT_RADIUS 16
-#define CONT_BATT_GAUGE_EXT_RADIUS 20
-#define CONT_BATT_GAUGE_SIZE ( CONT_BATT_GAUGE_EXT_RADIUS * 2 + 2 )
-#define SBGE001_BATT_GAUGE_LOC_X 33
-#define SBGE001_BATT_GAUGE_LOC_Y 132
-#define SBGE001_BATT_GAUGE_SIZE 71
-#define SBGE001_BATT_GAUGE_DOT_RADIUS 4
-#define MOSER_BATT_GAUGE_SIZE_W 55
-#define MOSER_BATT_GAUGE_SIZE_H 45
-#define MOSER_BATT_GAUGE_DOT_RADIUS 3
 ///////
 #else
 /////// 144 x 168
@@ -44,24 +34,11 @@
 #define HOUR_CENTER_DOT_RADIUS 10
 #define MIN_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 3 )
 #define SEC_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 6 )
-#define CONT_BATT_GAUGE_INT_RADIUS 12
-#define CONT_BATT_GAUGE_EXT_RADIUS 15
-#define CONT_BATT_GAUGE_SIZE ( CONT_BATT_GAUGE_EXT_RADIUS * 2 + 2 )
-#define SBGE001_BATT_GAUGE_LOC_X 24
-#define SBGE001_BATT_GAUGE_LOC_Y 95
-#define SBGE001_BATT_GAUGE_SIZE 51
-#define SBGE001_BATT_GAUGE_DOT_RADIUS 3
-#define MOSER_BATT_GAUGE_SIZE_W 40
-#define MOSER_BATT_GAUGE_SIZE_H 32
-#define MOSER_BATT_GAUGE_DOT_RADIUS 2
 ///////
 #endif
 ///////
 
 #define COLOUR_BG_BITMAP_BG     GColorBlack
-#define COLOUR_BATT_15          GColorRed
-#define COLOUR_BATT_95          GColorDarkGreen
-#define COLOUR_BATT_100         GColorMayGreen
 
 #define COLOUR_DOT              GColorWhite
 #define COLOUR_DOT_OUTLINE      GColorBlack
@@ -173,27 +150,9 @@ static const GPathInfo GMT_HAND_INLAY = {
   }
 };
 
-static const GPathInfo MOSER_BATT_GAUGE_HAND = {
-  5, (GPoint []) {
-    { -1, 0 },
-    { -2, -19 },
-    { 0, -38 },
-    { 2, -19 },
-    { 1, 0 }
-  }
-};
-
-static const GPathInfo SBGE001_BATT_GAUGE_HAND = {
-  3, (GPoint []) {
-    { -3, 0 },
-    { 0, -24 },
-    { 3, 0 }
-  }
-};
-
 ///////
 #else
-///////
+/////// 144 x 168
 
 static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
   4, (GPoint []) {
@@ -293,33 +252,9 @@ static const GPathInfo GMT_HAND_INLAY = {
   }
 };
 
-static const GPathInfo MOSER_BATT_GAUGE_HAND = {
-  5, (GPoint []) {
-    { -1, 0 },
-    { -2, -13 },
-    { 0, -27 },
-    { 2, -13 },
-    { 1, 0 }
-  }
-};
-
-static const GPathInfo SBGE001_BATT_GAUGE_HAND = {
-  3, (GPoint []) {
-    { -2, 0 },
-    { 0, -17 },
-    { 2, 0 }
-  }
-};
-
 ///////
 #endif
 ///////
-
-enum ANALOG_HANDS_STYLE {
-  STYLE_CONTEMPORARY = 0,
-  STYLE_SPIFFY_GS = 1,
-  STYLE_SBGE001 = 2
-};
 
 typedef struct {
   bool show_seconds;

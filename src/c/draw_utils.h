@@ -30,17 +30,5 @@ typedef struct {
   bool show_seconds;
 } GPATH_HANDS_PARAMS;
 
-typedef struct {
-  GContext *ctx;
-  uint32_t batt_angle;
-  GPoint center_pt;
-  GPath *s_hand;
-  GColor hand_colour;
-  GColor hand_outline_colour;
-  uint16_t dot_radius;
-  BatteryChargeState charge_state;
-} BATTERY_HAND_DRAW_PARAMS;
-
-void draw_battery_hand( BATTERY_HAND_DRAW_PARAMS *pDP );
 void draw_clock_hand( HAND_DRAW_PARAMS *pDP );
 void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP );

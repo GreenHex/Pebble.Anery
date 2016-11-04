@@ -1,23 +1,6 @@
 #include <pebble.h>
 #include "draw_utils.h"
 
-void draw_battery_hand( BATTERY_HAND_DRAW_PARAMS *pDP ) {
-  gpath_rotate_to( pDP->s_hand, DEG_TO_TRIGANGLE( pDP->batt_angle ) );
-  gpath_move_to( pDP->s_hand, pDP->center_pt );
-  
-  graphics_context_set_fill_color( pDP->ctx, pDP->hand_colour );
-  gpath_draw_filled( pDP->ctx, pDP->s_hand );
-  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
-  gpath_draw_outline( pDP->ctx, pDP->s_hand );
-  
-  graphics_context_set_fill_color( pDP->ctx, pDP->charge_state.is_charging ? GColorKellyGreen : 
-                                  pDP->charge_state.charge_percent < 16 ? GColorDarkCandyAppleRed : GColorDarkGray );
-  graphics_context_set_stroke_color( pDP->ctx, pDP->hand_outline_colour );
-  graphics_context_set_stroke_width( pDP->ctx, 1 );
-  graphics_fill_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius - 1 );	
-  graphics_draw_circle( pDP->ctx, pDP->center_pt, pDP->dot_radius );
-}
-
 void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
   // dot outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->dot_outline_color );
