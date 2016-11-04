@@ -1,6 +1,6 @@
 #pragma once
 #include <pebble.h>
-#include "config.h"
+#include "global.h"
 
 ///////
 #if PBL_DISPLAY_WIDTH == 200
@@ -18,10 +18,6 @@
 #define HOUR_CENTER_DOT_RADIUS 13
 #define MIN_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 4 )
 #define SEC_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 8 )
-#define DATE_WINDOW_WIDTH 34
-#define DATE_WINDOW_HEIGHT 28
-#define DATE_LEFT_GAP 2
-#define DATE_WINDOW_OUTLINE_THK 2
 #define CONT_BATT_GAUGE_INT_RADIUS 16
 #define CONT_BATT_GAUGE_EXT_RADIUS 20
 #define CONT_BATT_GAUGE_SIZE ( CONT_BATT_GAUGE_EXT_RADIUS * 2 + 2 )
@@ -48,10 +44,6 @@
 #define HOUR_CENTER_DOT_RADIUS 10
 #define MIN_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 3 )
 #define SEC_CENTER_DOT_RADIUS ( HOUR_CENTER_DOT_RADIUS - 6 )
-#define DATE_WINDOW_WIDTH 34
-#define DATE_WINDOW_HEIGHT 28
-#define DATE_LEFT_GAP 2
-#define DATE_WINDOW_OUTLINE_THK 2
 #define CONT_BATT_GAUGE_INT_RADIUS 12
 #define CONT_BATT_GAUGE_EXT_RADIUS 15
 #define CONT_BATT_GAUGE_SIZE ( CONT_BATT_GAUGE_EXT_RADIUS * 2 + 2 )
@@ -332,14 +324,6 @@ enum ANALOG_HANDS_STYLE {
 typedef struct {
   bool show_seconds;
 } ANALOG_LAYER_DATA;
-
-#ifdef GARNISH_HOLIDAYS
-typedef struct {
-  int date;
-  int month; // use normal month, not unix month
-  uint32_t iconID;
-} HOLIDAY;
-#endif
 
 bool is_X_in_range( int a, int b, int x );
 void draw_clock( void );
