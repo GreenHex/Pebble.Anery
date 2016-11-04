@@ -13,8 +13,13 @@ static GPath *s_sbge001_batt_gauge_hand = 0;
 
 static void batt_gauge_update_proc( BatteryChargeState state ) {
   charge_state = state;
-  layer_mark_dirty( bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ) );
-  layer_mark_dirty( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
+  if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
+    layer_mark_dirty( bitmap_layer_get_layer( moser_batt_gauge_bitmap_layer ) );
+  } else if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
+    layer_mark_dirty( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
+  } else {
+    layer_mark_dirty( bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ) );
+  }
 }
 
 static void draw_battery_hand( BATTERY_HAND_DRAW_PARAMS *pDP ) {

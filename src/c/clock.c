@@ -83,7 +83,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     draw_gpath_hands( &gpath_params );
   } else if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
     
-    // gmt hand
+    // gmt hands
     gpath_rotate_to( s_gmt_hand, gmt_angle );
     gpath_move_to( s_gmt_hand, center_pt );
     graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkCandyAppleRed, GColorWhite ) );
