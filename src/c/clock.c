@@ -21,8 +21,10 @@ static GPath *s_sbge001_hour_hand = 0;
 static GPath *s_sbge001_hour_hand_highlight = 0;
 static GPath *s_sbge001_minute_hand = 0;
 static GPath *s_sbge001_minute_hand_highlight = 0;
-// misc.
-static AppTimer *secs_display_apptimer = 0; 
+// misc
+#ifndef SECONDS_ALWAYS_ON
+static AppTimer *secs_display_apptimer = 0;
+#endif
 extern tm tm_time;
 extern tm tm_gmt;
 
@@ -36,7 +38,13 @@ void draw_clock( void ) {
   time_t now = time( NULL );
   tm_time = *localtime( &now ); // copy to global
   tm_gmt = *gmtime( &now ); // copy to global
-  if ( persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) ) accel_tap_service_subscribe( start_seconds_display );
+  #ifndef SECONDS_ALWAYS_ON
+  if ( persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) ) {
+    accel_tap_service_subscribe( start_seconds_display );
+  } else {
+    accel_tap_service_unsubscribe();
+  }
+  #endif
   layer_mark_dirty( analog_clock_layer );
 }
 
@@ -196,7 +204,8 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     #endif
   }
 }
-  
+
+#ifndef SECONDS_ALWAYS_ON
 static void stop_seconds_display( void* data ) { // after timer elapses
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer ); // just for fun.
   secs_display_apptimer = 0; // docs don't say if this is set to zero when timer expires. 
@@ -207,10 +216,6 @@ static void stop_seconds_display( void* data ) { // after timer elapses
 }
 
 static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
-  #ifdef SECONDS_ALWAYS_ON
-  return;
-  #endif
-  
   if ( ! persist_read_int( MESSAGE_KEY_ANALOG_SECONDS_DISPLAY_TIMEOUT_SECS ) ) return;
 
   tick_timer_service_subscribe( SECOND_UNIT, handle_clock_tick );
@@ -224,6 +229,7 @@ static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
                                                stop_seconds_display, 0 );
   }
 }
+#endif
 
 void clock_init( Window *window ) {
   window_layer = window_get_root_layer( window );
@@ -277,8 +283,10 @@ void clock_init( Window *window ) {
 }
 
 void clock_deinit( void ) {
+  #ifndef SECONDS_ALWAYS_ON
   if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer );
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
+  #endif
   tick_timer_service_unsubscribe();
   layer_destroy( analog_clock_layer );
   date_deinit();
