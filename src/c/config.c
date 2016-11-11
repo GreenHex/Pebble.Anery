@@ -4,7 +4,7 @@
 #include "clock.h"
 
 #define NUM_INT_MESSAGE_KEYS 6
-#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 2
+#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 3
 
 typedef struct {
   uint32_t keyID;
@@ -41,7 +41,8 @@ void handle_config_message( DictionaryIterator *iterator ) {
 
   BOOL_CHKBOX_KEY BOOL_CHKBOX_MESSAGE_KEYS[ NUM_BOOL_CHKBOX_MESSAGE_KEYS ] = {
     { .keyID = MESSAGE_KEY_CHIME_ON_DAYS, .numChkBoxItems = 7 },
-    { .keyID = MESSAGE_KEY_SHOW_BATTERY_GAUGE, .numChkBoxItems = 1}
+    { .keyID = MESSAGE_KEY_SHOW_DATE, .numChkBoxItems = 1 },
+    { .keyID = MESSAGE_KEY_SHOW_BATTERY_GAUGE, .numChkBoxItems = 1},
   };
 
   for ( int i = 0 ; i < NUM_BOOL_CHKBOX_MESSAGE_KEYS; i++ ) {

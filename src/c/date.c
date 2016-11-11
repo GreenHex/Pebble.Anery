@@ -16,6 +16,8 @@ extern tm tm_time;
 extern tm tm_gmt;
 
 static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_DATE ) ) return;
+  
   GRect date_window_bounds = layer_get_bounds( layer );
   date_window_bounds = grect_inset( date_window_bounds, GEdgeInsets( DATE_WINDOW_OUTLINE_THK ) );
   // APP_LOG( APP_LOG_LEVEL_INFO, "date_bitmap_layer_update_proc() (%d, %d, %d, %d)", date_window_bounds.origin.x, date_window_bounds.origin.y, date_window_bounds.size.w, date_window_bounds.size.h );
@@ -27,6 +29,8 @@ static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
 }
 
 static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_DATE ) ) return;
+  
   GRect date_window_bounds = layer_get_bounds( layer );
   // APP_LOG( APP_LOG_LEVEL_INFO, "date_text_layer_update_proc() (%d, %d, %d, %d)", date_window_bounds.origin.x, date_window_bounds.origin.y, date_window_bounds.size.w, date_window_bounds.size.h );
   graphics_context_set_fill_color( ctx, GColorWhite );

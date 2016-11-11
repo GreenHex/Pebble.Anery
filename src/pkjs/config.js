@@ -46,6 +46,12 @@ module.exports = [
       },
       {
         "type": "toggle",
+        "messageKey": "SHOW_DATE",
+        "label": "Show Date",
+        "defaultValue": true
+      },
+      {
+        "type": "toggle",
         "messageKey": "SHOW_BATTERY_GAUGE",
         "label": "Show Battery Status",
         "defaultValue": false
