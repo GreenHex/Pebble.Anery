@@ -75,52 +75,6 @@ static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   } 
 }
 
-void draw_cont_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
-  HAND_DRAW_PARAMS hand_params;
-  
-  GPoint hour_hand = (GPoint) {
-    .x = ( sin_lookup( pCP->hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.x,
-    .y = ( -cos_lookup( pCP->hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.y
-  };
-
-  // hour hand
-  hand_params = (HAND_DRAW_PARAMS) {
-    .ctx = pCP->ctx,
-    .center_pt = pCP->center_pt,
-    .from_pt = pCP->center_pt,
-    .to_pt = hour_hand,
-    .hand_width = HOUR_HAND_WIDTH,
-    .hand_color = COLOUR_HOUR_HAND,
-    .hand_outline_color = COLOUR_BG_BITMAP_BG,
-    .dot_radius = HOUR_CENTER_DOT_RADIUS,
-    .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
-    .dot_outline_color = COLOUR_DOT_OUTLINE
-  };
-  draw_clock_hand( &hand_params );
-
-  GPoint min_hand = (GPoint) {
-    .x = ( sin_lookup( pCP->min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.x,
-    .y = ( -cos_lookup( pCP->min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.y
-  };
-
-  // minute hand
-  hand_params = (HAND_DRAW_PARAMS) {
-    .ctx = pCP->ctx,
-    .center_pt = pCP->center_pt,
-    .from_pt = pCP->center_pt,
-    .to_pt = min_hand,
-    .hand_width = MIN_HAND_WIDTH,
-    .hand_color = COLOUR_MIN_HAND,
-    .hand_outline_color = COLOUR_BG_BITMAP_BG,
-    .dot_radius = MIN_CENTER_DOT_RADIUS,
-    .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
-    .dot_outline_color = COLOUR_DOT_OUTLINE
-  };
-  draw_clock_hand( &hand_params );
-  
-  draw_seconds( pCP );
-}
-
 void draw_spiffy_gs_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
   GPATH_HANDS_PARAMS gpath_params = (GPATH_HANDS_PARAMS) {
     .ctx = pCP->ctx,
@@ -176,6 +130,52 @@ void draw_sbge001_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
     .show_seconds = pCP->show_seconds
   };
   draw_gpath_hands( &gpath_params );
+  
+  draw_seconds( pCP );
+}
+
+void draw_cont_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
+  HAND_DRAW_PARAMS hand_params;
+  
+  GPoint hour_hand = (GPoint) {
+    .x = ( sin_lookup( pCP->hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.x,
+    .y = ( -cos_lookup( pCP->hour_angle ) * HOUR_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.y
+  };
+
+  // hour hand
+  hand_params = (HAND_DRAW_PARAMS) {
+    .ctx = pCP->ctx,
+    .center_pt = pCP->center_pt,
+    .from_pt = pCP->center_pt,
+    .to_pt = hour_hand,
+    .hand_width = HOUR_HAND_WIDTH,
+    .hand_color = COLOUR_HOUR_HAND,
+    .hand_outline_color = COLOUR_BG_BITMAP_BG,
+    .dot_radius = HOUR_CENTER_DOT_RADIUS,
+    .dot_color = COLOUR_HOUR_HAND, // COLOUR_DOT,
+    .dot_outline_color = COLOUR_DOT_OUTLINE
+  };
+  draw_clock_hand( &hand_params );
+
+  GPoint min_hand = (GPoint) {
+    .x = ( sin_lookup( pCP->min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.x,
+    .y = ( -cos_lookup( pCP->min_angle ) * MIN_HAND_LENGTH / TRIG_MAX_RATIO ) + pCP->center_pt.y
+  };
+
+  // minute hand
+  hand_params = (HAND_DRAW_PARAMS) {
+    .ctx = pCP->ctx,
+    .center_pt = pCP->center_pt,
+    .from_pt = pCP->center_pt,
+    .to_pt = min_hand,
+    .hand_width = MIN_HAND_WIDTH,
+    .hand_color = COLOUR_MIN_HAND,
+    .hand_outline_color = COLOUR_BG_BITMAP_BG,
+    .dot_radius = MIN_CENTER_DOT_RADIUS,
+    .dot_color = COLOUR_MIN_HAND, // COLOUR_DOT,
+    .dot_outline_color = COLOUR_DOT_OUTLINE
+  };
+  draw_clock_hand( &hand_params );
   
   draw_seconds( pCP );
 }

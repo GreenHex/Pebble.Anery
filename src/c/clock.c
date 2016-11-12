@@ -61,7 +61,7 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
     .hour_angle = ( TRIG_MAX_ANGLE * ( ( ( tm_time.tm_hour % 12 ) * 6 ) + ( tm_time.tm_min / 10 ) ) ) / ( 12 * 6 ),
     .min_angle = TRIG_MAX_ANGLE * tm_time.tm_min / 60,
     .sec_angle = TRIG_MAX_ANGLE * tm_time.tm_sec / 60,
-    .sec_tail_angle = TRIG_MAX_ANGLE * tm_time.tm_sec / 60 + ( TRIG_MAX_ANGLE / 2 ),
+    .sec_tail_angle = draw_clock_params.sec_angle + ( TRIG_MAX_ANGLE / 2 ),
     .show_seconds = ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds
   };
   
