@@ -4,7 +4,9 @@
 #include "draw_utils.h"
 #include "date.h"
 #include "battery.h"
+#ifdef PBL_HEALTH
 #include "health.h"
+#endif
 #include "chime.h"
 
 static Layer *window_layer = 0;
@@ -115,7 +117,9 @@ void clock_init( Window *window ) {
   // battery, date, health
   battery_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   date_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  #ifdef PBL_HEALTH
   health_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  #endif
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( ANALOG_LAYER_DATA ) );  
@@ -148,7 +152,9 @@ void clock_deinit( void ) {
   #endif
   tick_timer_service_unsubscribe();
   layer_destroy( analog_clock_layer );
+  #ifdef PBL_HEALTH
   health_deinit();
+  #endif
   date_deinit();
   battery_deinit();
   gpaths_deinit();

@@ -1,10 +1,12 @@
 #pragma once
 
+#ifdef PBL_HEALTH 
+
 #define HEALTH_WINDOW_POS_X 0
 #if PBL_DISPLAY_WIDTH == 200
 #define HEALTH_WINDOW_POS_Y 46
 #else
-#define HEALTH_WINDOW_POS_Y 30
+#define HEALTH_WINDOW_POS_Y 32
 #endif
 #define HEALTH_DIGIT_SIZE_W 16
 #define HEALTH_DIGIT_SIZE_H 20
@@ -21,3 +23,5 @@ typedef struct {
 
 void health_init( Layer *parent_layer );
 void health_deinit( void );
+
+#endif

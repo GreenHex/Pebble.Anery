@@ -58,9 +58,10 @@ module.exports = [
       },
       {
         "type": "toggle",
+        "capabilities": [ "HEALTH" ],
         "messageKey": "SHOW_HEALTH",
-        "label": "Show Steps",
-        "defaultValue": true
+        "label": "Show Distance Walked",
+        "defaultValue": false
       }
     ]
   },
