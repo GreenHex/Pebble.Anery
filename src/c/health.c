@@ -16,10 +16,10 @@ static void health_text_unit_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_HEALTH ) ) return;
   
   GRect health_unit_text_layer_bounds = layer_get_bounds( layer );
-  graphics_context_set_fill_color( ctx, GColorDarkGray );
+  graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorWhite ) );
   graphics_fill_rect( ctx, health_unit_text_layer_bounds, HEALTH_WINDOW_OUTLINE_THK, GCornersRight );
   
-  graphics_context_set_text_color( ctx, GColorWhite );
+  graphics_context_set_text_color( ctx, PBL_IF_COLOR_ELSE( GColorWhite, GColorBlack ) );
   health_unit_text_layer_bounds.origin.y -= HEALTH_UNIT_TXT_VERT_ADJ;
   graphics_draw_text( ctx, unit_str, fonts_get_system_font( FONT_KEY_GOTHIC_14 ), health_unit_text_layer_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );  
@@ -31,7 +31,7 @@ static void health_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
   static int dist = 0;
   
   GRect health_window_bounds = layer_get_bounds( layer );
-  graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorBlack ) );
+  graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorDarkGray ) );
   graphics_fill_rect( ctx, health_window_bounds, HEALTH_WINDOW_OUTLINE_THK, GCornersLeft | GCornerBottomRight );
   health_window_bounds = grect_inset( health_window_bounds, GEdgeInsets( HEALTH_WINDOW_OUTLINE_THK ) );
   graphics_context_set_fill_color( ctx, GColorLightGray );
@@ -91,7 +91,7 @@ void health_init( Layer *parent_layer ) {
                                              HEALTH_UNIT_SIZE_W, HEALTH_UNIT_SIZE_H );
   health_unit_text_layer = text_layer_create( health_unit_text_layer_frame );
   layer_set_update_proc( text_layer_get_layer( health_unit_text_layer ), health_text_unit_layer_update_proc );
-  layer_add_child( parent_layer, text_layer_get_layer( health_unit_text_layer ) );
+  layer_add_child( parent_layer, text_layer_get_layer( health_unit_text_layer ) ); // we use parent_layer as the health layer does not extend outside
 }
 
 void health_deinit( void ) {

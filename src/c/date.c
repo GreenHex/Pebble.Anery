@@ -18,7 +18,7 @@ static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_DATE ) ) return;
   
   GRect date_window_bounds = layer_get_bounds( layer );
-  graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorBlack ) );
+  graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorDarkGray ) );
   graphics_fill_rect( ctx, date_window_bounds, DATE_WINDOW_OUTLINE_THK, GCornersAll );
 
   date_window_bounds = grect_inset( date_window_bounds, GEdgeInsets( DATE_WINDOW_OUTLINE_THK ) );
@@ -56,7 +56,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
 void date_init( Layer *parent_layer ) {
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );
   // date bitmap layer
-  GRect date_window_frame = GRect( parent_layer_bounds.origin.x + parent_layer_bounds.size.w - DATE_WINDOW_WIDTH - PBL_IF_COLOR_ELSE( DATE_LEFT_GAP, DATE_LEFT_GAP - 2 ),
+  GRect date_window_frame = GRect( parent_layer_bounds.origin.x + parent_layer_bounds.size.w - DATE_WINDOW_WIDTH - DATE_LEFT_GAP,
                                   parent_layer_bounds.origin.y + ( ( parent_layer_bounds.size.h - DATE_WINDOW_HEIGHT ) / 2 ),
                                   DATE_WINDOW_WIDTH, DATE_WINDOW_HEIGHT );
   date_bitmap_layer = bitmap_layer_create( date_window_frame );
