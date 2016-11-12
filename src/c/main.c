@@ -1,8 +1,8 @@
 #include <pebble.h>
 #include "global.h"
 #include "clock.h"
-#include "config.h"
 #include "app_messaging.h"
+#include "health.h"
 
 static Window *window;
 

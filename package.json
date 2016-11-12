@@ -21,7 +21,8 @@
             "CHIME_ON_DAYS[7]",
             "CHIME_OFFSET",
             "SHOW_BATTERY_GAUGE",
-            "SHOW_DATE"
+            "SHOW_DATE",
+            "SHOW_HEALTH"
         ],
         "projectType": "native",
         "resources": {

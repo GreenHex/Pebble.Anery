@@ -4,6 +4,7 @@
 #include "draw_utils.h"
 #include "date.h"
 #include "battery.h"
+#include "health.h"
 #include "chime.h"
 
 static Layer *window_layer = 0;
@@ -103,17 +104,18 @@ static void start_seconds_display( AccelAxisType axis, int32_t direction ) {
 void clock_init( Window *window ) {
   window_layer = window_get_root_layer( window );
   GRect window_bounds = layer_get_bounds( window_layer );
-  GRect clock_layer_bounds = GRect( window_bounds.origin.x + CLOCK_POS_X, window_bounds.origin.y + CLOCK_POS_Y, 
+  GRect clock_layer_frame = GRect( window_bounds.origin.x + CLOCK_POS_X, window_bounds.origin.y + CLOCK_POS_Y, 
                                    window_bounds.size.w - CLOCK_POS_X, window_bounds.size.h - CLOCK_POS_Y );
   // background bitmap
   analog_clock_bitmap = gbitmap_create_with_resource( RESOURCE_ID_ANALOG_EMERY_FULL_SLIM );
-  analog_clock_bitmap_layer = bitmap_layer_create( clock_layer_bounds );
+  analog_clock_bitmap_layer = bitmap_layer_create( clock_layer_frame );
   bitmap_layer_set_bitmap( analog_clock_bitmap_layer, analog_clock_bitmap );
   layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
-  // battery and date
+  // battery, date, health
   battery_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   date_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  health_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
                                               sizeof( ANALOG_LAYER_DATA ) );  
@@ -146,6 +148,7 @@ void clock_deinit( void ) {
   #endif
   tick_timer_service_unsubscribe();
   layer_destroy( analog_clock_layer );
+  health_deinit();
   date_deinit();
   battery_deinit();
   gpaths_deinit();

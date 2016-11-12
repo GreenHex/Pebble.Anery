@@ -55,6 +55,12 @@ module.exports = [
         "messageKey": "SHOW_BATTERY_GAUGE",
         "label": "Show Battery Status",
         "defaultValue": false
+      },
+      {
+        "type": "toggle",
+        "messageKey": "SHOW_HEALTH",
+        "label": "Show Steps",
+        "defaultValue": true
       }
     ]
   },

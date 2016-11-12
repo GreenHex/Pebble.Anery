@@ -2,10 +2,11 @@
 #include <pebble.h>
 #include "global.h"
 
-#define DATE_WINDOW_WIDTH 34
-#define DATE_WINDOW_HEIGHT 28
+#define DATE_WINDOW_WIDTH 32
+#define DATE_WINDOW_HEIGHT 26
 #define DATE_LEFT_GAP 2
-#define DATE_WINDOW_OUTLINE_THK 2
+#define DATE_WINDOW_OUTLINE_THK 3
+#define DATE_TXT_VERT_ADJ 4
 
 #ifdef GARNISH_HOLIDAYS
 typedef struct {
