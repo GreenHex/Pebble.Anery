@@ -13,7 +13,6 @@ HOLIDAY holidays[ NUM_HOLIDAYS ] = {
 #endif
 
 extern tm tm_time;
-extern tm tm_gmt;
 
 static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_DATE ) ) return;
