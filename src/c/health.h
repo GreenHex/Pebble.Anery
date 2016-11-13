@@ -4,7 +4,7 @@
 
 #define HEALTH_WINDOW_POS_X 0
 #if PBL_DISPLAY_WIDTH == 200
-#define HEALTH_WINDOW_POS_Y 46
+#define HEALTH_WINDOW_POS_Y 50
 #else
 #define HEALTH_WINDOW_POS_Y 30
 #endif

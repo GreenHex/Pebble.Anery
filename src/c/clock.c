@@ -6,6 +6,7 @@
 #include "battery.h"
 #ifdef PBL_HEALTH
 #include "health.h"
+#include "heart.h"
 #endif
 #include "chime.h"
 
@@ -119,6 +120,7 @@ void clock_init( Window *window ) {
   date_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   #ifdef PBL_HEALTH
   health_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  heart_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   #endif
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
@@ -153,6 +155,7 @@ void clock_deinit( void ) {
   tick_timer_service_unsubscribe();
   layer_destroy( analog_clock_layer );
   #ifdef PBL_HEALTH
+  heart_deinit();
   health_deinit();
   #endif
   date_deinit();

@@ -123,9 +123,9 @@ void draw_sbge001_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
     .s_min_hand = s_sbge001_minute_hand,
     .s_min_hand_highlight = s_sbge001_minute_hand_highlight,
     .hour_hand_colour = GColorDarkGray,
-    .hour_hand_highlight_colour = GColorLightGray,
+    .hour_hand_highlight_colour = GColorWhite,
     .min_hand_colour = GColorDarkGray,
-    .min_hand_highlight_colour = GColorLightGray,
+    .min_hand_highlight_colour = GColorWhite,
     .hand_outline_color = COLOUR_BG_BITMAP_BG,
     .show_seconds = pCP->show_seconds
   };

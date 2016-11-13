@@ -29,6 +29,17 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/Heart.png",
+                    "name": "ICON_HEART",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery"
+                    ],
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/Haloween.png",
                     "name": "ICON_HALOWEEN",
                     "targetPlatforms": [
@@ -120,5 +131,5 @@
             "watchface": true
         }
     },
-    "version": "1.14.0"
+    "version": "1.15.0"
 }

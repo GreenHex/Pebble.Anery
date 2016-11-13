@@ -95,10 +95,10 @@ void health_init( Layer *parent_layer ) {
 }
 
 void health_deinit( void ) {
-  text_layer_destroy( health_unit_text_layer );
+  if ( health_unit_text_layer ) text_layer_destroy( health_unit_text_layer );
   bitmap_layer_destroy( health_bitmap_layer );
   for ( int i = 0 ; i < HEALTH_NUMBER_OF_DIGITS ; i++ ) {
-    layer_destroy( health_digit_layer[i] );
+    if ( health_digit_layer[i] ) layer_destroy( health_digit_layer[i] );
   }
 }
 
