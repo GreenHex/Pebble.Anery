@@ -4,12 +4,12 @@
 
 #pragma once
 
-enum CMD_TYPE {
-  CMD_UNDEFINED = 0,
-  CMD_CONFIG = 1,
-  CMD_WEATHER = 2,
+enum REQUEST_TYPE {
+  REQUEST_UNDEFINED = 0,
+  REQUEST_CONFIG = 1,
+  REQUEST_WEATHER = 2,
 };
 
 void messaging_init( void );
 void messaging_deinit( void );
-void send_request( enum CMD_TYPE requestType );
+void send_request( enum REQUEST_TYPE requestType );

@@ -10,7 +10,7 @@
 #include "weather.h"
 #endif
 
-void send_request( enum CMD_TYPE requestType ) {
+void send_request( enum REQUEST_TYPE requestType ) {
   DictionaryIterator *out_iter;
 
   if ( !requestType ) return;
@@ -19,7 +19,7 @@ void send_request( enum CMD_TYPE requestType ) {
 
   AppMessageResult result = app_message_outbox_begin( &out_iter );
   if( result == APP_MSG_OK ) {
-    dict_write_int( out_iter, MESSAGE_KEY_REQUEST, &requestType, sizeof( enum CMD_TYPE ), true );
+    dict_write_int( out_iter, MESSAGE_KEY_REQUEST, &requestType, sizeof( enum REQUEST_TYPE ), true );
     dict_write_end( out_iter );
     result = app_message_outbox_send();
     if( result != APP_MSG_OK ) {

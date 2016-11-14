@@ -9,14 +9,14 @@ var clay = new Clay( clayConfig, clayManipulator, { autoHandleEvents: false } );
 var MESSAGE_KEYS = require( 'message_keys' );
 // var COLOURS = require( './pebble_colours' );
 
-var DEBUG = 0;
+var DEBUG = 1;
 
-var CMD_TYPES = {
-  CMD_UNDEFINED : 0,
-  CMD_CONFIG : 1,
-  CMD_WEATHER : 2
+var REQUEST_TYPES = {
+  REQUEST_UNDEFINED : 0,
+  REQUEST_CONFIG : 1,
+  REQUEST_WEATHER : 2
 };
-Object.freeze( CMD_TYPES );
+Object.freeze( REQUEST_TYPES );
 
 // clay should be able to give these, but settings are stored locally to enable sending configuration settings on call.
 // But need to hook into clay, to get rid of all this.
@@ -138,7 +138,7 @@ function sendConfig() {
 }
 
 // Listen for when the watchface is opened
-Pebble.addEventListener('ready', 
+Pebble.addEventListener( 'ready', 
                         function(e) {
                           if (DEBUG) console.log( "index.js: addEventListener( ready ): PebbleKit JS ready." );
                           sendConfig();
@@ -150,9 +150,7 @@ Pebble.addEventListener( 'appmessage',
                           if (DEBUG) console.log( "index.js: addEventListener( appmessage ): AppMessage received: " + JSON.stringify( e.payload ) );
                           var dict = e.payload;
                           if( dict.REQUEST ) {
-                            if( dict.REQUEST ) {
-                              [ sendConfig, getWeather ][ dict.REQUEST - 1 ]();
-                            }
+                            [ sendConfig, getWeather ][ dict.REQUEST - 1 ]();
                           }
                         });
 

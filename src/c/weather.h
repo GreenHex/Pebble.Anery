@@ -17,8 +17,13 @@
 #define WEATHER_WINDOW_SIZE_H 28
 #define WEATHER_WINDOW_OUTLINE_THK 2
 #define WEATHER_TEXT_VERT_ADJ 4
-#define WEATHER_ICON_SIZE_W 13
-#define WEATHER_ICON_SIZE_H 12
+#define WEATHER_ICON_SIZE_W 25
+#define WEATHER_ICON_SIZE_H 25
+
+typedef struct {
+  char temp_str[8];
+  uint32_t icon_id;
+} WEATHER_DATA;
 
 void clear_weather( void );
 void show_weather( Tuple *tuple_ptr, DictionaryIterator *iterator );

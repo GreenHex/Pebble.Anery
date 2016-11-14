@@ -50,6 +50,7 @@ void draw_clock( void ) {
   }
   #endif
   layer_mark_dirty( analog_clock_layer );
+  get_weather( &tm_time, true );
 }
 
 static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
@@ -58,7 +59,8 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   tm_gmt = *gmtime( &now ); // copy to global
   
   // if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: handle_clock_tick(): %d:%d:%d", tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec );
-
+  if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) get_weather( &tm_time, false );
+  
   layer_mark_dirty( analog_clock_layer );
   
   if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) do_chime( &tm_time );

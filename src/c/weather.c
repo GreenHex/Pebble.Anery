@@ -14,21 +14,23 @@
 static BitmapLayer *weather_bitmap_layer = 0;
 static TextLayer *weather_text_layer = 0;
 static BitmapLayer *weather_icon_bitmap_layer = 0;
+static WEATHER_DATA weather_data;
 
 void show_weather( Tuple *tuple_ptr, DictionaryIterator *iterator ) {
-  static char buff[8] = "";
-  Tuple* weather_icon_id = ( iterator ) ? dict_find( iterator, MESSAGE_KEY_WEATHER_ICON_ID ) : 0;
+  Tuple* tuple_weather_icon_id = ( iterator ) ? dict_find( iterator, MESSAGE_KEY_WEATHER_ICON_ID ) : 0;
   
   if ( tuple_ptr ) {
-    if ( weather_icon_id ) {
-      
+    if ( tuple_weather_icon_id ) {
+      weather_data.icon_id = RESOURCE_ID_ICON_HEAVY_SNOW; // tuple_ptr->value->uint32;
     }
-    snprintf( buff, sizeof( buff ), "%s", tuple_ptr->value->cstring );
+    snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", tuple_ptr->value->cstring );
   }
+  layer_mark_dirty( bitmap_layer_get_layer( weather_bitmap_layer ) );
 }
 
 void clear_weather( void ) {
-
+  weather_data.icon_id = 0;
+  weather_data.temp_str[0] = 0;
 }
 
 void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
@@ -50,19 +52,44 @@ void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
 
   if ( ( ! ignoreUpdateInterval ) && ( tick_time->tm_min % ( persist_read_int( MESSAGE_KEY_WEATHER_UPDATE_INTERVAL ) ) ) ) return;
 
-  send_request( CMD_WEATHER );
+  send_request( REQUEST_WEATHER );
 }
 
 void weather_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
-  if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;  
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
+  if ( ! strlen( weather_data.temp_str ) ) return;
+  
+  GRect weather_window_bounds = layer_get_bounds( layer );
+  
+  // graphics_context_set_fill_color( ctx, GColorBlack );
+  // graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
+  weather_window_bounds = grect_inset( weather_window_bounds, GEdgeInsets( WEATHER_WINDOW_OUTLINE_THK ) );
+  graphics_context_set_fill_color( ctx, GColorBlack );
+  graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
 }
 
 void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
+  if ( ! strlen( weather_data.temp_str ) ) return;
+  
+  GRect weather_text_layer_bounds = layer_get_bounds( layer );
+  weather_text_layer_bounds.origin.y -= WEATHER_TEXT_VERT_ADJ;
+  graphics_context_set_text_color( ctx, GColorLightGray );
+  graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_DROID_SERIF_28_BOLD ), weather_text_layer_bounds,
+                     GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
 void weather_icon_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
-  if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;  
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
+  if( ! weather_data.icon_id ) return;
+  
+  GRect weather_icon_layer_bounds = layer_get_bounds( layer );
+  // graphics_context_set_fill_color( ctx, GColorWhite );
+  // graphics_fill_rect( ctx, weather_icon_layer_bounds, 0, GCornersAll );
+  static GDrawCommandImage *weather_icon = 0; 
+  weather_icon = gdraw_command_image_create_with_resource( weather_data.icon_id );
+  gdraw_command_image_draw( ctx, weather_icon, GPoint( 0, 0 ) );
+  if ( weather_icon ) gdraw_command_image_destroy( weather_icon );
 }
 
 
