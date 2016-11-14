@@ -1,3 +1,7 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
+
 var PBL_64_COLOURS = {
   GColorClear: 0x000000,
   GColorBlack: 0x000000,
@@ -68,4 +72,3 @@ var PBL_64_COLOURS = {
 Object.freeze( PBL_64_COLOURS );
 
 module.exports.PBL_64_COLOURS = PBL_64_COLOURS;
-

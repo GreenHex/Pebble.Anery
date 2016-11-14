@@ -1,17 +1,20 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
+
 var Clay = require( 'pebble-clay' );
 var clayConfig = require( './config' );
 var clayManipulator = require( './config_manipulator' );
 var clay = new Clay( clayConfig, clayManipulator, { autoHandleEvents: false } );
 var MESSAGE_KEYS = require( 'message_keys' );
-// var COLOURS = require( './colours' );
+// var COLOURS = require( './pebble_colours' );
 
 var DEBUG = 0;
 
 var CMD_TYPES = {
   CMD_UNDEFINED : 0,
-  CMD_WEATHER : 1,
-  CMD_STOCKS : 2,
-  CMD_CONFIG : 3
+  CMD_CONFIG : 1,
+  CMD_WEATHER : 2
 };
 Object.freeze( CMD_TYPES );
 
@@ -32,7 +35,87 @@ var local_config_settings = [
   MESSAGE_KEYS.CHIME_ON_DAYS + 3, MESSAGE_KEYS.CHIME_ON_DAYS + 4, MESSAGE_KEYS.CHIME_ON_DAYS + 5,
   MESSAGE_KEYS.CHIME_ON_DAYS + 6,
   MESSAGE_KEYS.CHIME_OFFSET,
+  // weather
+  MESSAGE_KEYS.SHOW_WEATHER,
+  MESSAGE_KEYS.WEATHER_UPDATE_INTERVAL,
+  MESSAGE_KEYS.WEATHER_UPDATE_START_TIME, 
+  MESSAGE_KEYS.WEATHER_UPDATE_END_TIME,
+  MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS, MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS + 1, MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS + 2,
+  MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS + 3, MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS + 4, MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS + 5,
+  MESSAGE_KEYS.WEATHER_UPDATE_ON_DAYS + 6,
+  // misc
+  MESSAGE_KEYS.WEATHER_TEMPERATURE_UNITS,
+  MESSAGE_KEYS.WEATHER_OWM_API_KEY
 ];
+
+
+var xhrRequest = function ( url, type, callback ) {
+  var xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    callback( this.responseText );
+  };
+  xhr.open( type, url );
+  xhr.send();
+};
+
+function locationSuccess( pos ) {
+  // Construct URL
+  var url = "http://api.openweathermap.org/data/2.5/weather?lat=" +
+      pos.coords.latitude + "&lon=" + pos.coords.longitude + '&appid=' + localStorage.getItem( MESSAGE_KEYS.OWM_API_KEY );
+
+  if (DEBUG) console.log( "index.js: locationSuccess(): " + url );
+
+  // Send request to OpenWeatherMap
+  xhrRequest( url, 'GET', 
+             function( responseText ) {
+
+               var json;
+
+               try {
+                 json = JSON.parse( responseText );
+               } catch ( err ) {
+                 if (DEBUG) console.log( 'index.js: locationSuccess(): Error parsing responseText, invalid JSON data.' );
+                 return;
+               }
+
+               if (DEBUG) console.log( "index.js: locationSuccess(): " + JSON.stringify(json) );
+
+               var weather_temperature = "...";
+               if ( json.cod == 200 ) { // success
+
+                 weather_temperature = [  Math.round( json.main.temp - 273.15 ) + "°C",
+                            Math.round( json.main.temp * 9/5 - 459.67 ) + "°F",
+                            Math.round( json.main.temp ) + " K"
+                           ][ localStorage.getItem( MESSAGE_KEYS.TEMPERATURE_UNITS ) ];
+
+               } else { // error
+                 if (DEBUG) console.log( 'index.js: locationSuccess(): XMLHttpRequest returned error: ' + json.cod + ": " + json.message );
+                 weather_temperature  = json.cod + ": " + json.message;
+               }
+
+               var dictionary = {
+                 "WEATHER_TEMPERATURE_TXT": weather_temperature,
+                 "WEATHER_ICON_ID": 0
+               };
+
+               sendDictionaryToPebble( dictionary );
+             });
+}
+
+function locationError( err ) {
+  if (DEBUG) console.log( "index.js: Error requesting location!" );
+}
+
+function getWeather() {
+  if (DEBUG) console.log( "index.js: getWeather()." );
+  if ( !localStorage.getItem( MESSAGE_KEYS.OWM_API_KEY ) ) return;
+
+  navigator.geolocation.getCurrentPosition(
+    locationSuccess,
+    locationError,
+    { timeout: 15000, maximumAge: 60000 }
+  );
+}
 
 function sendDictionaryToPebble( dictionary ) {
   Pebble.sendAppMessage( dictionary,
@@ -67,7 +150,9 @@ Pebble.addEventListener( 'appmessage',
                           if (DEBUG) console.log( "index.js: addEventListener( appmessage ): AppMessage received: " + JSON.stringify( e.payload ) );
                           var dict = e.payload;
                           if( dict.REQUEST ) {
-                            sendConfig();
+                            if( dict.REQUEST ) {
+                              [ sendConfig, getWeather ][ dict.REQUEST - 1 ]();
+                            }
                           }
                         });
 
@@ -85,7 +170,7 @@ Pebble.addEventListener( 'webviewclosed', function( e ) {
   // save for later...
   local_config_settings.map( function( item ) {
     localStorage.setItem( item, dictionary[ item ] );
-    // if (DEBUG) console.log( "index.js/clay: " + item + " " + localStorage.getItem( item ) );
+    if (DEBUG) console.log( "index.js/clay: " + item + " " + localStorage.getItem( item ) );
   });
   sendConfig();
 });

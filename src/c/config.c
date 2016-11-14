@@ -1,10 +1,14 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
+
 #include <pebble.h>
 #include "global.h"
 #include "config.h"
 #include "clock.h"
 
-#define NUM_INT_MESSAGE_KEYS 6
-#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 4
+#define NUM_INT_MESSAGE_KEYS 9
+#define NUM_BOOL_CHKBOX_MESSAGE_KEYS 6
 
 typedef struct {
   uint32_t keyID;
@@ -28,7 +32,11 @@ void handle_config_message( DictionaryIterator *iterator ) {
     MESSAGE_KEY_CHIME_INTERVAL,
     MESSAGE_KEY_CHIME_START_TIME,
     MESSAGE_KEY_CHIME_END_TIME,
-    MESSAGE_KEY_CHIME_OFFSET
+    MESSAGE_KEY_CHIME_OFFSET,
+    // Weather
+    MESSAGE_KEY_WEATHER_UPDATE_INTERVAL,
+    MESSAGE_KEY_WEATHER_UPDATE_START_TIME,
+    MESSAGE_KEY_WEATHER_UPDATE_END_TIME,
   };
 
   Tuple *p_tuple = 0;
@@ -43,7 +51,9 @@ void handle_config_message( DictionaryIterator *iterator ) {
     { .keyID = MESSAGE_KEY_CHIME_ON_DAYS, .numChkBoxItems = 7 },
     { .keyID = MESSAGE_KEY_SHOW_DATE, .numChkBoxItems = 1 },
     { .keyID = MESSAGE_KEY_SHOW_BATTERY_GAUGE, .numChkBoxItems = 1 },
-    { .keyID = MESSAGE_KEY_SHOW_HEALTH, .numChkBoxItems = 1 }
+    { .keyID = MESSAGE_KEY_SHOW_HEALTH, .numChkBoxItems = 1 },
+    { .keyID = MESSAGE_KEY_SHOW_WEATHER, .numChkBoxItems = 1 },
+    { .keyID = MESSAGE_KEY_WEATHER_UPDATE_ON_DAYS, .numChkBoxItems = 7 },
   };
 
   for ( int i = 0 ; i < NUM_BOOL_CHKBOX_MESSAGE_KEYS; i++ ) {

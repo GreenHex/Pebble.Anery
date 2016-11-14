@@ -23,7 +23,17 @@
             "CHIME_OFFSET",
             "SHOW_BATTERY_GAUGE",
             "SHOW_DATE",
-            "SHOW_HEALTH"
+            "SHOW_HEALTH",
+            "SHOW_WEATHER",
+            "WEATHER_UPDATE_INTERVAL",
+            "WEATHER_UPDATE_START_TIME",
+            "WEATHER_UPDATE_END_TIME",
+            "WEATHER_UPDATE_ON_DAYS[7]",
+            "WEATHER_TEMPERATURE_UNITS",
+            "WEATHER_OWM_API_KEY",
+            "WEATHER_TEMPERATURE_TXT",
+            "WEATHER_ICON_ID",
+            "REQUEST"
         ],
         "projectType": "native",
         "resources": {

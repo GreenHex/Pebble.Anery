@@ -1,5 +1,11 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
 #pragma once
 
+#include <pebble.h>
+
+#ifdef INCLUDE_HR
 #ifdef PBL_HEALTH
 
 #define HR_WINDOW_POS_X 22
@@ -18,4 +24,5 @@
 void heart_init( Layer* parent_layer );
 void heart_deinit( void );
 
+#endif
 #endif

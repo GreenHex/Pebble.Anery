@@ -1,3 +1,7 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
+
 #include <pebble.h>
 #include "battery.h"
 

@@ -1,9 +1,15 @@
-#ifdef PBL_HEALTH
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
 
 #include <pebble.h>
-#include "heart.h"
 #include "global.h"
 
+#ifdef INCLUDE_HR
+#ifdef PBL_HEALTH
+
+#include "heart.h"
+  
 static BitmapLayer *hr_bitmap_layer = 0;
 static TextLayer *hr_text_layer = 0;
 static BitmapLayer *hr_icon_bitmap_layer = 0;
@@ -88,4 +94,5 @@ void heart_deinit( void ) {
   if ( hr_bitmap_layer ) bitmap_layer_destroy( hr_bitmap_layer );
 }
 
+#endif
 #endif

@@ -1,12 +1,22 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
+
 #include <pebble.h>
 #include "global.h"
 #include "clock.h"
 #include "draw_utils.h"
 #include "date.h"
 #include "battery.h"
+
 #ifdef PBL_HEALTH
 #include "health.h"
+#ifdef INCLUDE_HR
 #include "heart.h"
+#endif
+#endif
+#ifdef INCLUDE_WEATHER
+#include "weather.h"
 #endif
 #include "chime.h"
 
@@ -115,12 +125,17 @@ void clock_init( Window *window ) {
   bitmap_layer_set_bitmap( analog_clock_bitmap_layer, analog_clock_bitmap );
   layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
-  // battery, date, health
+  // battery, date, health, weather
   battery_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   date_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   #ifdef PBL_HEALTH
   health_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  #ifdef INCLUDE_HR
   heart_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  #endif
+  #endif
+  #ifdef INCLUDE_WEATHER
+  weather_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
   #endif
   // clock layer
   analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
@@ -154,8 +169,13 @@ void clock_deinit( void ) {
   #endif
   tick_timer_service_unsubscribe();
   layer_destroy( analog_clock_layer );
+  #ifdef INCLUDE_WEATHER
+  weather_deinit();
+  #endif
   #ifdef PBL_HEALTH
+  #ifdef INCLUDE_HR
   heart_deinit();
+  #endif
   health_deinit();
   #endif
   date_deinit();

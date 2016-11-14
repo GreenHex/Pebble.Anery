@@ -1,10 +1,13 @@
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
+
 #pragma once
 
 enum CMD_TYPE {
   CMD_UNDEFINED = 0,
-  CMD_WEATHER = 1,
-  CMD_STOCKS = 2,
-  CMD_CONFIG = 3
+  CMD_CONFIG = 1,
+  CMD_WEATHER = 2,
 };
 
 void messaging_init( void );

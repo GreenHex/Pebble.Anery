@@ -1,8 +1,13 @@
-#ifdef PBL_HEALTH
+//
+// Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
+//
 
 #include <pebble.h>
-#include "health.h"
 #include "global.h"
+
+#ifdef PBL_HEALTH
+
+#include "health.h"
 
 static BitmapLayer *health_bitmap_layer = 0;
 static Layer *health_digit_layer[ HEALTH_NUMBER_OF_DIGITS ];
@@ -96,7 +101,7 @@ void health_init( Layer *parent_layer ) {
 
 void health_deinit( void ) {
   if ( health_unit_text_layer ) text_layer_destroy( health_unit_text_layer );
-  bitmap_layer_destroy( health_bitmap_layer );
+  if ( health_bitmap_layer ) bitmap_layer_destroy( health_bitmap_layer );
   for ( int i = 0 ; i < HEALTH_NUMBER_OF_DIGITS ; i++ ) {
     if ( health_digit_layer[i] ) layer_destroy( health_digit_layer[i] );
   }
