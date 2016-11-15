@@ -4,20 +4,20 @@
 
 #include <pebble.h>
 #include "global.h"
-#include "clock.h"
 #include "app_messaging.h"
+#include "clock.h"
 #include "health.h"
 
 static Window *window;
 
 static void window_load( Window *window ) { // order is important as layers are drawn over each other.
-  clock_init( window );
   messaging_init();
+  clock_init( window );
 }
 
 static void window_unload( Window *window ) {
-  messaging_deinit();
   clock_deinit();
+  messaging_deinit();
 }
 
 static void init( void ) {

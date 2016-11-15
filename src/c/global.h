@@ -5,7 +5,7 @@
 #pragma once
 #include <pebble.h>
 
-#define DEBUG 1
+#define DEBUG 0
 // #define SECONDS_ALWAYS_ON
 // #define INCLUDE_HR
 #define INCLUDE_WEATHER

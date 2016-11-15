@@ -16,14 +16,37 @@ static TextLayer *weather_text_layer = 0;
 static BitmapLayer *weather_icon_bitmap_layer = 0;
 static WEATHER_DATA weather_data;
 
-void show_weather( Tuple *tuple_ptr, DictionaryIterator *iterator ) {
-  Tuple* tuple_weather_icon_id = ( iterator ) ? dict_find( iterator, MESSAGE_KEY_WEATHER_ICON_ID ) : 0;
+uint32_t get_icon_id( int id ) {
+  switch ( id ) {
+    case 1:
+      return RESOURCE_ID_ICON_CLOUDY_DAY;
+    case 2:
+      return RESOURCE_ID_ICON_HEAVY_RAIN;
+    case 3:
+      return RESOURCE_ID_ICON_HEAVY_SNOW;
+    case 4:
+      return RESOURCE_ID_ICON_LIGHT_RAIN;
+    case 5:
+      return RESOURCE_ID_ICON_LIGHT_SNOW;
+    case 6:
+      return RESOURCE_ID_ICON_PARTLY_CLOUDY;
+    case 7:
+      return RESOURCE_ID_ICON_RAINING_AND_SNOWING;
+    case 8:
+      return RESOURCE_ID_ICON_RAINING_AND_SNOWING;
+    default:
+      return 0;
+  }
+}
+
+void show_weather( Tuple *tuple_ptr_temp, DictionaryIterator *iterator ) {
+  Tuple* tuple_ptr_weather_icon_id = ( iterator ) ? dict_find( iterator, MESSAGE_KEY_WEATHER_ICON_ID ) : 0;
   
-  if ( tuple_ptr ) {
-    if ( tuple_weather_icon_id ) {
-      weather_data.icon_id = RESOURCE_ID_ICON_HEAVY_SNOW; // tuple_ptr->value->uint32;
+  if ( tuple_ptr_temp ) {
+    if ( tuple_ptr_weather_icon_id ) {
+      weather_data.icon_id = get_icon_id( tuple_ptr_weather_icon_id->value->uint8 );
     }
-    snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", tuple_ptr->value->cstring );
+    snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", tuple_ptr_temp->value->cstring );
   }
   layer_mark_dirty( bitmap_layer_get_layer( weather_bitmap_layer ) );
 }
@@ -34,11 +57,14 @@ void clear_weather( void ) {
 }
 
 void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
-  if ( ! ( persist_read_int( MESSAGE_KEY_SHOW_WEATHER ) ) ) {
+  
+  if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "weather.c: get_weather(): (%02d:%02d) %lu: %d", tick_time->tm_hour, tick_time->tm_min, MESSAGE_KEY_SHOW_WEATHER, (int) persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) );
+  
+  if ( ! ( persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) ) {
     clear_weather();
     return;
   }
-
+  
   if ( ! is_X_in_range( persist_read_int( MESSAGE_KEY_WEATHER_UPDATE_START_TIME ), 
                        persist_read_int( MESSAGE_KEY_WEATHER_UPDATE_END_TIME ), tick_time->tm_hour ) ) {
     clear_weather();
@@ -61,7 +87,7 @@ void weather_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
   
   GRect weather_window_bounds = layer_get_bounds( layer );
   
-  // graphics_context_set_fill_color( ctx, GColorBlack );
+  // graphics_context_set_fill_color( ctx, GColorWhite );
   // graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
   weather_window_bounds = grect_inset( weather_window_bounds, GEdgeInsets( WEATHER_WINDOW_OUTLINE_THK ) );
   graphics_context_set_fill_color( ctx, GColorBlack );
@@ -74,8 +100,8 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   
   GRect weather_text_layer_bounds = layer_get_bounds( layer );
   weather_text_layer_bounds.origin.y -= WEATHER_TEXT_VERT_ADJ;
-  graphics_context_set_text_color( ctx, GColorLightGray );
-  graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_DROID_SERIF_28_BOLD ), weather_text_layer_bounds,
+  graphics_context_set_text_color( ctx, GColorWhite );
+  graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_ROBOTO_CONDENSED_21 ), weather_text_layer_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
@@ -84,11 +110,13 @@ void weather_icon_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! weather_data.icon_id ) return;
   
   GRect weather_icon_layer_bounds = layer_get_bounds( layer );
-  // graphics_context_set_fill_color( ctx, GColorWhite );
-  // graphics_fill_rect( ctx, weather_icon_layer_bounds, 0, GCornersAll );
+  graphics_context_set_fill_color( ctx, GColorLightGray );
+  graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
   static GDrawCommandImage *weather_icon = 0; 
   weather_icon = gdraw_command_image_create_with_resource( weather_data.icon_id );
-  gdraw_command_image_draw( ctx, weather_icon, GPoint( 0, 0 ) );
+  graphics_context_set_stroke_color( ctx, GColorBlack );
+  graphics_context_set_fill_color( ctx, GColorBlack );
+  gdraw_command_image_draw( ctx, weather_icon, GPoint( WEATHER_ICON_OUTLINE_THK, WEATHER_ICON_OUTLINE_THK ) );
   if ( weather_icon ) gdraw_command_image_destroy( weather_icon );
 }
 

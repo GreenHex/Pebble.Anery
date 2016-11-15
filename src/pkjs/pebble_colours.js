@@ -71,4 +71,87 @@ var PBL_64_COLOURS = {
 };
 Object.freeze( PBL_64_COLOURS );
 
+var WEATHER_ICON_IDS = {
+  ICON_UNKNOWN : 0,
+  ICON_CLOUDY_DAY : 1,
+  ICON_HEAVY_RAIN : 2,
+  ICON_HEAVY_SNOW : 3,
+  ICON_LIGHT_RAIN : 4,
+  ICON_LIGHT_SNOW : 5,
+  ICON_PARTLY_CLOUDY : 6,
+  ICON_RAINING_AND_SNOWING : 7,
+  ICON_SUNNY_DAY : 8
+};
+Object.freeze( WEATHER_ICON_IDS );
+
+var getWeatherIconIDFromID = function( id ) {
+  switch( id ) {
+    case 200:
+    case 201:
+    case 202:
+    case 210:
+    case 211: return WEATHER_ICON_IDS.ICON_HEAVY_RAIN;
+    case 212:
+    case 221:
+    case 230:
+    case 231:
+    case 232: return WEATHER_ICON_IDS.ICON_HEAVY_RAIN;
+    case 300:
+    case 301: return WEATHER_ICON_IDS.ICON_LIGHT_RAIN;
+    case 302:
+    case 310:
+    case 311:
+    case 312:
+    case 313:
+    case 314:
+    case 321: return WEATHER_ICON_IDS.ICON_LIGHT_RAIN;
+    case 500: return WEATHER_ICON_IDS.ICON_LIGHT_RAIN;
+    case 501: return WEATHER_ICON_IDS.ICON_LIGHT_RAIN;
+    case 502:
+    case 503:
+    case 504: return WEATHER_ICON_IDS.ICON_HEAVY_RAIN;
+    case 511:
+    case 520:
+    case 521:
+    case 522:
+    case 531: return WEATHER_ICON_IDS.ICON_LIGHT_RAIN;
+    case 600: 
+    case 601:
+    case 602:
+    case 611:
+    case 612:
+    case 615:
+    case 616:
+    case 620:
+    case 621:
+    case 622: return WEATHER_ICON_IDS.ICON_LIGHT_SNOW;
+    case 701: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 711: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 721: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 731: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 741: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 751: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 761: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 762: 
+    case 771:
+    case 781: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 800: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 801:
+    case 802:
+    case 803:
+    case 804: return WEATHER_ICON_IDS.ICON_CLOUDY_DAY;
+    case 900: return WEATHER_ICON_IDS.ICON_HEAVY_RAIN;
+    case 901:	return WEATHER_ICON_IDS.ICON_HEAVY_RAIN;
+    case 902: return WEATHER_ICON_IDS.ICON_HEAVY_RAIN;
+    case 903: return WEATHER_ICON_IDS.ICON_LIGHT_SNOW;
+    case 904: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 905: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 906: return WEATHER_ICON_IDS.ICON_LIGHT_SNOW;
+    case 951: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    case 952: return WEATHER_ICON_IDS.ICON_SUNNY_DAY;
+    default: return WEATHER_ICON_IDS.ICON_UNKNOWN;
+  }
+};
+
 module.exports.PBL_64_COLOURS = PBL_64_COLOURS;
+module.exports.getWeatherIconIDFromID = getWeatherIconIDFromID;

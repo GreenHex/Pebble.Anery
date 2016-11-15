@@ -7,9 +7,9 @@ var clayConfig = require( './config' );
 var clayManipulator = require( './config_manipulator' );
 var clay = new Clay( clayConfig, clayManipulator, { autoHandleEvents: false } );
 var MESSAGE_KEYS = require( 'message_keys' );
-// var COLOURS = require( './pebble_colours' );
+var COLOURS = require( './pebble_colours' );
 
-var DEBUG = 1;
+var DEBUG = 0;
 
 var REQUEST_TYPES = {
   REQUEST_UNDEFINED : 0,
@@ -61,7 +61,7 @@ var xhrRequest = function ( url, type, callback ) {
 function locationSuccess( pos ) {
   // Construct URL
   var url = "http://api.openweathermap.org/data/2.5/weather?lat=" +
-      pos.coords.latitude + "&lon=" + pos.coords.longitude + '&appid=' + localStorage.getItem( MESSAGE_KEYS.OWM_API_KEY );
+      pos.coords.latitude + "&lon=" + pos.coords.longitude + '&appid=' + localStorage.getItem( MESSAGE_KEYS.WEATHER_OWM_API_KEY );
 
   if (DEBUG) console.log( "index.js: locationSuccess(): " + url );
 
@@ -80,13 +80,13 @@ function locationSuccess( pos ) {
 
                if (DEBUG) console.log( "index.js: locationSuccess(): " + JSON.stringify(json) );
 
-               var weather_temperature = "...";
+               var weather_temperature = "";
                if ( json.cod == 200 ) { // success
 
                  weather_temperature = [  Math.round( json.main.temp - 273.15 ) + "°C",
                             Math.round( json.main.temp * 9/5 - 459.67 ) + "°F",
                             Math.round( json.main.temp ) + " K"
-                           ][ localStorage.getItem( MESSAGE_KEYS.TEMPERATURE_UNITS ) ];
+                           ][ localStorage.getItem( MESSAGE_KEYS.WEATHER_TEMPERATURE_UNITS ) ];
 
                } else { // error
                  if (DEBUG) console.log( 'index.js: locationSuccess(): XMLHttpRequest returned error: ' + json.cod + ": " + json.message );
@@ -95,9 +95,10 @@ function locationSuccess( pos ) {
 
                var dictionary = {
                  "WEATHER_TEMPERATURE_TXT": weather_temperature,
-                 "WEATHER_ICON_ID": 0
+                 "WEATHER_ICON_ID": COLOURS.getWeatherIconIDFromID( json.weather[0].id )
                };
-
+               
+               if (DEBUG) console.log( "index.js: locationSuccess(): AFTER DICTIONARY" + JSON.stringify( dictionary ) );
                sendDictionaryToPebble( dictionary );
              });
 }
@@ -108,7 +109,7 @@ function locationError( err ) {
 
 function getWeather() {
   if (DEBUG) console.log( "index.js: getWeather()." );
-  if ( !localStorage.getItem( MESSAGE_KEYS.OWM_API_KEY ) ) return;
+  if ( !localStorage.getItem( MESSAGE_KEYS.WEATHER_OWM_API_KEY ) ) return;
 
   navigator.geolocation.getCurrentPosition(
     locationSuccess,
@@ -164,7 +165,7 @@ Pebble.addEventListener( 'webviewclosed', function( e ) {
     return;
   }
   var dictionary = clay.getSettings( e.response );
-  if (DEBUG) console.log( "index.js/clay: " + JSON.stringify( dictionary ) );
+  // if (DEBUG) console.log( "index.js/clay: " + JSON.stringify( dictionary ) );
   // save for later...
   local_config_settings.map( function( item ) {
     localStorage.setItem( item, dictionary[ item ] );

@@ -10,6 +10,6 @@ enum REQUEST_TYPE {
   REQUEST_WEATHER = 2,
 };
 
+void send_request( enum REQUEST_TYPE requestType );
 void messaging_init( void );
 void messaging_deinit( void );
-void send_request( enum REQUEST_TYPE requestType );
