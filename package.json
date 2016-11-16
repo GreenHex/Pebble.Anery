@@ -39,92 +39,28 @@
         "resources": {
             "media": [
                 {
-                    "file": "data/Pebble_25x25_Heavy_snow.pdc",
-                    "name": "ICON_HEAVY_SNOW",
+                    "characterRegex": "[A-V]",
+                    "file": "fonts/Forecast Font Mod.ttf",
+                    "name": "FONT_FORECASTFONT_24",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
                         "diorite",
                         "emery"
                     ],
-                    "type": "raw"
+                    "type": "font"
                 },
                 {
-                    "file": "data/Pebble_25x25_Light_snow.pdc",
-                    "name": "ICON_LIGHT_SNOW",
+                    "characterRegex": "[A-V]",
+                    "file": "fonts/Forecast Font Mod.ttf",
+                    "name": "FONT_FORECASTFONT_36",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
                         "diorite",
                         "emery"
                     ],
-                    "type": "raw"
-                },
-                {
-                    "file": "data/Pebble_25x25_Raining_and_snowing.pdc",
-                    "name": "ICON_RAINING_AND_SNOWING",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "raw"
-                },
-                {
-                    "file": "data/Pebble_25x25_Heavy_rain.pdc",
-                    "name": "ICON_HEAVY_RAIN",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "raw"
-                },
-                {
-                    "file": "data/Pebble_25x25_Light_rain.pdc",
-                    "name": "ICON_LIGHT_RAIN",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "raw"
-                },
-                {
-                    "file": "data/Pebble_25x25_Cloudy_day.pdc",
-                    "name": "ICON_CLOUDY_DAY",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "raw"
-                },
-                {
-                    "file": "data/Pebble_25x25_Partly_cloudy.pdc",
-                    "name": "ICON_PARTLY_CLOUDY",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "raw"
-                },
-                {
-                    "file": "data/Pebble_25x25_Sunny_day.pdc",
-                    "name": "ICON_SUNNY_DAY",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "raw"
+                    "type": "font"
                 },
                 {
                     "file": "images/Heart.png",

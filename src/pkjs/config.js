@@ -9,7 +9,7 @@ module.exports = [
   },
   {
     "type": "text",
-    "defaultValue": "Configure your watch app settings."
+    "defaultValue": 'Configure your watch app settings. Weather icons are from <a href="http://forecastfont.iconvau.lt">Forecast Font.</a>'
   },
   {
     "type": "section",
@@ -218,12 +218,12 @@ module.exports = [
         "type": "toggle",
         "messageKey": "SHOW_WEATHER",
         "label": "Show Weather",
-        "defaultValue": false
+        "defaultValue": true
       },
       {
         "type": "input",
         "messageKey": "WEATHER_OWM_API_KEY",
-        "defaultValue": "",
+        "defaultValue": "52c0913c975e1794a95d284f47aa4828",
         "label": "OpenWeatherMap API Key",
         "description": 'Weather forecast on the Pebble will not work without a valid API key. You can get your free API key from <a href="http://openweathermap.org">openweathermap.org.</a>',  
         "attributes": {
