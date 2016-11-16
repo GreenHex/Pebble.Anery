@@ -297,7 +297,7 @@ module.exports = [
       {
         "type": "select",
         "messageKey": "WEATHER_UPDATE_END_TIME",
-        "defaultValue": '23',
+        "defaultValue": '0',
         "label": "Stop Updates At",
         "options": [
           { "label": "Midnight", "value": '0' },

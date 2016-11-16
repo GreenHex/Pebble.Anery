@@ -5,18 +5,34 @@
 
 #ifdef INCLUDE_WEATHER
 
+static WEATHER_ICON mist;
+static WEATHER_ICON sunny;
+static WEATHER_ICON moon;
+static WEATHER_ICON cloudy;
+static WEATHER_ICON drizzle;
+static WEATHER_ICON raining;
+static WEATHER_ICON snowing;
+static WEATHER_ICON showers;
+static WEATHER_ICON thunder;
+static WEATHER_ICON frosty;
+static WEATHER_ICON hail;
+static WEATHER_ICON sleet;
+static WEATHER_ICON windy;
+static WEATHER_ICON windy_raining;
+static WEATHER_ICON windy_snowing;
+
 static GFont icon_font;
 
-static void draw_glyph( GContext *ctx, GRect bounds, GLYPH glyph ) {
-  graphics_context_set_text_color( ctx, GColorWhite /* GColorFromHEX( glyph.colour ) */ );
-  graphics_draw_text( ctx, glyph.str, icon_font, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+void draw_glyph( GContext *ctx, GRect bounds, GLYPH glyph ) {
+  graphics_context_set_text_color( ctx, GColorFromHEX( glyph.colour ) );
+  graphics_draw_text( ctx, &(glyph.glyph), icon_font, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
 void draw_icon( GContext *ctx, GRect bounds, WEATHER_ICON icon ) {
-  APP_LOG( APP_LOG_LEVEL_INFO, "%d %s", icon.num_glyphs, icon.glyphs[0].str );
+  APP_LOG( APP_LOG_LEVEL_INFO, "%d %c", drizzle.num_glyphs, drizzle.glyphs[0].glyph );
   for( int i = 0; i < icon.num_glyphs; i++ ) {
-    APP_LOG( APP_LOG_LEVEL_INFO, "%d %s", i, icon.glyphs[i].str );
-    draw_glyph( ctx, bounds, icon.glyphs[i] );
+    APP_LOG( APP_LOG_LEVEL_INFO, "%d %c", i, drizzle.glyphs[i].glyph );
+    draw_glyph( ctx, bounds, drizzle.glyphs[i] );
   }
 }
 

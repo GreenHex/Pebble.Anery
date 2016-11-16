@@ -89,7 +89,7 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
 void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
   // if( ! weather_data.icon_id ) return;
-  
+  static WEATHER_ICON cloudy;
   GRect weather_icon_layer_bounds = layer_get_bounds( layer );
   // graphics_context_set_fill_color( ctx, GColorBlack );
   // graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
@@ -99,12 +99,15 @@ void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // graphics_draw_text( ctx, "H", icon_font, weather_icon_layer_bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
   // graphics_context_set_text_color( ctx, GColorLightGray );
   // graphics_draw_text( ctx, "F", icon_font, weather_icon_layer_bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  draw_glyph( ctx, weather_icon_layer_bounds, g_cloud_open );
+  draw_glyph( ctx, weather_icon_layer_bounds, g_lightning );
   draw_icon( ctx, weather_icon_layer_bounds, cloudy );
 }
 
 
 void weather_init( Layer *parent_layer ) {
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );
+  weather_icons_init();
   
   GRect weather_bitmap_layer_frame = GRect( parent_layer_bounds.origin.x + WEATHER_WINDOW_POS_X - WEATHER_WINDOW_OUTLINE_THK,
                                            parent_layer_bounds.origin.y + WEATHER_WINDOW_POS_Y - WEATHER_WINDOW_OUTLINE_THK,
@@ -130,15 +133,13 @@ void weather_init( Layer *parent_layer ) {
   weather_icon_text_layer = text_layer_create( weather_icon_text_layer_frame );
   layer_set_update_proc( text_layer_get_layer( weather_icon_text_layer ), weather_icon_text_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( weather_bitmap_layer ), text_layer_get_layer( weather_icon_text_layer ) );
-  
-  weather_icons_init();
 }
 
 void weather_deinit() {
-  weather_icons_deinit();
   if ( weather_icon_text_layer ) text_layer_destroy( weather_icon_text_layer );
   if ( weather_text_layer ) text_layer_destroy( weather_text_layer );
   if ( weather_bitmap_layer ) bitmap_layer_destroy( weather_bitmap_layer );
+  weather_icons_deinit();
 }
 
 #endif
