@@ -65,11 +65,11 @@ void weather_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
   
   GRect weather_window_bounds = layer_get_bounds( layer );
   
-  graphics_context_set_fill_color( ctx, GColorWhite );
-  graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
-  weather_window_bounds = grect_inset( weather_window_bounds, GEdgeInsets( WEATHER_WINDOW_OUTLINE_THK ) );
-  graphics_context_set_fill_color( ctx, GColorBlue );
-  graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
+  // graphics_context_set_fill_color( ctx, GColorWhite );
+  // graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
+  // weather_window_bounds = grect_inset( weather_window_bounds, GEdgeInsets( WEATHER_WINDOW_OUTLINE_THK ) );
+  // graphics_context_set_fill_color( ctx, GColorBlue );
+  // graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
 }
 
 void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -77,8 +77,8 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // if ( ! strlen( weather_data.temp_str ) ) return;
 
   GRect weather_text_layer_bounds = layer_get_bounds( layer );
-  graphics_context_set_fill_color( ctx, GColorOrange );
-  graphics_fill_rect( ctx, weather_text_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
+  // graphics_context_set_fill_color( ctx, GColorOrange );
+  // graphics_fill_rect( ctx, weather_text_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
 
   weather_text_layer_bounds.origin.y -= WEATHER_TEXT_VERT_ADJ;
   graphics_context_set_text_color( ctx, GColorWhite );
@@ -91,9 +91,15 @@ void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // if( ! weather_data.icon_id ) return;
   
   GRect weather_icon_layer_bounds = layer_get_bounds( layer );
-  graphics_context_set_fill_color( ctx, GColorBlack );
-  graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
-  draw_icon( ctx, weather_icon_layer_bounds, windy_raining );
+  // graphics_context_set_fill_color( ctx, GColorBlack );
+  // graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
+  weather_icon_layer_bounds.origin.y -= WEATHER_ICON_VERT_ADJ;
+  GFont icon_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_FORECASTFONT_32 ) );
+  // graphics_context_set_text_color( ctx, GColorBlue );
+  // graphics_draw_text( ctx, "H", icon_font, weather_icon_layer_bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  // graphics_context_set_text_color( ctx, GColorLightGray );
+  // graphics_draw_text( ctx, "F", icon_font, weather_icon_layer_bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  draw_icon( ctx, weather_icon_layer_bounds, cloudy );
 }
 
 

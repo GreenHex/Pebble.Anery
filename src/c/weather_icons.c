@@ -9,11 +9,13 @@ static GFont icon_font;
 
 static void draw_glyph( GContext *ctx, GRect bounds, GLYPH glyph ) {
   graphics_context_set_text_color( ctx, GColorWhite /* GColorFromHEX( glyph.colour ) */ );
-  graphics_draw_text( ctx, "ABC", icon_font, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  graphics_draw_text( ctx, glyph.str, icon_font, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
 void draw_icon( GContext *ctx, GRect bounds, WEATHER_ICON icon ) {
+  APP_LOG( APP_LOG_LEVEL_INFO, "%d %s", icon.num_glyphs, icon.glyphs[0].str );
   for( int i = 0; i < icon.num_glyphs; i++ ) {
+    APP_LOG( APP_LOG_LEVEL_INFO, "%d %s", i, icon.glyphs[i].str );
     draw_glyph( ctx, bounds, icon.glyphs[i] );
   }
 }
@@ -80,7 +82,7 @@ void weather_icons_init( void ) {
     .glyphs = (GLYPH []) { g_cloud_windy_snow, g_snow_small } 
   };
   
-  icon_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_FORECASTFONT_24 ) );
+  icon_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_FORECASTFONT_32 ) );
 }
 
 void weather_icons_deinit( void ) {

@@ -41,7 +41,7 @@
                 {
                     "characterRegex": "[A-V]",
                     "file": "fonts/Forecast Font Mod.ttf",
-                    "name": "FONT_FORECASTFONT_24",
+                    "name": "FONT_FORECASTFONT_32",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
@@ -53,7 +53,7 @@
                 {
                     "characterRegex": "[A-V]",
                     "file": "fonts/Forecast Font Mod.ttf",
-                    "name": "FONT_FORECASTFONT_36",
+                    "name": "FONT_FORECASTFONT_24",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
