@@ -89,21 +89,13 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
 void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
   // if( ! weather_data.icon_id ) return;
-  static WEATHER_ICON cloudy;
+  
   GRect weather_icon_layer_bounds = layer_get_bounds( layer );
   // graphics_context_set_fill_color( ctx, GColorBlack );
   // graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
   weather_icon_layer_bounds.origin.y -= WEATHER_ICON_VERT_ADJ;
-  GFont icon_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_FORECASTFONT_32 ) );
-  // graphics_context_set_text_color( ctx, GColorBlue );
-  // graphics_draw_text( ctx, "H", icon_font, weather_icon_layer_bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
-  // graphics_context_set_text_color( ctx, GColorLightGray );
-  // graphics_draw_text( ctx, "F", icon_font, weather_icon_layer_bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
-  draw_glyph( ctx, weather_icon_layer_bounds, g_cloud_open );
-  draw_glyph( ctx, weather_icon_layer_bounds, g_lightning );
-  draw_icon( ctx, weather_icon_layer_bounds, cloudy );
+  draw_icon( ctx, weather_icon_layer_bounds, weather_data.icon_id );
 }
-
 
 void weather_init( Layer *parent_layer ) {
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );

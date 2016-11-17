@@ -17,5 +17,10 @@ enum ANALOG_HANDS_STYLE {
   STYLE_SBGE001 = 2
 };
 
+typedef struct {
+  char temp_str[8];
+  uint32_t icon_id;
+} WEATHER_DATA;
+
 tm tm_time;
 tm tm_gmt;
