@@ -112,15 +112,15 @@ var getWeatherIconIDFromID = function( id ) {
     case 620:
     case 621:
     case 622: return 13;
-    case 701:
-    case 711:
-    case 721:
-    case 731:
-    case 741:
-    case 751:
-    case 761:
-    case 762: 
-    case 771:
+    case 701: return 50;
+    case 711: return 711;
+    case 721: return 50;
+    case 731: return 50;
+    case 741: return 50;
+    case 751: return 751;
+    case 761: return 761;
+    case 762: return 762;
+    case 771: return 50;
     case 781: return 50;
     case 800: return 1;
     case 801: return 2;
@@ -132,8 +132,8 @@ var getWeatherIconIDFromID = function( id ) {
     case 902: return 0;
     case 903: return 0;
     case 904: return 0;
-    case 905: return 0;
-    case 906: return 0;
+    case 905: return 905;
+    case 906: return 906;
     case 951: return 0;
     case 952: return 0;
     default: return 0;

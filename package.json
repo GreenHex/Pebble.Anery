@@ -39,21 +39,9 @@
         "resources": {
             "media": [
                 {
-                    "characterRegex": "[A-V]",
+                    "characterRegex": "[A-X]",
                     "file": "fonts/Forecast Font Mod.ttf",
                     "name": "FONT_FORECASTFONT_32",
-                    "targetPlatforms": [
-                        "aplite",
-                        "basalt",
-                        "diorite",
-                        "emery"
-                    ],
-                    "type": "font"
-                },
-                {
-                    "characterRegex": "[A-V]",
-                    "file": "fonts/Forecast Font Mod.ttf",
-                    "name": "FONT_FORECASTFONT_24",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
@@ -165,5 +153,5 @@
             "watchface": true
         }
     },
-    "version": "1.17.0"
+    "version": "1.18.0"
 }

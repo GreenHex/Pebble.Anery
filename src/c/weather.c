@@ -12,7 +12,7 @@
 #include "clock.h"
 #include "app_messaging.h"
 
-bool is_day;
+bool is_day_not_night;
 
 static BitmapLayer *weather_bitmap_layer = 0;
 static TextLayer *weather_text_layer = 0;
@@ -60,7 +60,7 @@ void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
 
   if ( ( ! ignoreUpdateInterval ) && ( tick_time->tm_min % ( persist_read_int( MESSAGE_KEY_WEATHER_UPDATE_INTERVAL ) ) ) ) return;
 
-  is_day = ( ( tick_time->tm_hour > 6 ) && ( tick_time->tm_hour < 18 ) );
+  is_day_not_night = ( ( tick_time->tm_hour > 6 ) && ( tick_time->tm_hour < 18 ) );
   send_request( REQUEST_WEATHER );
 }
 
@@ -86,7 +86,7 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // graphics_fill_rect( ctx, weather_text_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
 
   weather_text_layer_bounds.origin.y -= WEATHER_TEXT_VERT_ADJ;
-  graphics_context_set_text_color( ctx, GColorWhite );
+  graphics_context_set_text_color( ctx, GColorLightGray );
   graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_ROBOTO_CONDENSED_21 ), weather_text_layer_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
@@ -99,7 +99,7 @@ void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // graphics_context_set_fill_color( ctx, GColorBlack );
   // graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
   weather_icon_layer_bounds.origin.y -= WEATHER_ICON_VERT_ADJ;
-  draw_icon( ctx, weather_icon_layer_bounds, weather_data.icon_id, is_day );
+  draw_icon( ctx, weather_icon_layer_bounds, weather_data.icon_id, is_day_not_night );
 
 }
 
