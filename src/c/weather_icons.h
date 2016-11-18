@@ -23,7 +23,7 @@ typedef struct {
 
 static const GLYPH g_mist = { 'I', LightGray };
 static const GLYPH g_sun = { 'T', ChromeYellow };
-static const GLYPH g_moon = { 'N', Brass };
+static const GLYPH g_moon = { 'N', White };
 static const GLYPH g_wind = { 'V', BabyBlueEyes };
 static const GLYPH g_cloud = { 'G', LightGray };
 static const GLYPH g_lightning = { 'U', Yellow };

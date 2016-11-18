@@ -20,6 +20,7 @@ static GPath *s_sbge001_minute_hand_highlight = 0;
 static void draw_seconds( DRAW_CLOCK_PARAMS *pCP );
 
 static void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
+  graphics_context_set_antialiased( pDP->ctx, true );
   // dot outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->dot_outline_color );
   graphics_context_set_stroke_width( pDP->ctx, 1 );
@@ -45,6 +46,7 @@ static void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
 
 static void draw_gpath_hands( GPATH_HANDS_PARAMS *pGP ) {
   // for hour and minute hands
+  graphics_context_set_antialiased( pGP->ctx, true );
   graphics_context_set_stroke_width( pGP->ctx, 1 );
 
   // hour hand
@@ -102,6 +104,7 @@ void draw_spiffy_gs_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
 }
 
 void draw_sbge001_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
+  graphics_context_set_antialiased( pCP->ctx, true );
   // gmt hands
   gpath_rotate_to( s_gmt_hand, pCP->gmt_angle );
   gpath_move_to( s_gmt_hand, pCP->center_pt );
@@ -216,6 +219,7 @@ static void draw_seconds( DRAW_CLOCK_PARAMS *pCP ) {
     .x = ( sin_lookup( pCP->sec_angle ) * ( SEC_HAND_LENGTH - SEC_HAND_TIP_LENGTH ) / TRIG_MAX_RATIO ) + pCP->center_pt.x,
     .y = ( -cos_lookup( pCP->sec_angle ) * ( SEC_HAND_LENGTH - SEC_HAND_TIP_LENGTH ) / TRIG_MAX_RATIO ) + pCP->center_pt.y
   };
+  graphics_context_set_antialiased( pCP->ctx, true );
   graphics_context_set_stroke_width( pCP->ctx, SEC_HAND_WIDTH );
   graphics_context_set_stroke_color( pCP->ctx, COLOUR_SEC_HAND_TIP );
   graphics_draw_line( pCP->ctx, sec_hand, sec_hand_tip );
