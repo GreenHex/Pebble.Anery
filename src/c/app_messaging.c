@@ -23,15 +23,21 @@ void send_request( enum REQUEST_TYPE requestType ) {
     dict_write_end( out_iter );
     result = app_message_outbox_send();
     if( result != APP_MSG_OK ) {
-      if (DEBUG) APP_LOG( APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int) result );
+      #ifdef DEBUG
+      APP_LOG( APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int) result );
+      #endif
     }
   } else {
-    if (DEBUG) APP_LOG( APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int) result );
+    #ifdef DEBUG
+    APP_LOG( APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int) result );
+    #endif
   }
 }
 
 static void inbox_received_callback( DictionaryIterator *iterator, void *context ) {
-  if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "app_messaging.c: inbox_received_callback(): Received a message from phone." );
+  #ifdef DEBUG
+  APP_LOG( APP_LOG_LEVEL_INFO, "app_messaging.c: inbox_received_callback(): Received a message from phone." );
+  #endif
   
   #ifdef INCLUDE_WEATHER 
   Tuple *tuple_ptr = 0;
@@ -47,15 +53,21 @@ static void inbox_received_callback( DictionaryIterator *iterator, void *context
 }
 
 static void inbox_dropped_callback( AppMessageResult reason, void *context ) {
-  if (DEBUG) APP_LOG( APP_LOG_LEVEL_ERROR, "Message dropped." );
+  #ifdef DEBUG
+  APP_LOG( APP_LOG_LEVEL_ERROR, "Message dropped." );
+  #endif
 }
 
 static void outbox_failed_callback( DictionaryIterator *iterator, AppMessageResult reason, void *context ) {
-  if (DEBUG) APP_LOG( APP_LOG_LEVEL_ERROR, "Outbox send failed." );
+  #ifdef DEBUG
+  APP_LOG( APP_LOG_LEVEL_ERROR, "Outbox send failed." );
+  #endif
 }
 
 static void outbox_sent_callback( DictionaryIterator *iterator, void *context ) {
-  if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "Outbox send success." );
+  #ifdef DEBUG
+  APP_LOG( APP_LOG_LEVEL_INFO, "Outbox send success." );
+  #endif
 }
 
 void messaging_init( void ) {

@@ -4,52 +4,61 @@
 // Weather icons from Forecast Font <http://forecastfont.iconvau.lt>.
 
 #ifdef INCLUDE_WEATHER
-#define ARRAY_SIZE(array) (sizeof(array)/sizeof(*array))
 
 static GFont icon_font;
 
 static void draw_glyph( GContext *ctx, GRect bounds, GLYPH glyph ) {
+  #ifdef DEBUG
   APP_LOG( APP_LOG_LEVEL_INFO, "B-> %c %ld", glyph.glyph, glyph.colour );
+  #endif
   graphics_context_set_text_color( ctx, GColorFromHEX( glyph.colour ) );
   graphics_draw_text( ctx, &(glyph.glyph), icon_font, bounds, GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
-void draw_icon( GContext *ctx, GRect bounds, uint32_t icon_id ) {
-  GLYPHS mist1 = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_mist } };
-  GLYPHS windy1 = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_wind } };
+void draw_icon( GContext *ctx, GRect bounds, int32_t icon_id, bool is_day ) {
   
-  GLYPH mist[] = { g_mist };
-  GLYPH sunny[] = { g_sun };
-  GLYPH moon[] = { g_moon };
-  GLYPH cloudy[] = { g_cloud };
-  GLYPH drizzle[] = { g_cloud_open, g_drizzle };
-  GLYPH raining[] = { g_cloud_open, g_rain };
-  GLYPH snowing[] = { g_cloud_open, g_snow };
-  GLYPH showers[] = { g_cloud_open, g_shower };
-  GLYPH thunder[] = { g_cloud_open, g_lightning };
-  GLYPH frosty[] = { g_cloud_open, g_frost };
-  GLYPH hail[] = { g_cloud_open, g_hail };
-  GLYPH sleet[] = { g_cloud_open, g_sleet };
-  GLYPH windy[] = { g_cloud_open, g_wind };
-  GLYPH windy_raining[] = { g_cloud_windy_rain, g_raining_small };
-  GLYPH windy_snowing[] = { g_cloud_windy_snow, g_snow_small };
+  WEATHER_ICON *p_glyphs = 0;
+  WEATHER_ICON *p_glyph_peek = 0;
   
-  GLYPH *glyph = 0;
-  glyph = windy_snowing;
-  int num_glyphs = ARRAY_SIZE(glyph);
+  // This is here because 'C', and the "glyphs"" array is variable length.
+  WEATHER_ICON mist = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_mist } };
+  WEATHER_ICON sun = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_sun } };
+  WEATHER_ICON moon = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_moon } };
+  WEATHER_ICON sun_peek = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_sun_peek } };
+  WEATHER_ICON moon_peek = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_moon_peek } };
+  WEATHER_ICON cloudy = { .num_glyphs = 1, .glyphs = (GLYPH []) { g_cloud } };
+  WEATHER_ICON drizzle = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_drizzle } };
+  WEATHER_ICON raining = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_rain } };
+//  WEATHER_ICON snowing = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_snow } };
+//  WEATHER_ICON showers = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_shower } };
+  WEATHER_ICON thunder = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_lightning } };
+  WEATHER_ICON frosty = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_frost } };
+//  WEATHER_ICON hail = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_hail } };
+//  WEATHER_ICON sleet = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_sleet } };
+//  WEATHER_ICON windy = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_wind } };
+//  WEATHER_ICON windy_raining = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_windy_rain, g_raining_small } };
+//  WEATHER_ICON windy_snowing = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_windy_snow, g_snow_small } };
+
+  switch ( icon_id ) {
+    case 1: p_glyphs = is_day ? &sun : &moon; break; // clear sky
+    case 2: p_glyphs = &cloudy; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // few clouds
+    case 3: p_glyphs = &cloudy; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // scattered clouds
+    case 4: p_glyphs = &cloudy; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // broken clouds
+    case 9: p_glyphs = &drizzle; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // shower rain
+    case 10: p_glyphs = &raining; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // rain
+    case 11: p_glyphs = &thunder; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // thunderstorm
+    case 13: p_glyphs = &frosty; p_glyph_peek = is_day ? &sun_peek : &moon_peek; break; // snow
+    case 50: p_glyphs = &mist; break; // mist
+    default: break;
+  }
   
-  // APP_LOG( APP_LOG_LEVEL_INFO, "K-> %d %d %d", sizeof(mist), sizeof(*mist), ARRAY_SIZE(mist) );
-  // APP_LOG( APP_LOG_LEVEL_INFO, "L-> %d %d %d", sizeof(thunder), sizeof(*thunder), ARRAY_SIZE(thunder) );
-  // APP_LOG( APP_LOG_LEVEL_INFO, "M-> %d %d %d", sizeof(glyph), sizeof(*glyph), ARRAY_SIZE(glyph) );
-  // for( size_t i = 0; i < 2; i++ ) {
-  //  APP_LOG( APP_LOG_LEVEL_INFO, "A-> %d %c %ld", i, glyph[i].glyph, glyph[i].colour );
-  //  draw_glyph( ctx, bounds, glyph[i] );
-  // }
-  APP_LOG( APP_LOG_LEVEL_INFO, "mist1-> %d %d %d", sizeof(mist1), mist1.num_glyphs, sizeof(mist1.glyphs) );
-  APP_LOG( APP_LOG_LEVEL_INFO, "windy1-> %d %d %d", sizeof(windy1), windy1.num_glyphs, sizeof(windy1.glyphs) );
-  for( int i = 0; i < windy1.num_glyphs; i++ ) {
-    APP_LOG( APP_LOG_LEVEL_INFO, "J-> %d %c %ld", i, windy1.glyphs[i].glyph, windy1.glyphs[i].colour );
-    draw_glyph( ctx, bounds, windy1.glyphs[i] );
+  if ( p_glyphs ) {
+    for( int i = 0; i < p_glyphs->num_glyphs; i++ ) {
+      draw_glyph( ctx, bounds, p_glyphs->glyphs[i] );
+    }
+    if ( p_glyph_peek ) {
+      draw_glyph( ctx, bounds, p_glyph_peek->glyphs[0] );
+    }
   }
 }
 

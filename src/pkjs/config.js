@@ -218,12 +218,12 @@ module.exports = [
         "type": "toggle",
         "messageKey": "SHOW_WEATHER",
         "label": "Show Weather",
-        "defaultValue": true
+        "defaultValue": false
       },
       {
         "type": "input",
         "messageKey": "WEATHER_OWM_API_KEY",
-        "defaultValue": "52c0913c975e1794a95d284f47aa4828",
+        "defaultValue": "",
         "label": "OpenWeatherMap API Key",
         "description": 'Weather forecast on the Pebble will not work without a valid API key. You can get your free API key from <a href="http://openweathermap.org">openweathermap.org.</a>',  
         "attributes": {
@@ -297,7 +297,7 @@ module.exports = [
       {
         "type": "select",
         "messageKey": "WEATHER_UPDATE_END_TIME",
-        "defaultValue": '0',
+        "defaultValue": '23',
         "label": "Stop Updates At",
         "options": [
           { "label": "Midnight", "value": '0' },

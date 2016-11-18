@@ -12,6 +12,8 @@
 #include "clock.h"
 #include "app_messaging.h"
 
+bool is_day;
+
 static BitmapLayer *weather_bitmap_layer = 0;
 static TextLayer *weather_text_layer = 0;
 static TextLayer *weather_icon_text_layer = 0;
@@ -22,7 +24,7 @@ void show_weather( Tuple *tuple_ptr_temp, DictionaryIterator *iterator ) {
   
   if ( tuple_ptr_temp ) {
     if ( tuple_ptr_weather_icon_id ) {
-      weather_data.icon_id = 0; // 
+      weather_data.icon_id = tuple_ptr_weather_icon_id->value->int32; 
     }
     snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", tuple_ptr_temp->value->cstring );
   }
@@ -36,7 +38,9 @@ void clear_weather( void ) {
 
 void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
   
-  if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "weather.c: get_weather(): (%02d:%02d) %lu: %d", tick_time->tm_hour, tick_time->tm_min, MESSAGE_KEY_SHOW_WEATHER, (int) persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) );
+  #ifdef DEBUG
+  APP_LOG( APP_LOG_LEVEL_INFO, "weather.c: get_weather(): (%02d:%02d) %lu: %d", tick_time->tm_hour, tick_time->tm_min, MESSAGE_KEY_SHOW_WEATHER, (int) persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) );
+  #endif
   
   if ( ! ( persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) ) {
     clear_weather();
@@ -56,12 +60,13 @@ void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
 
   if ( ( ! ignoreUpdateInterval ) && ( tick_time->tm_min % ( persist_read_int( MESSAGE_KEY_WEATHER_UPDATE_INTERVAL ) ) ) ) return;
 
+  is_day = ( ( tick_time->tm_hour > 6 ) && ( tick_time->tm_hour < 18 ) );
   send_request( REQUEST_WEATHER );
 }
 
 void weather_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
-  // if ( ! strlen( weather_data.temp_str ) ) return;
+  if ( ! strlen( weather_data.temp_str ) ) return;
   
   GRect weather_window_bounds = layer_get_bounds( layer );
   
@@ -74,7 +79,7 @@ void weather_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
 
 void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
-  // if ( ! strlen( weather_data.temp_str ) ) return;
+  if ( ! strlen( weather_data.temp_str ) ) return;
 
   GRect weather_text_layer_bounds = layer_get_bounds( layer );
   // graphics_context_set_fill_color( ctx, GColorOrange );
@@ -88,13 +93,14 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
 
 void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_WEATHER ) ) return;
-  // if( ! weather_data.icon_id ) return;
+  if( ! weather_data.icon_id ) return;
   
   GRect weather_icon_layer_bounds = layer_get_bounds( layer );
   // graphics_context_set_fill_color( ctx, GColorBlack );
   // graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
   weather_icon_layer_bounds.origin.y -= WEATHER_ICON_VERT_ADJ;
-  draw_icon( ctx, weather_icon_layer_bounds, weather_data.icon_id );
+  draw_icon( ctx, weather_icon_layer_bounds, weather_data.icon_id, is_day );
+
 }
 
 void weather_init( Layer *parent_layer ) {

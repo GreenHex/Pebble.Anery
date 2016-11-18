@@ -60,7 +60,9 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   time_t now = time( NULL );
   tm_gmt = *gmtime( &now ); // copy to global
   
-  // if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: handle_clock_tick(): %d:%d:%d", tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec );
+  #ifdef DEBUG
+  APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: handle_clock_tick(): %d:%d:%d", tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec );
+  #endif
   
   #ifdef INCLUDE_WEATHER
   if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) get_weather( &tm_time, false );

@@ -5,7 +5,7 @@
 #pragma once
 #include <pebble.h>
 
-#define DEBUG 0
+// #define DEBUG
 // #define SECONDS_ALWAYS_ON
 // #define INCLUDE_HR
 #define INCLUDE_WEATHER
@@ -19,7 +19,7 @@ enum ANALOG_HANDS_STYLE {
 
 typedef struct {
   char temp_str[8];
-  uint32_t icon_id;
+  int32_t icon_id;
 } WEATHER_DATA;
 
 tm tm_time;

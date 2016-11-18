@@ -41,9 +41,13 @@ void do_chime( struct tm *tick_time ) {
   // is this half hour or full hour?
   if ( tick_time->tm_min + persist_read_int( MESSAGE_KEY_CHIME_OFFSET ) == 0 ) {
     vibes_enqueue_custom_pattern( double_vibe_pattern );
-    if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: do_chime() hour" );
+    #ifdef DEBUG
+    APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: do_chime() hour" );
+    #endif
   } else {
     vibes_enqueue_custom_pattern( single_vibe_pattern );
-    if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: do_chime() half-hour" );
+    #ifdef DEBUG
+    APP_LOG( APP_LOG_LEVEL_INFO, "clock.c: do_chime() half-hour" );
+    #endif
   }
 }

@@ -62,8 +62,10 @@ void handle_config_message( DictionaryIterator *iterator ) {
         persist_write_bool( BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j, ( ( p_tuple->value->uint8 == 't' ) ||
                                                                     ( p_tuple->value->uint8 == 'T' ) ||
                                                                     ( p_tuple->value->uint8 == '1' ) ) );
-        // if (DEBUG) APP_LOG( APP_LOG_LEVEL_INFO, "config.c: handle_config_message(): %ld: %d %d", 
-        //                   BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j, persist_read_bool( BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j ), p_tuple->value->uint8 );
+        #ifdef DEBUG
+        APP_LOG( APP_LOG_LEVEL_INFO, "config.c: handle_config_message(): %ld: %d %d", 
+                BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j, persist_read_bool( BOOL_CHKBOX_MESSAGE_KEYS[i].keyID + j ), p_tuple->value->uint8 );
+        #endif
       }
     }
   }
@@ -76,7 +78,9 @@ static int stringToInt( char *str ) {
   int sum = 0;
   while ( str[i] != '\0' ) {
     if ( str[i]< 48 || str[i] > 57 ) {
-      if (DEBUG) APP_LOG( APP_LOG_LEVEL_ERROR, "config.c: stringToInt(): Unable to convert it into integer." );
+      #ifdef DEBUG
+      APP_LOG( APP_LOG_LEVEL_ERROR, "config.c: stringToInt(): Unable to convert it into integer." );
+      #endif
       return 0;
     }
     else {
