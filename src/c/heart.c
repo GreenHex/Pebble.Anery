@@ -60,10 +60,7 @@ void hr_icon_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
 
 void heart_init( Layer* parent_layer ) {
   HealthServiceAccessibilityMask hr_mask = health_service_metric_accessible( HealthMetricHeartRateBPM, time_start_of_today(), time( NULL ) );
-  if ( ! ( hr_mask & HealthServiceAccessibilityMaskAvailable ) ) {
-    hr_available = true;
-    return;
-  }
+  if ( ! ( hr_available = ( hr_mask & HealthServiceAccessibilityMaskAvailable ) ) ) return;
   
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );
   
