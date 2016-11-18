@@ -15,10 +15,8 @@ static TextLayer *hr_text_layer = 0;
 static BitmapLayer *hr_icon_bitmap_layer = 0;
 static HealthValue hr_bpm;
 static char hr_bpm_str[4] = "71";
-static bool hr_available = false;
 
 void hr_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
-  if ( ! hr_available ) return;
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_HEALTH ) ) return;
   
   GRect hr_window_bounds = layer_get_bounds( layer );
@@ -31,7 +29,6 @@ void hr_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
 }
 
 void hr_text_layer_update_proc( Layer *layer, GContext *ctx ) {
-  if ( ! hr_available ) return;
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_HEALTH ) ) return;
   
   HealthValue hr_bpm = health_service_peek_current_value( HealthMetricHeartRateBPM );
@@ -47,7 +44,6 @@ void hr_text_layer_update_proc( Layer *layer, GContext *ctx ) {
 }
 
 void hr_icon_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
-  if ( ! hr_available ) return;
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_HEALTH ) ) return;
   
   GRect hr_icon_layer_bounds = layer_get_bounds( layer );
@@ -60,7 +56,7 @@ void hr_icon_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
 
 void heart_init( Layer* parent_layer ) {
   HealthServiceAccessibilityMask hr_mask = health_service_metric_accessible( HealthMetricHeartRateBPM, time_start_of_today(), time( NULL ) );
-  if ( ! ( hr_available = ( hr_mask & HealthServiceAccessibilityMaskAvailable ) ) ) return;
+  if ( ! ( hr_mask & HealthServiceAccessibilityMaskAvailable ) ) return;
   
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );
   

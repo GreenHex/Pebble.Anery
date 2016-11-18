@@ -3,7 +3,9 @@
 //
 #pragma once
 #include <pebble.h>
+#include "global.h"
 
+#ifdef INCLUDE_STEPS
 #ifdef PBL_HEALTH 
 
 #define HEALTH_WINDOW_POS_X 0
@@ -34,4 +36,5 @@ typedef struct {
 void health_init( Layer *parent_layer );
 void health_deinit( void );
 
+#endif
 #endif

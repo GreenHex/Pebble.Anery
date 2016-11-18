@@ -7,9 +7,10 @@
 
 // #define DEBUG
 // #define SECONDS_ALWAYS_ON
-// #define INCLUDE_HR
-#define INCLUDE_WEATHER
 #define GARNISH_HOLIDAYS
+#define INCLUDE_WEATHER
+#define INCLUDE_STEPS
+// #define INCLUDE_HR
 
 enum ANALOG_HANDS_STYLE {
   STYLE_CONTEMPORARY = 0,

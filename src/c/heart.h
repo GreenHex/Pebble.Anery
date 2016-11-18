@@ -4,6 +4,7 @@
 #pragma once
 
 #include <pebble.h>
+#include "global.h"
 
 #ifdef INCLUDE_HR
 #ifdef PBL_HEALTH

@@ -5,6 +5,7 @@
 #include <pebble.h>
 #include "global.h"
 
+#ifdef INCLUDE_STEPS
 #ifdef PBL_HEALTH
 
 #include "health.h"
@@ -70,6 +71,10 @@ static void health_digit_layer_update_proc( Layer *layer, GContext *ctx ) {
 }
 
 void health_init( Layer *parent_layer ) {
+  HealthServiceAccessibilityMask steps_mask = health_service_metric_accessible( HealthMetricWalkedDistanceMeters, time_start_of_today(), time( NULL ) );
+  if ( ! ( steps_mask & HealthServiceAccessibilityMaskAvailable ) ) return;
+                                         
+  
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );
   // health bitmap layer
   GRect health_window_frame = GRect( parent_layer_bounds.origin.x + HEALTH_WINDOW_POS_X +
@@ -107,4 +112,5 @@ void health_deinit( void ) {
   }
 }
 
+#endif
 #endif
