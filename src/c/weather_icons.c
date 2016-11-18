@@ -64,7 +64,7 @@ void draw_icon( GContext *ctx, GRect bounds, int32_t icon_id, bool is_day_not_ni
     case 50: p_glyphs = &mist; break; // mist
     default: break;
   }
-  p_glyphs = &dusty;
+  
   if ( p_glyphs ) {
     for( int i = 0; i < p_glyphs->num_glyphs; i++ ) {
       draw_glyph( ctx, bounds, p_glyphs->glyphs[i] );
