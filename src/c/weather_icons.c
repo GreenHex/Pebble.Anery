@@ -44,7 +44,7 @@ void draw_icon( GContext *ctx, GRect bounds, int32_t icon_id, bool is_day_not_ni
   WEATHER_ICON windy = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_open, g_wind } };
   WEATHER_ICON windy_raining = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_windy_rain, g_raining_small } };
   WEATHER_ICON windy_snowing = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_cloud_windy_snow, g_snow_small } };
-  WEATHER_ICON dusty = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_wind, g_dust } };
+  WEATHER_ICON dusty = { .num_glyphs = 2, .glyphs = (GLYPH []) { g_mist, g_dust } };
 
   switch ( icon_id ) {
     case 1: p_glyphs = is_day_not_night ? &sun : &moon; break; // clear sky
@@ -64,7 +64,7 @@ void draw_icon( GContext *ctx, GRect bounds, int32_t icon_id, bool is_day_not_ni
     case 50: p_glyphs = &mist; break; // mist
     default: break;
   }
-  
+  p_glyphs = &dusty;
   if ( p_glyphs ) {
     for( int i = 0; i < p_glyphs->num_glyphs; i++ ) {
       draw_glyph( ctx, bounds, p_glyphs->glyphs[i] );
