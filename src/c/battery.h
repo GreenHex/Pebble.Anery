@@ -12,8 +12,8 @@
 #define CONT_BATT_GAUGE_INT_RADIUS 16
 #define CONT_BATT_GAUGE_EXT_RADIUS 20
 #define CONT_BATT_GAUGE_SIZE ( CONT_BATT_GAUGE_EXT_RADIUS * 2 + 2 )
-#define SBGE001_BATT_GAUGE_LOC_X 33
-#define SBGE001_BATT_GAUGE_LOC_Y 132
+#define SBGE001_BATT_GAUGE_LOC_X 32
+#define SBGE001_BATT_GAUGE_LOC_Y 136
 #define SBGE001_BATT_GAUGE_SIZE 71
 #define SBGE001_BATT_GAUGE_DOT_RADIUS 4
 #define MOSER_BATT_GAUGE_SIZE_W 55
@@ -25,13 +25,13 @@
 #define CONT_BATT_GAUGE_INT_RADIUS 12
 #define CONT_BATT_GAUGE_EXT_RADIUS 15
 #define CONT_BATT_GAUGE_SIZE ( CONT_BATT_GAUGE_EXT_RADIUS * 2 + 2 )
-#define SBGE001_BATT_GAUGE_LOC_X 20
-#define SBGE001_BATT_GAUGE_LOC_Y 100
+#define SBGE001_BATT_GAUGE_LOC_X 24
+#define SBGE001_BATT_GAUGE_LOC_Y 102
 #define SBGE001_BATT_GAUGE_SIZE 51
 #define SBGE001_BATT_GAUGE_DOT_RADIUS 3
 #define MOSER_BATT_GAUGE_SIZE_W 40
 #define MOSER_BATT_GAUGE_SIZE_H 32
-#define MOSER_BATT_GAUGE_DOT_RADIUS 2
+#define MOSER_BATT_GAUGE_DOT_RADIUS 3
 ///////
 #endif
 ///////
@@ -47,9 +47,9 @@
 static const GPathInfo MOSER_BATT_GAUGE_HAND = {
   5, (GPoint []) {
     { -1, 0 },
-    { -2, -19 },
+    { -2, -20 },
     { 0, -38 },
-    { 2, -19 },
+    { 2, -20 },
     { 1, 0 }
   }
 };
@@ -69,9 +69,9 @@ static const GPathInfo SBGE001_BATT_GAUGE_HAND = {
 static const GPathInfo MOSER_BATT_GAUGE_HAND = {
   5, (GPoint []) {
     { -1, 0 },
-    { -2, -13 },
+    { -2, -15 },
     { 0, -27 },
-    { 2, -13 },
+    { 2, -15 },
     { 1, 0 }
   }
 };
