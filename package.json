@@ -41,12 +41,20 @@
                 {
                     "characterRegex": "[A-X]",
                     "file": "fonts/Forecast Font Mod.ttf",
+                    "name": "FONT_FORECASTFONT_40",
+                    "targetPlatforms": [
+                        "emery"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[A-X]",
+                    "file": "fonts/Forecast Font Mod.ttf",
                     "name": "FONT_FORECASTFONT_32",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
-                        "diorite",
-                        "emery"
+                        "diorite"
                     ],
                     "type": "font"
                 },
@@ -153,5 +161,5 @@
             "watchface": true
         }
     },
-    "version": "1.19.0"
+    "version": "1.20.0"
 }

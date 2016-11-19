@@ -60,7 +60,7 @@ void get_weather( struct tm *tick_time, bool ignoreUpdateInterval ) {
 
   if ( ( ! ignoreUpdateInterval ) && ( tick_time->tm_min % ( persist_read_int( MESSAGE_KEY_WEATHER_UPDATE_INTERVAL ) ) ) ) return;
 
-  is_day_not_night = ( ( tick_time->tm_hour > 6 ) && ( tick_time->tm_hour < 18 ) );
+  is_day_not_night = ( ( tick_time->tm_hour > 4 ) && ( tick_time->tm_hour < 18 ) ); // quick-and-dirty
   send_request( REQUEST_WEATHER );
 }
 
