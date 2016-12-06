@@ -1,6 +1,10 @@
 //
 // Copyright (C) 2016, Vinodh Kumar M. <GreenHex@gmail.com>
 //
+// Fonts:
+// https://fonts.google.com/specimen/BioRhyme
+// https://fonts.google.com/specimen/BioRhyme+Expanded
+//
 
 #include <pebble.h>
 #include "date.h"
@@ -30,6 +34,10 @@ static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_fill_rect( ctx, date_window_bounds, 0, GCornersAll );  
 }
 
+#define ALTERNATE_FONT
+#define DATE_FONT_EXPANDED RESOURCE_ID_FONT_BIORHYME_EXPANDED_REGULAR_20
+#define DATE_FONT_NORMAL RESOURCE_ID_FONT_BIORHYME_REGULAR_20
+
 static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_DATE ) ) return;
   
@@ -39,9 +47,24 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack;
   graphics_context_set_text_color( ctx, text_color );
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
+
+  #ifdef ALTERNATE_FONT
+  GFont font;
+  if ( tm_time.tm_mday < 10 ) {
+    font = fonts_load_custom_font( resource_get_handle( DATE_FONT_EXPANDED ) );
+  } else {
+    font = fonts_load_custom_font( resource_get_handle( DATE_FONT_NORMAL ) );
+  }
+  date_window_bounds.origin.y -= ( DATE_TXT_VERT_ADJ - 1 );
+  graphics_draw_text( ctx, date_text, font, date_window_bounds,
+                     GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  fonts_unload_custom_font( font );
+  #else
   date_window_bounds.origin.y -= DATE_TXT_VERT_ADJ;
   graphics_draw_text( ctx, date_text, fonts_get_system_font( FONT_KEY_ROBOTO_CONDENSED_21 ), date_window_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
+  #endif
+  
   #ifdef GARNISH_HOLIDAYS
   static GBitmap *holiday_bitmap = 0;
   for ( int i = 0; i < NUM_HOLIDAYS; i++ ) {

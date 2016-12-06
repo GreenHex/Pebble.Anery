@@ -39,6 +39,30 @@
         "resources": {
             "media": [
                 {
+                    "characterRegex": "[0-9]",
+                    "file": "fonts/BioRhymeExpanded-Regular-Mod.ttf",
+                    "name": "FONT_BIORHYME_EXPANDED_REGULAR_20",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9]",
+                    "file": "fonts/BioRhyme-Regular-Mod.ttf",
+                    "name": "FONT_BIORHYME_REGULAR_20",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery"
+                    ],
+                    "type": "font"
+                },
+                {
                     "characterRegex": "[A-X]",
                     "file": "fonts/Forecast Font Mod.ttf",
                     "name": "FONT_FORECASTFONT_40",
@@ -161,5 +185,5 @@
             "watchface": true
         }
     },
-    "version": "1.21.0"
+    "version": "1.22.0"
 }
