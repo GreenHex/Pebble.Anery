@@ -35,17 +35,19 @@ static void date_bitmap_layer_update_proc( Layer *layer, GContext *ctx ) {
 }
 
 #define ALTERNATE_FONT
-#define DATE_FONT_EXPANDED RESOURCE_ID_FONT_BIORHYME_EXPANDED_REGULAR_20
-#define DATE_FONT_NORMAL RESOURCE_ID_FONT_BIORHYME_REGULAR_20
+#define DATE_FONT_EXPANDED RESOURCE_ID_FONT_BIORHYME_EXPANDED_REGULAR_18
+#define DATE_FONT_NORMAL RESOURCE_ID_FONT_BIORHYME_REGULAR_18
 
 static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_DATE ) ) return;
   
   GRect date_window_bounds = layer_get_bounds( layer );
-
+  
   static char date_text[3] = "";
+  
   GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack;
   graphics_context_set_text_color( ctx, text_color );
+  tm_time.tm_wday = 38;
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
 
   #ifdef ALTERNATE_FONT
@@ -55,7 +57,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   } else {
     font = fonts_load_custom_font( resource_get_handle( DATE_FONT_NORMAL ) );
   }
-  date_window_bounds.origin.y -= ( DATE_TXT_VERT_ADJ - 1 );
+  date_window_bounds.origin.y -= ( DATE_TXT_VERT_ADJ - 2 );
   graphics_draw_text( ctx, date_text, font, date_window_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
   fonts_unload_custom_font( font );

@@ -41,7 +41,7 @@
                 {
                     "characterRegex": "[0-9]",
                     "file": "fonts/BioRhymeExpanded-Regular-Mod.ttf",
-                    "name": "FONT_BIORHYME_EXPANDED_REGULAR_20",
+                    "name": "FONT_BIORHYME_EXPANDED_REGULAR_18",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
@@ -53,7 +53,7 @@
                 {
                     "characterRegex": "[0-9]",
                     "file": "fonts/BioRhyme-Regular-Mod.ttf",
-                    "name": "FONT_BIORHYME_REGULAR_20",
+                    "name": "FONT_BIORHYME_REGULAR_18",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
@@ -185,5 +185,5 @@
             "watchface": true
         }
     },
-    "version": "1.22.0"
+    "version": "1.23.0"
 }
