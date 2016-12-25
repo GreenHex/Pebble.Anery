@@ -45,7 +45,7 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   
   static char date_text[3] = "";
   
-  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack;
+  GColor text_color = PBL_IF_COLOR_ELSE( ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack, GColorBlack );
   graphics_context_set_text_color( ctx, text_color );
   tm_time.tm_wday = 38;
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
@@ -72,7 +72,11 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   for ( int i = 0; i < NUM_HOLIDAYS; i++ ) {
     if ( ( holidays[i].date == tm_time.tm_mday ) && ( ( holidays[i].month - 1 ) == tm_time.tm_mon ) ) {
       holiday_bitmap = gbitmap_create_with_resource( holidays[i].iconID );
-      date_window_bounds.origin.y += DATE_TXT_VERT_ADJ;
+      #ifdef ALTERNATE_FONT
+      date_window_bounds.origin.y += DATE_TXT_VERT_ADJ - 2;
+      #else
+      date_window_bounds.origin.y += DATE_TXT_VERT_ADJ
+      #endif
       graphics_draw_bitmap_in_rect( ctx, holiday_bitmap, date_window_bounds );
       break;
     }
