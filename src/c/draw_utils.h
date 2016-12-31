@@ -155,16 +155,16 @@ static const GPathInfo GMT_HAND_INLAY = {
 static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
   4, (GPoint []) {
     { 0, 18 },
-    { -8, 0 },
+    { -10, 0 },
     { 0, -46 },
-    { 8, 0 }
+    { 10, 0 }
   }
 };
 
 static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 18 },
-    { -8, 0 },
+    { -10, 0 },
     { 0, -46 }
   }
 };

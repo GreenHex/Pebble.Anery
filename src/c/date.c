@@ -105,6 +105,6 @@ void date_init( Layer *parent_layer ) {
 }
 
 void date_deinit( void ) {
-  bitmap_layer_destroy( date_bitmap_layer );
-  text_layer_destroy( date_text_layer );
+  if ( date_text_layer ) text_layer_destroy( date_text_layer );
+  if ( date_bitmap_layer ) bitmap_layer_destroy( date_bitmap_layer );
 }
