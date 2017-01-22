@@ -22,7 +22,8 @@
 
 static Layer *window_layer = 0;
 // analog clock
-static BitmapLayer *analog_clock_bitmap_layer = 0;
+static Layer *dial_layer = 0;
+// static BitmapLayer *analog_clock_bitmap_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
 // misc
@@ -65,12 +66,59 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   #endif
   
   #ifdef INCLUDE_WEATHER
-  if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) get_weather( &tm_time, false );
+  if ( units_changed & MINUTE_UNIT ) get_weather( &tm_time, false );
   #endif
   
   layer_mark_dirty( analog_clock_layer );
   
-  if ( ( units_changed & MINUTE_UNIT ) == MINUTE_UNIT ) do_chime( &tm_time );
+  if ( units_changed & MINUTE_UNIT ) do_chime( &tm_time );
+}
+
+static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
+  GRect bounds = layer_get_bounds( layer );
+  graphics_context_set_antialiased( ctx, true );
+  graphics_context_set_fill_color( ctx, BACKGROUND_COLOUR );
+  graphics_fill_rect( ctx, bounds, 0, GCornerNone );
+  
+  if ( persist_read_bool( MESSAGE_KEY_ANALOG_SHOW_SECONDS_TICKS ) ) {
+    draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
+      .layer = layer, 
+      .ctx = ctx, 
+      .p_gpath_info = &PATH_TICK, 
+      .increment = 1, 
+      .tick_thk = 1, 
+      .tick_length = 6,
+      #ifdef REVERSE
+      .tick_colour = GColorLightGray, 
+      #else
+      .tick_colour = GColorDarkGray, 
+      #endif
+      .bg_colour = BACKGROUND_COLOUR
+    } );
+  }
+  draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
+    .layer = layer, 
+    .ctx = ctx, 
+    .p_gpath_info = &PATH_TICK, 
+    .increment = 5, 
+    .tick_thk = 1, 
+    .tick_length = 10, 
+    .tick_colour = CLOCK_TICK_HOUR_COLOUR, 
+    .bg_colour = BACKGROUND_COLOUR
+  } );
+  draw_seconds_ticks( & (DRAW_TICKS_PARAMS) {
+    .layer = layer,
+    .ctx = ctx,
+    .p_gpath_info = &PATH_TICK,
+    .increment = 15,
+    .tick_thk = 3,
+    .tick_length = 15,
+    .tick_colour = CLOCK_TICK_HOUR_COLOUR, 
+    .bg_colour = BACKGROUND_COLOUR
+  } );
+  graphics_context_set_stroke_color( ctx, BACKGROUND_COLOUR );
+  graphics_context_set_stroke_width( ctx, CLOCK_TICK_EDGE_OFFSET );
+  graphics_draw_round_rect( ctx, grect_inset( bounds, GEdgeInsets( CLOCK_TICK_EDGE_OFFSET / 2 ) ), 0 ); 
 }
 
 static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -99,7 +147,6 @@ static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
 
 #ifndef SECONDS_ALWAYS_ON
 static void stop_seconds_display( void* data ) { // after timer elapses
-  if ( secs_display_apptimer ) app_timer_cancel( secs_display_apptimer ); // just for fun.
   secs_display_apptimer = 0; // docs don't say if this is set to zero when timer expires. 
 
   ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
@@ -128,33 +175,32 @@ void clock_init( Window *window ) {
   GRect window_bounds = layer_get_bounds( window_layer );
   GRect clock_layer_frame = GRect( window_bounds.origin.x + CLOCK_POS_X, window_bounds.origin.y + CLOCK_POS_Y, 
                                    window_bounds.size.w - CLOCK_POS_X, window_bounds.size.h - CLOCK_POS_Y );
-  // background bitmap
-  analog_clock_bitmap = gbitmap_create_with_resource( RESOURCE_ID_ANALOG_EMERY_FULL_SLIM );
-  analog_clock_bitmap_layer = bitmap_layer_create( clock_layer_frame );
-  bitmap_layer_set_bitmap( analog_clock_bitmap_layer, analog_clock_bitmap );
-  layer_add_child( window_layer, bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
-  layer_set_hidden( bitmap_layer_get_layer( analog_clock_bitmap_layer ), false );
+  // background
+  dial_layer = layer_create( clock_layer_frame );
+  layer_set_update_proc( dial_layer, dial_layer_update_proc );
+  layer_add_child( window_layer, dial_layer );
+  
   // battery, date, health, weather
-  battery_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
-  date_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  battery_init( dial_layer );
+  date_init( dial_layer );
   #ifdef PBL_HEALTH
-  health_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  health_init( dial_layer );
   #ifdef INCLUDE_HR
-  heart_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  heart_init( dial_layer );
   #endif
   #endif
   #ifdef INCLUDE_WEATHER
-  weather_init( bitmap_layer_get_layer( analog_clock_bitmap_layer ) );
+  weather_init( dial_layer );
   #endif
   // clock layer
-  analog_clock_layer = layer_create_with_data( layer_get_bounds( bitmap_layer_get_layer( analog_clock_bitmap_layer ) ),
+  analog_clock_layer = layer_create_with_data( layer_get_bounds( dial_layer ),
                                               sizeof( ANALOG_LAYER_DATA ) );  
   #ifdef SECONDS_ALWAYS_ON
   ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = true;
   #else
   ( (ANALOG_LAYER_DATA *) layer_get_data( analog_clock_layer ) )->show_seconds = false;
   #endif
-  layer_add_child( bitmap_layer_get_layer( analog_clock_bitmap_layer ), analog_clock_layer );
+  layer_add_child( dial_layer, analog_clock_layer );
   layer_set_update_proc( analog_clock_layer, analog_clock_layer_update_proc ); 
   layer_set_hidden( analog_clock_layer, false );
   
@@ -190,6 +236,6 @@ void clock_deinit( void ) {
   date_deinit();
   battery_deinit();
   gpaths_deinit();
-  bitmap_layer_destroy( analog_clock_bitmap_layer );
+  layer_destroy( dial_layer );
   gbitmap_destroy( analog_clock_bitmap );
 }

@@ -50,6 +50,12 @@ module.exports = [
       },
       {
         "type": "toggle",
+        "messageKey": "ANALOG_SHOW_SECONDS_TICKS",
+        "label": "Show Seconds Ticks",
+        "defaultValue": true
+      },
+      {
+        "type": "toggle",
         "messageKey": "SHOW_DATE",
         "label": "Show Date",
         "defaultValue": true

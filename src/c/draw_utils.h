@@ -37,6 +37,8 @@
 ///////
 
 #define COLOUR_BG_BITMAP_BG     GColorBlack
+#define BACKGROUND_COLOUR       COLOUR_BG_BITMAP_BG
+#define TICKS_COLOUR            GColorBlack
 
 #define COLOUR_DOT              GColorWhite
 #define COLOUR_DOT_OUTLINE      GColorBlack
@@ -45,6 +47,21 @@
 #define COLOUR_MIN_HAND         PBL_IF_COLOR_ELSE( GColorChromeYellow /* GColorOrange */, GColorWhite )
 #define COLOUR_SEC_HAND         GColorWhite
 #define COLOUR_SEC_HAND_TIP     PBL_IF_COLOR_ELSE( GColorRed /* GColorDarkCandyAppleRed */, GColorWhite )
+
+#define CLOCK_DIAL_SIZE_W       PBL_DISPLAY_WIDTH 
+#define CLOCK_DIAL_SIZE_H       PBL_DISPLAY_HEIGHT
+#define CLOCK_DIAL_POS_X        0
+#define CLOCK_DIAL_POS_Y        0
+#define CLOCK_TICK_EDGE_OFFSET  3 /* make it an odd number */
+#define CLOCK_TICK_HOUR_COLOUR  GColorWhite
+#define CLOCK_TICK_MINUTE_COLOUR GColorDrakGray
+
+static GPathInfo PATH_TICK = {
+  2, (GPoint []) {
+    { 0, - ( CLOCK_DIAL_SIZE_W > CLOCK_DIAL_SIZE_H ? CLOCK_DIAL_SIZE_W : CLOCK_DIAL_SIZE_H ) },
+    { 0, ( CLOCK_DIAL_SIZE_W >  CLOCK_DIAL_SIZE_H ? CLOCK_DIAL_SIZE_W : CLOCK_DIAL_SIZE_H ) }
+  }
+};
 
 ///////
 #if PBL_DISPLAY_WIDTH == 200
@@ -255,6 +272,17 @@ static const GPathInfo GMT_HAND_INLAY = {
 ///////
 
 typedef struct {
+  Layer *layer;
+  GContext *ctx;
+  GPathInfo *p_gpath_info;
+  int increment;
+  int tick_thk;
+  int tick_length;
+  GColor tick_colour;
+  GColor bg_colour;
+} DRAW_TICKS_PARAMS;
+
+typedef struct {
   GContext *ctx;
   GPoint center_pt;
   GPoint from_pt;
@@ -295,6 +323,7 @@ typedef struct {
   bool show_seconds;
 } DRAW_CLOCK_PARAMS;
 
+void draw_seconds_ticks( DRAW_TICKS_PARAMS *pDTP );
 void draw_cont_clock_hands( DRAW_CLOCK_PARAMS *pCP );
 void draw_spiffy_gs_clock_hands( DRAW_CLOCK_PARAMS *pCP );
 void draw_sbge001_clock_hands( DRAW_CLOCK_PARAMS *pCP );
