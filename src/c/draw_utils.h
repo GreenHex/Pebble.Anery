@@ -150,7 +150,7 @@ static const GPathInfo GMT_HAND = {
     { -4, 0 },
     { -2, -64 },
     { -8, -64 },
-    { 0, -84 },
+    { 0, -88 },
     { 8, -64 },
     { 2, -64 },
     { 4,  0 }
@@ -160,7 +160,7 @@ static const GPathInfo GMT_HAND = {
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
     { -5, -67 },
-    { 0, -80 },
+    { 0, -84 },
     { 5, -67 },
   }
 };
@@ -173,7 +173,7 @@ static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
   4, (GPoint []) {
     { 0, 18 },
     { -9, 0 },
-    { 0, -46 },
+    { 0, -50 },
     { 9, 0 }
   }
 };
@@ -182,7 +182,7 @@ static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 18 },
     { -9, 0 },
-    { 0, -46 }
+    { 0, -50 }
   }
 };
 
@@ -190,7 +190,7 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS = {
   4, (GPoint []) {
     { 0, 18 },
     { -7, 0 },
-    { 0, -68 },
+    { 0, -70 },
     { 7, 0 },
   }
 };
@@ -199,7 +199,7 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 18 },
     { 7, 0 },
-    { 0, -68 },
+    { 0, -70 },
   }
 };
 
@@ -207,8 +207,8 @@ static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
   6, (GPoint []) {
     { -3, 14 },
     { -8, 0 },
-    { -2, -38 },
-    { 2, -38 },
+    { -2, -40 },
+    { 2, -40 },
     { 8, 0 },
     { 3, 14 }
   }
@@ -218,8 +218,8 @@ static const GPathInfo HOUR_HAND_SBGE001_POINTS_HIGHLIGHT = {
   6, (GPoint []) {
     { -1, 12 },
     { -6, 0 },
-    { 0, -36 },
-    { 0, -36 },
+    { 0, -38 },
+    { 0, -38 },
     { 6, 0 },
     { 1, 12 }
   }
@@ -229,8 +229,8 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS = {
   6, (GPoint []) {
     { -3, 14 },
     { -7, 0 },
-    { -2, -60 },
-    { 2, -60 },
+    { -2, -64 },
+    { 2, -64 },
     { 7, 0 },
     { 3, 14 }
   }
@@ -240,8 +240,8 @@ static const GPathInfo MINUTE_HAND_SBGE001_POINTS_HIGHLIGHT = {
   6, (GPoint []) {
     { -1, 12 },
     { -5, 0 },
-    { -0, -58 },
-    { 0, -58 },
+    { -0, -62 },
+    { 0, -62 },
     { 5, 0 },
     { 1, 12 }
   }
@@ -252,7 +252,7 @@ static const GPathInfo GMT_HAND = {
     { -3, 0 },
     { -2, -44 },
     { -6, -44 },
-    { 0, -59 },
+    { 0, -68 },
     { 6, -44 },
     { 2, -44 },
     { 3,  0 }
@@ -262,7 +262,7 @@ static const GPathInfo GMT_HAND = {
 static const GPathInfo GMT_HAND_INLAY = {
   3, (GPoint []) {
     { -4, -47 },
-    { 0, -56 },
+    { 0, -65 },
     { 4, -47 },
   }
 };
@@ -323,6 +323,7 @@ typedef struct {
   bool show_seconds;
 } DRAW_CLOCK_PARAMS;
 
+void draw_clock_hand( HAND_DRAW_PARAMS *pDP );
 void draw_seconds_ticks( DRAW_TICKS_PARAMS *pDTP );
 void draw_cont_clock_hands( DRAW_CLOCK_PARAMS *pCP );
 void draw_spiffy_gs_clock_hands( DRAW_CLOCK_PARAMS *pCP );

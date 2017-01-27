@@ -4,6 +4,7 @@
 
 #include <pebble.h>
 #include "battery.h"
+#include "draw_utils.h"
 
 static BatteryChargeState charge_state;
 // cont battery gauge
@@ -20,7 +21,7 @@ static void batt_gauge_update_proc( BatteryChargeState state ) {
   if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SPIFFY_GS ) {
     layer_mark_dirty( bitmap_layer_get_layer( moser_batt_gauge_bitmap_layer ) );
   } else if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) == STYLE_SBGE001 ) {
-    layer_mark_dirty( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
+    // layer_mark_dirty( bitmap_layer_get_layer( sbge001_batt_gauge_bitmap_layer ) );
   } else {
     layer_mark_dirty( bitmap_layer_get_layer( cont_batt_gauge_bitmap_layer ) );
   }
@@ -85,7 +86,32 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
   
   center_pt.x = MOSER_BATT_GAUGE_SIZE_W - 6;
  
-  uint32_t batt_angle = (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245;
+  // uint32_t batt_angle = (uint32_t) TRIG_MAX_ANGLE * ( ( ( charge_state.charge_percent * 50 ) / 100 ) + 245 );
+  uint32_t batt_angle = DEG_TO_TRIGANGLE( (uint32_t) ( ( charge_state.charge_percent * 50 ) / 100 ) + 245 );
+  GPoint battery_hand = (GPoint) {
+    .x = ( sin_lookup( batt_angle ) * BATT_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.x,
+    .y = ( -cos_lookup( batt_angle ) * BATT_HAND_LENGTH / TRIG_MAX_RATIO ) + center_pt.y
+  };
+  
+  draw_clock_hand( & (HAND_DRAW_PARAMS) {
+    .ctx = ctx,
+    .center_pt = center_pt,
+    .from_pt = center_pt,
+    .to_pt = battery_hand,
+    .hand_width = 1,
+    .hand_color = GColorDarkGray,
+    .hand_outline_color = GColorBlack,
+    .dot_radius = 3,
+    .dot_color = GColorDarkGray,
+    .dot_outline_color = GColorBlack
+  } );
+  
+  graphics_context_set_fill_color( ctx, charge_state.is_charging ? GColorJaegerGreen : 
+                                  charge_state.charge_percent < 16 ? GColorFolly : GColorDarkGray );
+  graphics_fill_circle( ctx, center_pt, 1 );
+  
+  
+  /*
   BATTERY_HAND_DRAW_PARAMS batt_hand_params = {
     .ctx = ctx,
     .batt_angle = batt_angle,
@@ -97,10 +123,18 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
     .charge_state = charge_state,    
   };
   draw_battery_hand( &batt_hand_params );
+  */
   gbitmap_destroy( moser_batt_gauge_bitmap );
 }
 
 static void sbge001_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if( ! persist_read_bool( MESSAGE_KEY_SHOW_BATTERY_GAUGE ) ) return;
+  if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
+  
+}
+
+static void sbge001_batt_gauge_layer_update_proc_OLD( Layer *layer, GContext *ctx ) {
+  return;
   if( ! persist_read_bool( MESSAGE_KEY_SHOW_BATTERY_GAUGE ) ) return;
   if( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
 

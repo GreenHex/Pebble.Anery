@@ -24,15 +24,18 @@ void show_weather( Tuple *tuple_ptr_temp, DictionaryIterator *iterator ) {
   
   if ( tuple_ptr_temp ) {
     if ( tuple_ptr_weather_icon_id ) {
-      weather_data.icon_id = tuple_ptr_weather_icon_id->value->int32; 
+      weather_data.icon_id = tuple_ptr_weather_icon_id->value->int32;
+      // weather_data.icon_id = 10; // test
     }
     snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", tuple_ptr_temp->value->cstring );
+    // snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", "38 C" ); // test
   }
   layer_mark_dirty( bitmap_layer_get_layer( weather_bitmap_layer ) );
 }
 
 void clear_weather( void ) {
   weather_data.temp_str[0] = 0;
+  // snprintf( weather_data.temp_str, sizeof( weather_data.temp_str ), "%s", "38 C" );
   weather_data.icon_id = 0;
 }
 
@@ -83,11 +86,11 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
 
   GRect weather_text_layer_bounds = layer_get_bounds( layer );
   // graphics_context_set_fill_color( ctx, GColorOrange );
-  // graphics_fill_rect( ctx, weather_text_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
-
+  // graphics_fill_rect( ctx, weather_text_layer_bounds, 2, GCornersAll );
+  graphics_context_set_antialiased( ctx, true );
   weather_text_layer_bounds.origin.y -= WEATHER_TEXT_VERT_ADJ;
   graphics_context_set_text_color( ctx, GColorLightGray );
-  graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_ROBOTO_CONDENSED_21 ), weather_text_layer_bounds,
+  graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_GOTHIC_28 /* FONT_KEY_ROBOTO_CONDENSED_21 */ ), weather_text_layer_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }
 
@@ -96,38 +99,29 @@ void weather_icon_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   if( ! weather_data.icon_id ) return;
   
   GRect weather_icon_layer_bounds = layer_get_bounds( layer );
-  // graphics_context_set_fill_color( ctx, GColorBlack );
-  // graphics_fill_rect( ctx, weather_icon_layer_bounds, WEATHER_ICON_OUTLINE_THK, GCornersAll );
+  // graphics_context_set_fill_color( ctx, GColorOrange );
+  // graphics_fill_rect( ctx, weather_icon_layer_bounds, 2, GCornersAll );
+  graphics_context_set_antialiased( ctx, true );
   weather_icon_layer_bounds.origin.y -= WEATHER_ICON_VERT_ADJ;
   draw_icon( ctx, weather_icon_layer_bounds, weather_data.icon_id, is_day_not_night );
-
 }
 
 void weather_init( Layer *parent_layer ) {
   GRect parent_layer_bounds = layer_get_bounds( parent_layer );
   weather_icons_init();
   
-  GRect weather_bitmap_layer_frame = GRect( parent_layer_bounds.origin.x + WEATHER_WINDOW_POS_X - WEATHER_WINDOW_OUTLINE_THK,
-                                           parent_layer_bounds.origin.y + WEATHER_WINDOW_POS_Y - WEATHER_WINDOW_OUTLINE_THK,
-                                           WEATHER_WINDOW_SIZE_W + ( WEATHER_WINDOW_OUTLINE_THK * 2 ),
-                                           WEATHER_WINDOW_SIZE_H + ( WEATHER_WINDOW_OUTLINE_THK * 2 ) );
+  GRect weather_bitmap_layer_frame = WEATHER_WINDOW_FRAME;
   weather_bitmap_layer = bitmap_layer_create( weather_bitmap_layer_frame );
   bitmap_layer_set_compositing_mode( weather_bitmap_layer, GCompOpAssign );
   layer_set_update_proc( bitmap_layer_get_layer( weather_bitmap_layer ), weather_bitmap_layer_update_proc );
   layer_add_child( parent_layer, bitmap_layer_get_layer( weather_bitmap_layer ) );
   
-  GRect weather_text_layer_bounds = GRect( WEATHER_WINDOW_SIZE_W / 2 - WEATHER_TEXT_SIZE_W / 2,
-                                          WEATHER_WINDOW_OUTLINE_THK + WEATHER_ICON_SIZE_H + ( WEATHER_ICON_OUTLINE_THK * 2 ),
-                                          WEATHER_TEXT_SIZE_W + ( WEATHER_TEXT_OUTLINE_THK * 2 ),
-                                          WEATHER_TEXT_SIZE_H + ( WEATHER_TEXT_OUTLINE_THK * 2 ) );
+  GRect weather_text_layer_bounds = WEATHER_TEXT_FRAME;
   weather_text_layer = text_layer_create( weather_text_layer_bounds );
   layer_set_update_proc( text_layer_get_layer( weather_text_layer ), weather_text_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( weather_bitmap_layer ), text_layer_get_layer( weather_text_layer ) );
   
-  GRect weather_icon_text_layer_frame = GRect( WEATHER_WINDOW_SIZE_W / 2 - WEATHER_ICON_SIZE_W / 2,
-                                              WEATHER_WINDOW_OUTLINE_THK,
-                                              WEATHER_ICON_SIZE_W + ( WEATHER_ICON_OUTLINE_THK * 2 ), 
-                                              WEATHER_ICON_SIZE_H + ( WEATHER_ICON_OUTLINE_THK * 2 ) );
+  GRect weather_icon_text_layer_frame = WEATHER_ICON_FRAME;
   weather_icon_text_layer = text_layer_create( weather_icon_text_layer_frame );
   layer_set_update_proc( text_layer_get_layer( weather_icon_text_layer ), weather_icon_text_layer_update_proc );
   layer_add_child( bitmap_layer_get_layer( weather_bitmap_layer ), text_layer_get_layer( weather_icon_text_layer ) );

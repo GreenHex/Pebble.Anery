@@ -4,7 +4,7 @@
         "pebble-clay": "^1.0.2"
     },
     "keywords": [],
-    "name": "anery-v1.27",
+    "name": "anery-v1.28",
     "pebble": {
         "capabilities": [
             "location",
@@ -66,9 +66,11 @@
                 {
                     "characterRegex": "[A-X]",
                     "file": "fonts/Forecast Font Mod.ttf",
-                    "name": "FONT_FORECASTFONT_40",
+                    "name": "FONT_FORECASTFONT_48",
                     "targetPlatforms": [
-                        "emery"
+                        "aplite",
+                        "basalt",
+                        "diorite"
                     ],
                     "type": "font"
                 },
@@ -80,6 +82,15 @@
                         "aplite",
                         "basalt",
                         "diorite"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[A-X]",
+                    "file": "fonts/Forecast Font Mod.ttf",
+                    "name": "FONT_FORECASTFONT_40",
+                    "targetPlatforms": [
+                        "emery"
                     ],
                     "type": "font"
                 },
@@ -185,5 +196,5 @@
             "watchface": true
         }
     },
-    "version": "1.27.0"
+    "version": "1.28.0"
 }

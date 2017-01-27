@@ -41,7 +41,7 @@ void draw_seconds_ticks( DRAW_TICKS_PARAMS *pDTP ) {
   gpath_destroy( gpath );
 }
 
-static void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
+void draw_clock_hand( HAND_DRAW_PARAMS *pDP ) {
   graphics_context_set_antialiased( pDP->ctx, true );
   // dot outline
   graphics_context_set_stroke_color( pDP->ctx, pDP->dot_outline_color );

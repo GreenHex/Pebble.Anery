@@ -36,6 +36,7 @@
 #endif
 ///////
 
+#define BATT_HAND_LENGTH        22
 #define COLOUR_BATT_15          GColorRed
 #define COLOUR_BATT_95          GColorDarkGreen
 #define COLOUR_BATT_100         GColorMayGreen
