@@ -4,7 +4,7 @@
         "pebble-clay": "^1.0.2"
     },
     "keywords": [],
-    "name": "anery-v1.28",
+    "name": "anery-v1.30",
     "pebble": {
         "capabilities": [
             "location",
@@ -39,6 +39,26 @@
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "images/Mouse W.png",
+                    "name": "IMAGE_MOUSE_W",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/Mouse B.png",
+                    "name": "IMAGE_MOUSE_B",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite"
+                    ],
+                    "type": "bitmap"
+                },
                 {
                     "characterRegex": "[0-9]",
                     "file": "fonts/BioRhymeExpanded-Regular-Mod.ttf",
@@ -196,5 +216,5 @@
             "watchface": true
         }
     },
-    "version": "1.28.0"
+    "version": "1.30.0"
 }

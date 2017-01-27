@@ -73,11 +73,15 @@ void weather_bitmap_layer_update_proc(  Layer *layer, GContext *ctx ) {
   
   GRect weather_window_bounds = layer_get_bounds( layer );
   
-  // graphics_context_set_fill_color( ctx, GColorWhite );
-  // graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
+  // graphics_context_set_fill_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorLightGray ) );
+  // graphics_fill_rect( ctx, weather_window_bounds, 5, GCornersAll );
   // weather_window_bounds = grect_inset( weather_window_bounds, GEdgeInsets( WEATHER_WINDOW_OUTLINE_THK ) );
   // graphics_context_set_fill_color( ctx, GColorBlue );
   // graphics_fill_rect( ctx, weather_window_bounds, WEATHER_WINDOW_OUTLINE_THK, GCornersAll );
+  
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_context_set_stroke_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorLightGray ) );
+  graphics_draw_round_rect( ctx, weather_window_bounds, 6 );
 }
 
 void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -89,7 +93,7 @@ void weather_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   // graphics_fill_rect( ctx, weather_text_layer_bounds, 2, GCornersAll );
   graphics_context_set_antialiased( ctx, true );
   weather_text_layer_bounds.origin.y -= WEATHER_TEXT_VERT_ADJ;
-  graphics_context_set_text_color( ctx, GColorLightGray );
+  graphics_context_set_text_color( ctx, GColorWhite );
   graphics_draw_text( ctx, weather_data.temp_str, fonts_get_system_font( FONT_KEY_GOTHIC_28 /* FONT_KEY_ROBOTO_CONDENSED_21 */ ), weather_text_layer_bounds,
                      GTextOverflowModeTrailingEllipsis, GTextAlignmentCenter, NULL );
 }

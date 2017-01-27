@@ -18,6 +18,9 @@
 
 #endif
 
+// #define SNOOZE_LAYER_FRAME ( GRect( 89, ( PBL_DISPLAY_HEIGHT / 2 ) - ( 20 / 2 ), 20, 20 ) )
+#define SNOOZE_LAYER_FRAME ( GRect( ( PBL_DISPLAY_WIDTH / 2 ) - ( 20 / 2 ), 2, 20, 20 ) )
+
 typedef struct {
   bool show_seconds;
 } ANALOG_LAYER_DATA;

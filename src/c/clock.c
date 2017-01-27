@@ -23,7 +23,7 @@
 static Layer *window_layer = 0;
 // analog clock
 static Layer *dial_layer = 0;
-// static BitmapLayer *analog_clock_bitmap_layer = 0;
+static BitmapLayer *snooze_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
 // misc
@@ -71,7 +71,7 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   
   layer_mark_dirty( analog_clock_layer );
   
-  if ( units_changed & MINUTE_UNIT ) do_chime( &tm_time );
+  if ( ( units_changed & MINUTE_UNIT ) && ( !quiet_time_is_active() ) )do_chime( &tm_time );
 }
 
 static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -119,6 +119,23 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_stroke_color( ctx, BACKGROUND_COLOUR );
   graphics_context_set_stroke_width( ctx, CLOCK_TICK_EDGE_OFFSET );
   graphics_draw_round_rect( ctx, grect_inset( bounds, GEdgeInsets( CLOCK_TICK_EDGE_OFFSET / 2 ) ), 0 ); 
+}
+
+static void snooze_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if ( quiet_time_is_active() ) {
+    GRect bounds = layer_get_bounds( layer );
+    graphics_context_set_fill_color( ctx, GColorBlack );
+    graphics_fill_rect( ctx, bounds, 0, GCornerNone );
+    graphics_context_set_antialiased( ctx, true );
+    graphics_context_set_compositing_mode( ctx, GCompOpSet );
+    #ifdef REVERSE
+    GBitmap *snooze_bitmap = gbitmap_create_with_resource( RESOURCE_ID_IMAGE_MOUSE_W );
+    #else
+    GBitmap *snooze_bitmap = gbitmap_create_with_resource( RESOURCE_ID_IMAGE_MOUSE_B );
+    #endif
+    graphics_draw_bitmap_in_rect( ctx, snooze_bitmap, bounds );
+    gbitmap_destroy( snooze_bitmap );
+  }
 }
 
 static void analog_clock_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -180,6 +197,10 @@ void clock_init( Window *window ) {
   layer_set_update_proc( dial_layer, dial_layer_update_proc );
   layer_add_child( window_layer, dial_layer );
   
+  snooze_layer = bitmap_layer_create( SNOOZE_LAYER_FRAME );
+  layer_set_update_proc( bitmap_layer_get_layer( snooze_layer ), snooze_layer_update_proc );
+  layer_add_child( dial_layer, bitmap_layer_get_layer( snooze_layer ) );
+  
   // battery, date, health, weather
   battery_init( dial_layer );
   date_init( dial_layer );
@@ -236,6 +257,7 @@ void clock_deinit( void ) {
   date_deinit();
   battery_deinit();
   gpaths_deinit();
+  if ( snooze_layer ) bitmap_layer_destroy( snooze_layer );
   layer_destroy( dial_layer );
   gbitmap_destroy( analog_clock_bitmap );
 }

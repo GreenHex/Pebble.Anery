@@ -49,6 +49,21 @@ module.exports = function( minified ) {
     show( showItems );
     hide( hideItems );
   };
+  
+  var toggle_battery_gauge_settings_visibility = function() {
+    var showItems;
+    var hideItems;
+    
+    if ( this.get() == '2' ) { // weather
+      showItems = [ ];
+      hideItems = [ 'SHOW_BATTERY_GAUGE' ];
+    } else { // nothing
+      showItems = [ 'SHOW_BATTERY_GAUGE' ];
+      hideItems = [ ]; 
+    }
+    show( showItems );
+    hide( hideItems );
+  };
 
   clayConfig.on( clayConfig.EVENTS.AFTER_BUILD, function() {
     var chimeSettings = clayConfig.getItemByMessageKey( 'CHIME_INTERVAL' );
@@ -58,5 +73,10 @@ module.exports = function( minified ) {
     var showWeather = clayConfig.getItemByMessageKey( 'SHOW_WEATHER' );
     toggle_weather_visibility.call( showWeather );
     showWeather.on( 'change', toggle_weather_visibility );
+    
+    var showBatteryGauge = clayConfig.getItemByMessageKey( 'ANALOG_HANDS_STYLE' );
+    toggle_battery_gauge_settings_visibility.call( showBatteryGauge );
+    showBatteryGauge.on( 'change', toggle_battery_gauge_settings_visibility );
+    
   });
 };

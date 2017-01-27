@@ -21,11 +21,11 @@
 ///////
 #else
 /////// 144 x 168
-#define SEC_HAND_LENGTH 55 /* 53 */
+#define SEC_HAND_LENGTH 58 /* 53 */
 #define SEC_HAND_TAIL_LENGTH 20
 #define SEC_HAND_TIP_LENGTH 12
-#define MIN_HAND_LENGTH 50
-#define HOUR_HAND_LENGTH 35
+#define MIN_HAND_LENGTH 58
+#define HOUR_HAND_LENGTH 40
 #define SEC_HAND_WIDTH 1
 #define MIN_HAND_WIDTH 4
 #define HOUR_HAND_WIDTH 6
