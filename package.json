@@ -4,7 +4,7 @@
         "pebble-clay": "^1.0.2"
     },
     "keywords": [],
-    "name": "anery-v1.30",
+    "name": "anery-v1.31",
     "pebble": {
         "capabilities": [
             "location",
@@ -62,7 +62,31 @@
                 {
                     "characterRegex": "[0-9]",
                     "file": "fonts/BioRhymeExpanded-Regular-Mod.ttf",
+                    "name": "FONT_BIORHYME_EXPANDED_REGULAR_9",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9]",
+                    "file": "fonts/BioRhymeExpanded-Regular-Mod.ttf",
                     "name": "FONT_BIORHYME_EXPANDED_REGULAR_18",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "diorite",
+                        "emery"
+                    ],
+                    "type": "font"
+                },
+                {
+                    "characterRegex": "[0-9]",
+                    "file": "fonts/BioRhyme-Regular-Mod.ttf",
+                    "name": "FONT_BIORHYME_REGULAR_9",
                     "targetPlatforms": [
                         "aplite",
                         "basalt",
@@ -216,5 +240,5 @@
             "watchface": true
         }
     },
-    "version": "1.30.0"
+    "version": "1.31.0"
 }

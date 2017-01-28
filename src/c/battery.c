@@ -191,9 +191,9 @@ void battery_init( Layer* parent_layer ) {
 }
 
 void battery_deinit( void ) {
-  bitmap_layer_destroy( cont_batt_gauge_bitmap_layer );
-  bitmap_layer_destroy( moser_batt_gauge_bitmap_layer );
-  bitmap_layer_destroy( sbge001_batt_gauge_bitmap_layer );
-  gpath_destroy( s_sbge001_batt_gauge_hand );
-  gpath_destroy( s_moser_batt_gauge_hand );
+  if ( cont_batt_gauge_bitmap_layer ) bitmap_layer_destroy( cont_batt_gauge_bitmap_layer );
+  if ( moser_batt_gauge_bitmap_layer ) bitmap_layer_destroy( moser_batt_gauge_bitmap_layer );
+  if ( sbge001_batt_gauge_bitmap_layer ) bitmap_layer_destroy( sbge001_batt_gauge_bitmap_layer );
+  if ( s_sbge001_batt_gauge_hand ) gpath_destroy( s_sbge001_batt_gauge_hand );
+  if ( s_moser_batt_gauge_hand ) gpath_destroy( s_moser_batt_gauge_hand );
 }

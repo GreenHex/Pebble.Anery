@@ -23,12 +23,17 @@
 static Layer *window_layer = 0;
 // analog clock
 static Layer *dial_layer = 0;
+static Layer *digit_layer[ NUM_DIGITS ];
+static int gmt_digits[ NUM_DIGITS ] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23 };
+static char digit_str[] = "12";
 static BitmapLayer *snooze_layer = 0;
 static Layer *analog_clock_layer = 0;
 static GBitmap *analog_clock_bitmap = 0;
 // misc
 #ifndef SECONDS_ALWAYS_ON
 static AppTimer *secs_display_apptimer = 0;
+static GFont digit_font_expanded;
+static GFont digit_font_normal;
 #endif
 extern tm tm_time;
 extern tm tm_gmt;
@@ -71,7 +76,7 @@ static void handle_clock_tick( struct tm *tick_time, TimeUnits units_changed ) {
   
   layer_mark_dirty( analog_clock_layer );
   
-  if ( ( units_changed & MINUTE_UNIT ) && ( !quiet_time_is_active() ) )do_chime( &tm_time );
+  if ( ( !quiet_time_is_active() ) && ( units_changed & MINUTE_UNIT ) ) do_chime( &tm_time );
 }
 
 static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -79,8 +84,8 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_antialiased( ctx, true );
   graphics_context_set_fill_color( ctx, BACKGROUND_COLOUR );
   graphics_fill_rect( ctx, bounds, 0, GCornerNone );
-  
-  if ( persist_read_bool( MESSAGE_KEY_ANALOG_SHOW_SECONDS_TICKS ) ) {
+  if ( persist_read_bool( MESSAGE_KEY_ANALOG_SHOW_SECONDS_TICKS ) &&
+      ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) ) {
     draw_seconds_ticks( & (DRAW_TICKS_PARAMS) { 
       .layer = layer, 
       .ctx = ctx, 
@@ -119,6 +124,26 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_stroke_color( ctx, BACKGROUND_COLOUR );
   graphics_context_set_stroke_width( ctx, CLOCK_TICK_EDGE_OFFSET );
   graphics_draw_round_rect( ctx, grect_inset( bounds, GEdgeInsets( CLOCK_TICK_EDGE_OFFSET / 2 ) ), 0 ); 
+}
+
+#define DIGIT_FONT_EXPANDED RESOURCE_ID_FONT_BIORHYME_EXPANDED_REGULAR_9
+#define DIGIT_FONT_NORMAL RESOURCE_ID_FONT_BIORHYME_REGULAR_9
+
+static void digit_layer_update_proc( Layer *layer, GContext *ctx ) {
+  if ( persist_read_int( MESSAGE_KEY_ANALOG_HANDS_STYLE ) != STYLE_SBGE001 ) return;
+  GRect layer_bounds = layer_get_bounds( layer );
+  /*
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_context_set_stroke_color( ctx, PBL_IF_COLOR_ELSE( GColorDarkGray, GColorLightGray ) );
+  graphics_draw_round_rect( ctx, layer_bounds, 0 );
+  */
+  snprintf( digit_str, sizeof( digit_str ), "%u",  ( (DIGIT_LAYER_DATA_GMT *) layer_get_data( layer ) )->digit );
+  layer_bounds.origin.y -= DIGIT_TXT_VERT_ADJ;
+  GFont font = ( ( (DIGIT_LAYER_DATA_GMT *) layer_get_data( layer ) )->digit < 10 ) ?
+    digit_font_expanded : digit_font_normal;
+  graphics_context_set_text_color( ctx, ( (DIGIT_LAYER_DATA_GMT *) layer_get_data( layer ) )->colour );
+  graphics_draw_text( ctx, digit_str, font /* fonts_get_system_font( FONT_KEY_GOTHIC_14 ) */, layer_bounds,
+                     GTextOverflowModeTrailingEllipsis, ( ( DIGIT_LAYER_DATA_GMT *) layer_get_data( layer ) )->text_alignment, NULL );
 }
 
 static void snooze_layer_update_proc( Layer *layer, GContext *ctx ) {
@@ -196,7 +221,20 @@ void clock_init( Window *window ) {
   dial_layer = layer_create( clock_layer_frame );
   layer_set_update_proc( dial_layer, dial_layer_update_proc );
   layer_add_child( window_layer, dial_layer );
-  
+  for ( int i = 0; i < NUM_DIGITS; i++ ) {
+    GRect digit_layer_frame = GRect( DIGIT_LOCATIONS.points[ i ].x, DIGIT_LOCATIONS.points[ i ].y,
+                                    DIGIT_RECT_SIZE_W, DIGIT_RECT_SIZE_H ); 
+    digit_layer[i] = layer_create_with_data( digit_layer_frame, sizeof( DIGIT_LAYER_DATA_GMT ) );
+    *(DIGIT_LAYER_DATA_GMT *) layer_get_data( digit_layer[ i ] ) = (DIGIT_LAYER_DATA_GMT) {
+      .digit = gmt_digits[ i ],
+      .colour = PBL_IF_COLOR_ELSE( GColorRed, GColorWhite ),
+      .text_alignment = GTextAlignmentCenter,
+    };
+    layer_set_update_proc( digit_layer[ i ], digit_layer_update_proc );
+    layer_add_child( dial_layer, digit_layer[ i ] );
+  }
+  digit_font_expanded = fonts_load_custom_font( resource_get_handle( DIGIT_FONT_EXPANDED ) );
+  digit_font_normal = fonts_load_custom_font( resource_get_handle( DIGIT_FONT_NORMAL ) );
   snooze_layer = bitmap_layer_create( SNOOZE_LAYER_FRAME );
   layer_set_update_proc( bitmap_layer_get_layer( snooze_layer ), snooze_layer_update_proc );
   layer_add_child( dial_layer, bitmap_layer_get_layer( snooze_layer ) );
@@ -244,7 +282,7 @@ void clock_deinit( void ) {
   accel_tap_service_unsubscribe(); // are we over-unsubscribing?
   #endif
   tick_timer_service_unsubscribe();
-  layer_destroy( analog_clock_layer );
+  if ( analog_clock_layer ) layer_destroy( analog_clock_layer );
   #ifdef INCLUDE_WEATHER
   weather_deinit();
   #endif
@@ -258,6 +296,11 @@ void clock_deinit( void ) {
   battery_deinit();
   gpaths_deinit();
   if ( snooze_layer ) bitmap_layer_destroy( snooze_layer );
-  layer_destroy( dial_layer );
+  fonts_unload_custom_font( digit_font_normal );
+  fonts_unload_custom_font( digit_font_expanded );  
+  for ( int i = 0; i < NUM_DIGITS; i ++ ) {
+    if ( digit_layer[i] ) layer_destroy( digit_layer[i] );
+  }
+  if ( dial_layer ) layer_destroy( dial_layer );
   gbitmap_destroy( analog_clock_bitmap );
 }

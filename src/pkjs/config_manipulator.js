@@ -56,9 +56,9 @@ module.exports = function( minified ) {
     
     if ( this.get() == '2' ) { // weather
       showItems = [ ];
-      hideItems = [ 'SHOW_BATTERY_GAUGE' ];
+      hideItems = [ 'ANALOG_SHOW_SECONDS_TICKS', 'SHOW_BATTERY_GAUGE' ];
     } else { // nothing
-      showItems = [ 'SHOW_BATTERY_GAUGE' ];
+      showItems = [ 'ANALOG_SHOW_SECONDS_TICKS', 'SHOW_BATTERY_GAUGE' ];
       hideItems = [ ]; 
     }
     show( showItems );
