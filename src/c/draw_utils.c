@@ -132,7 +132,7 @@ void draw_sbge001_clock_hands( DRAW_CLOCK_PARAMS *pCP ) {
   gpath_move_to( s_gmt_hand, pCP->center_pt );
   graphics_context_set_fill_color( pCP->ctx, PBL_IF_COLOR_ELSE( GColorDarkCandyAppleRed, GColorWhite ) );
   gpath_draw_filled( pCP->ctx, s_gmt_hand );
-  graphics_context_set_stroke_color( pCP->ctx, PBL_IF_COLOR_ELSE( GColorRed, GColorWhite ) );
+  graphics_context_set_stroke_color( pCP->ctx, PBL_IF_COLOR_ELSE( GColorRed, GColorBlack ) );
   gpath_draw_outline( pCP->ctx, s_gmt_hand );
   // gmt inlay
   gpath_rotate_to( s_gmt_inlay, pCP->gmt_angle );
