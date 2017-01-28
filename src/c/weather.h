@@ -23,8 +23,13 @@
 #define WEATHER_ICON_FRAME ( GRect( 0, 0, WEATHER_ICON_SIZE_W, WEATHER_ICON_SIZE_H ) )
 #define WEATHER_TEXT_FRAME ( GRect( WEATHER_ICON_SIZE_W, (WEATHER_WINDOW_SIZE_H/2) - (WEATHER_TEXT_SIZE_H/2), WEATHER_TEXT_SIZE_W, WEATHER_TEXT_SIZE_H ) )
 
+#if defined( PBL_COLOR1 )
 #define WEATHER_ICON_VERT_ADJ 7
 #define WEATHER_TEXT_VERT_ADJ 6
+#else
+#define WEATHER_ICON_VERT_ADJ 0
+#define WEATHER_TEXT_VERT_ADJ 4 
+#endif
 
 void clear_weather( void );
 void show_weather( Tuple *tuple_ptr_temp, DictionaryIterator *iterator );

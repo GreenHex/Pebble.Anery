@@ -75,8 +75,12 @@ void draw_icon( GContext *ctx, GRect bounds, int32_t icon_id, bool is_day_not_ni
   }
 }
 
-void weather_icons_init( void ) {  
+void weather_icons_init( void ) {
+  #if defined( PBL_COLOR1 )
   icon_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_FORECASTFONT_48 ) );
+  #else
+  icon_font = fonts_load_custom_font( resource_get_handle( RESOURCE_ID_FONT_FORECASTFONT_32 ) );
+  #endif
 }
 
 void weather_icons_deinit( void ) {

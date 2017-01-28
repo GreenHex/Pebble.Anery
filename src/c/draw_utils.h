@@ -169,10 +169,11 @@ static const GPathInfo GMT_HAND_INLAY = {
 #else
 /////// 144 x 168
 
+#if defined( PBL_COLOR )
 static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
   4, (GPoint []) {
     { 0, 18 },
-    { -10, 0 },
+    { -9, 0 },
     { 0, -50 },
     { 9, 0 }
   }
@@ -181,7 +182,7 @@ static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
 static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
   3, (GPoint []) {
     { 0, 18 },
-    { -10, 0 },
+    { -9, 0 },
     { 0, -50 }
   }
 };
@@ -202,6 +203,41 @@ static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
     { 0, -70 },
   }
 };
+#else
+static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS = {
+  4, (GPoint []) {
+    { 0, 18 },
+    { -7, 0 },
+    { 0, -50 },
+    { 7, 0 }
+  }
+};
+
+static const GPathInfo HOUR_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
+  3, (GPoint []) {
+    { 0, 18 },
+    { -7, 0 },
+    { 0, -50 }
+  }
+};
+
+static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS = {
+  4, (GPoint []) {
+    { 0, 18 },
+    { -6, 0 },
+    { 0, -75 },
+    { 6, 0 },
+  }
+};
+
+static const GPathInfo MINUTE_HAND_SPIFFY_GS_POINTS_HIGHLIGHT = {
+  3, (GPoint []) {
+    { 0, 18 },
+    { 6, 0 },
+    { 0, -75 },
+  }
+};
+#endif
 
 static const GPathInfo HOUR_HAND_SBGE001_POINTS = {
   6, (GPoint []) {

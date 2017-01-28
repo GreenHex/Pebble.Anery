@@ -99,7 +99,7 @@ static void moser_batt_gauge_layer_update_proc( Layer *layer, GContext *ctx ) {
     .from_pt = center_pt,
     .to_pt = battery_hand,
     .hand_width = 1,
-    .hand_color = GColorDarkGray,
+    .hand_color = PBL_IF_COLOR_ELSE( GColorDarkGray, GColorLightGray ),
     .hand_outline_color = GColorBlack,
     .dot_radius = 3,
     .dot_color = GColorDarkGray,
