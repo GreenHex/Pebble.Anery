@@ -4,7 +4,7 @@
         "pebble-clay": "^1.0.2"
     },
     "keywords": [],
-    "name": "anery-v1.32",
+    "name": "anery-v1.33",
     "pebble": {
         "capabilities": [
             "location",
@@ -240,5 +240,5 @@
             "watchface": true
         }
     },
-    "version": "1.32.0"
+    "version": "1.33.0"
 }
