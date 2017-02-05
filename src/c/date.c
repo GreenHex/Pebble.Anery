@@ -43,11 +43,17 @@ static void date_text_layer_update_proc( Layer *layer, GContext *ctx ) {
   
   GRect date_window_bounds = layer_get_bounds( layer );
   
-  static char date_text[3] = "";
+  static char date_text[] = "31";
   
-  GColor text_color = PBL_IF_COLOR_ELSE( ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack, GColorBlack );
+  #if defined( PBL_COLOR )
+  GColor text_color = ( tm_time.tm_wday == 0 ) ? GColorOrange : ( tm_time.tm_wday == 6 ) ? GColorBlueMoon : GColorBlack;
+  #else
+  GColor text_color = GColorBlack;
+  #endif
+  
+  // tm_time.tm_wday = 38;
+  
   graphics_context_set_text_color( ctx, text_color );
-  tm_time.tm_wday = 38;
   snprintf( date_text, sizeof( date_text ), "%d", tm_time.tm_mday );
 
   #ifdef ALTERNATE_FONT
