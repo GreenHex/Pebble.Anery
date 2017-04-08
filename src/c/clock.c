@@ -124,6 +124,9 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_stroke_color( ctx, BACKGROUND_COLOUR );
   graphics_context_set_stroke_width( ctx, CLOCK_TICK_EDGE_OFFSET );
   graphics_draw_round_rect( ctx, grect_inset( bounds, GEdgeInsets( CLOCK_TICK_EDGE_OFFSET / 2 ) ), 0 ); 
+  graphics_context_set_stroke_color( ctx, GColorWhite );
+  graphics_context_set_stroke_width( ctx, 1 );
+  graphics_draw_round_rect( ctx, bounds, 9 ); 
 }
 
 #define DIGIT_FONT_EXPANDED RESOURCE_ID_FONT_BIORHYME_EXPANDED_REGULAR_9
