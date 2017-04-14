@@ -124,7 +124,7 @@ static void dial_layer_update_proc( Layer *layer, GContext *ctx ) {
   graphics_context_set_stroke_color( ctx, BACKGROUND_COLOUR );
   graphics_context_set_stroke_width( ctx, CLOCK_TICK_EDGE_OFFSET );
   graphics_draw_round_rect( ctx, grect_inset( bounds, GEdgeInsets( CLOCK_TICK_EDGE_OFFSET / 2 ) ), 0 ); 
-  graphics_context_set_stroke_color( ctx, GColorWhite );
+  graphics_context_set_stroke_color( ctx, GColorDarkGray );
   graphics_context_set_stroke_width( ctx, 1 );
   graphics_draw_round_rect( ctx, bounds, 9 ); 
 }
@@ -230,7 +230,7 @@ void clock_init( Window *window ) {
     digit_layer[i] = layer_create_with_data( digit_layer_frame, sizeof( DIGIT_LAYER_DATA_GMT ) );
     *(DIGIT_LAYER_DATA_GMT *) layer_get_data( digit_layer[ i ] ) = (DIGIT_LAYER_DATA_GMT) {
       .digit = gmt_digits[ i ],
-      .colour = PBL_IF_COLOR_ELSE( GColorRed, GColorWhite ),
+      .colour = PBL_IF_COLOR_ELSE( GColorJaegerGreen, GColorWhite ),
       .text_alignment = GTextAlignmentCenter,
     };
     layer_set_update_proc( digit_layer[ i ], digit_layer_update_proc );
